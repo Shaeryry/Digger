@@ -4,6 +4,10 @@
 #include "TransformComponent.h"
 
 
+dae::TextureComponent::TextureComponent()
+{
+}
+
 dae::TextureComponent::TextureComponent(const std::string& filename)
 {
 	SetTexture(filename);
@@ -12,6 +16,11 @@ dae::TextureComponent::TextureComponent(const std::string& filename)
 void dae::TextureComponent::SetTexture(const std::string& filename)
 {
 	m_texture = ResourceManager::GetInstance().LoadTexture(filename);
+}
+
+void dae::TextureComponent::SetTexture(std::shared_ptr<Texture2D> texture)
+{
+	m_texture = std::move(texture);
 }
 
 void dae::TextureComponent::Render() const

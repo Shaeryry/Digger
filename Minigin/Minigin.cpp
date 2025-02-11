@@ -1,14 +1,18 @@
 #include <stdexcept>
 #define WIN32_LEAN_AND_MEAN 
 #include <windows.h>
+#include <chrono>
+#include <thread>
 #include <SDL.h>
 #include <SDL_image.h>
 #include <SDL_ttf.h>
+
 #include "Minigin.h"
 #include "InputManager.h"
 #include "SceneManager.h"
 #include "Renderer.h"
 #include "ResourceManager.h"
+#include "Timer.h"
 
 SDL_Window* g_window{};
 
@@ -82,13 +86,28 @@ void dae::Minigin::Run(const std::function<void()>& load)
 	auto& renderer = Renderer::GetInstance();
 	auto& sceneManager = SceneManager::GetInstance();
 	auto& input = InputManager::GetInstance();
+	auto& timer = Timer::GetInstance();
 
 	// todo: this update loop could use some work.
 	bool doContinue = true;
 	while (doContinue)
-	{
+	{ 
 		doContinue = input.ProcessInput();
+		// Fixed Update
+		while (timer.lag >= timer.FIXED_TIME_STEP)
+		{
+			//fixed_update(fixed_time_step);
+			timer.FixedUpdate();
+		}
+		// Regular update
+		timer.Update();
 		sceneManager.Update();
-		renderer.Render();
+
+		// Draw
+		renderer.Render(); 
+
+		// Sleep 
+		const auto sleep_time = std::chrono::high_resolution_clock::now() + std::chrono::milliseconds( timer.MS_PER_FRAME ) - std::chrono::high_resolution_clock::now();
+		std::this_thread::sleep_for(sleep_time);
 	}
-}
+} 

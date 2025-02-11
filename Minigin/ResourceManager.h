@@ -24,6 +24,6 @@ namespace dae
 
 		std::map<std::string, std::shared_ptr<Texture2D>> m_loadedTextures;
 		std::map<std::pair<std::string, uint8_t>, std::shared_ptr<Font>> m_loadedFonts;
-
+		 
 	};
 }
