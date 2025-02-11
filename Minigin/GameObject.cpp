@@ -3,22 +3,38 @@
 #include "ResourceManager.h"
 #include "Renderer.h"
 
-dae::GameObject::~GameObject() = default;
+dae::GameObject::GameObject()
+{
+	AddComponent<TransformComponent>(); // Add the base transform component to EVERY game object.
+}
 
-void dae::GameObject::Update(){}
+dae::GameObject::~GameObject()
+{
+}
+
+void dae::GameObject::Update()
+{
+	for (auto& component : m_components) {
+		component->Update();
+	}
+}
+
+void dae::GameObject::LateUpdate()
+{
+}
 
 void dae::GameObject::Render() const
 {
-	const auto& pos = m_transform.GetPosition();
-	Renderer::GetInstance().RenderTexture(*m_texture, pos.x, pos.y);
+	for (auto& component : m_components) {
+		component->Render();
+	}
+	//const auto& pos = m_transform.GetPosition();
+	//Renderer::GetInstance().RenderTexture(*m_texture, pos.x, pos.y);
 }
 
-void dae::GameObject::SetTexture(const std::string& filename)
-{
-	m_texture = ResourceManager::GetInstance().LoadTexture(filename);
-}
 
-void dae::GameObject::SetPosition(float x, float y)
+
+void dae::GameObject::RemoveComponent(std::unique_ptr<Component> component)
 {
-	m_transform.SetPosition(x, y, 0.0f);
+	m_components.erase(std::remove(m_components.begin(), m_components.end(), component), m_components.end());
 }
