@@ -1,8 +1,18 @@
 #include "Component.h"
 #include "GameObject.h"
 
+dae::Component::Component(GameObject* parent)
+{
+	SetParent(parent);
+}
+
 dae::Component::~Component()
 {
+}
+
+void dae::Component::SetParent(GameObject* parent)
+{
+	m_parent = parent;
 }
 
 void dae::Component::SetTransform(TransformComponent* transform)

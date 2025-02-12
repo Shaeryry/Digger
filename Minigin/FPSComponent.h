@@ -1,19 +1,12 @@
 #pragma once
-#include "Component.h"
+#include "TextComponent.h"
 
 namespace dae {
-	class TextComponent;
-	class FPSComponent final : public Component
+	class FPSComponent final : public TextComponent
 	{
-	public:
-		FPSComponent();
-		FPSComponent(TextComponent* textComponent);
-		void AssignTextComponent(TextComponent* textComponent);
-		const TextComponent* GetAssignedTextComponent() const { return m_assignedTextComponent; };
-
+	public: 
+		FPSComponent(GameObject* gameObject, std::shared_ptr<Font> font);
 		virtual void Update() override;
-	private:
-		TextComponent* m_assignedTextComponent;
 	};
 }
 

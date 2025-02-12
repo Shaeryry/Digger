@@ -5,12 +5,11 @@
 #include "Texture2D.h"
 
 namespace dae {
-	class Font;
 	class TextureComponent : public Component
 	{
 	public:
-		TextureComponent();
-		TextureComponent(const std::string& filename);
+		TextureComponent(GameObject* gameObject);
+		TextureComponent(GameObject* gameObject, const std::string& filename);
 
 		const std::shared_ptr<Texture2D>& GetTexture() const { return m_texture; };
 		void SetTexture(const std::string& filename);

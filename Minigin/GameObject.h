@@ -25,7 +25,7 @@ namespace dae
 		virtual void LateUpdate();
 		virtual void Render() const;
 
-		template<typename T,typename... Arguments> Component* AddComponent(Arguments&&... args);
+		template<typename T,typename... Arguments> T* AddComponent(Arguments&&... args);
 		template<typename T> T* GetComponent();
 
 		void RemoveComponent(std::unique_ptr<Component> component);
@@ -37,14 +37,14 @@ namespace dae
 	};
 	 
 	template<typename T, typename... Arguments>	
-	inline Component* GameObject::AddComponent(Arguments&&... args)
+	inline T* GameObject::AddComponent(Arguments&&... args)
 	{
-		std::unique_ptr<T> newComponent{ std::make_unique<T>( std::forward<Arguments>(args)... ) };
-		newComponent->SetTransform( GetComponent<TransformComponent>() );
+		std::unique_ptr<T> newComponent{ std::make_unique<T>( this,std::forward<Arguments>(args)... ) };
+		newComponent->SetTransform(GetComponent<TransformComponent>());
 
 		m_components.emplace_back(std::move(newComponent));
 
-		return m_components.back().get();
+		return dynamic_cast<T*>( m_components.back().get() );
 	}
 
 	template<typename T>

@@ -5,8 +5,13 @@
 #include "Font.h"
 #include "Texture2D.h"
 
-dae::TextComponent::TextComponent(const std::string& text, std::shared_ptr<Font> font) :
-	TextureComponent(),
+dae::TextComponent::TextComponent(GameObject* gameObject, std::shared_ptr<Font> font) :
+	TextComponent(gameObject, "TextComponent", font)
+{
+}
+
+dae::TextComponent::TextComponent(GameObject* gameObject, const std::string& text, std::shared_ptr<Font> font) :
+	TextureComponent(gameObject),
 	m_needsUpdate{ true }
 {
 	SetText(text);
