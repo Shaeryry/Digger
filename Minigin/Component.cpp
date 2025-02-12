@@ -11,16 +11,6 @@ dae::Component::~Component()
 {
 }
 
-void dae::Component::Destroy()
-{
-	m_Destroyed = true;
-}
-
-void dae::Component::SetParent(GameObject* gameObject)
-{
-	m_Parent = gameObject;
-}
-
 void dae::Component::SetTransform(TransformComponent* transform)
 {
 	if (transform == nullptr) return; // Make sure that the transform exists;
