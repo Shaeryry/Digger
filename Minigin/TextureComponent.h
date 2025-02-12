@@ -11,12 +11,12 @@ namespace dae {
 		TextureComponent(GameObject* gameObject);
 		TextureComponent(GameObject* gameObject, const std::string& filename);
 
-		const std::shared_ptr<Texture2D>& GetTexture() const { return m_Texture; };
+		const Texture2D* GetTexture() const { return m_Texture; };
 		void SetTexture(const std::string& filename);
-		void SetTexture(std::shared_ptr<Texture2D> texture);
+		void SetTexture(Texture2D* texture);
 
 		virtual void Render() const override;
 	private:
-		std::shared_ptr<Texture2D> m_Texture;
+		Texture2D* m_Texture;
 	};
 }

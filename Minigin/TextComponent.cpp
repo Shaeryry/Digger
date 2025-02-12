@@ -5,12 +5,12 @@
 #include "Font.h"
 #include "Texture2D.h"
 
-dae::TextComponent::TextComponent(GameObject* gameObject, std::shared_ptr<Font> font) :
+dae::TextComponent::TextComponent(GameObject* gameObject, Font* font) :
 	TextComponent(gameObject, "TextComponent", font)
 {
 }
 
-dae::TextComponent::TextComponent(GameObject* gameObject, const std::string& text, std::shared_ptr<Font> font) :
+dae::TextComponent::TextComponent(GameObject* gameObject, const std::string& text, Font* font) :
 	TextureComponent(gameObject),
 	m_Changed{ true }
 {
@@ -25,7 +25,7 @@ void dae::TextComponent::SetText(const std::string& text)
 	m_Changed = true;
 }
 
-void dae::TextComponent::SetFont(std::shared_ptr<Font> font)
+void dae::TextComponent::SetFont(Font* font)
 {
 	m_Font = std::move(font);
 	m_Changed = true;
@@ -47,8 +47,8 @@ void dae::TextComponent::Update()
 			throw std::runtime_error(std::string("Create text texture from surface failed: ") + SDL_GetError());
 		}
 		SDL_FreeSurface(surf);
-		//m_texture = std::make_shared<Texture2D>(texture);
-		SetTexture( std::make_shared<Texture2D>(texture) );
+		m_TextTexture = std::make_unique<Texture2D>(texture);
+		SetTexture( m_TextTexture.get() );
 		m_Changed = false;
 	}
 }

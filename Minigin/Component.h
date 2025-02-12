@@ -10,7 +10,7 @@ namespace dae
 	{
 	public:
 		//Component() = default;
-		Component(GameObject* parent);
+		Component(GameObject* gameObject);
 		virtual ~Component();
 		Component(const Component& other) = delete;
 		Component(Component&& other) = delete; 
@@ -20,16 +20,16 @@ namespace dae
 		void Destroy();
 		bool IsDestroyed() const { return m_Destroyed; };
 
-		void SetParent(GameObject* parent);
+		void SetParent(GameObject* gameObject);
 		GameObject* GetParent() const { return m_Parent; };
 
 		void SetTransform(TransformComponent* transform); 
 		TransformComponent* GetTransform() const { return m_Transform; }; 
 
-		virtual void FixedUpdate();
-		virtual void Update();
-		virtual void LateUpdate();
-		virtual void Render() const; 
+		virtual void FixedUpdate() {};
+		virtual void Update() {};
+		virtual void LateUpdate() {};
+		virtual void Render() const{}; 
 	private:
 		bool m_Destroyed;
 		GameObject* m_Parent; // A pointer to the parented gameobject

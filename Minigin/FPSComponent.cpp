@@ -4,7 +4,7 @@
 #include "TextComponent.h"
 #include "Timer.h"
 
-dae::FPSComponent::FPSComponent(GameObject* gameObject, std::shared_ptr<Font> font) :
+dae::FPSComponent::FPSComponent(GameObject* gameObject, Font* font) :
 	TextComponent(gameObject, font)
 {
 }

@@ -21,15 +21,15 @@ void dae::TextureComponent::SetTexture(const std::string& filename)
 	m_Texture = ResourceManager::GetInstance().LoadTexture(filename);
 }
 
-void dae::TextureComponent::SetTexture(std::shared_ptr<Texture2D> texture)
+void dae::TextureComponent::SetTexture(Texture2D* texture)
 {
-	m_Texture = std::move(texture);
+	m_Texture = texture;
 }
 
 void dae::TextureComponent::Render() const
 {
 	if (m_Texture != nullptr) {
-		glm::vec3 position{ GetTransform()->GetPosition()};
+		const glm::vec3 position{ GetTransform()->GetPosition() };
 		Renderer::GetInstance().RenderTexture(*m_Texture, position.x, position.y);
 	}
 }
