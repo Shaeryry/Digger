@@ -1,4 +1,6 @@
 #include <string>
+#include <iostream>
+#include <functional>
 #include "GameObject.h"
 #include "ResourceManager.h"
 #include "Renderer.h"
@@ -12,6 +14,13 @@ dae::GameObject::~GameObject()
 {
 }
 
+void dae::GameObject::FixedUpdate()
+{
+	for (auto& component : m_components) {
+		component->FixedUpdate();
+	}
+}
+
 void dae::GameObject::Update()
 {
 	for (auto& component : m_components) {
@@ -21,6 +30,16 @@ void dae::GameObject::Update()
 
 void dae::GameObject::LateUpdate()
 {
+	//std::vector< std::unique_ptr<Component> > destroyedComponents{};
+
+	for (auto& component : m_components) {
+		component->LateUpdate();
+	}
+
+	m_components.erase( 
+		std::remove_if(m_components.begin(), m_components.end(),std::bind(&Component::IsDestroyed,std::placeholders::_1)),
+		m_components.end() 
+	);
 }
 
 void dae::GameObject::Render() const
@@ -28,13 +47,10 @@ void dae::GameObject::Render() const
 	for (auto& component : m_components) {
 		component->Render();
 	}
-	//const auto& pos = m_transform.GetPosition();
-	//Renderer::GetInstance().RenderTexture(*m_texture, pos.x, pos.y);
 }
 
 
-
-void dae::GameObject::RemoveComponent(std::unique_ptr<Component> component)
+void dae::GameObject::RemoveComponent(Component* component)
 {
-	m_components.erase(std::remove(m_components.begin(), m_components.end(), component), m_components.end());
+	if (component != nullptr) component->Destroy();
 }

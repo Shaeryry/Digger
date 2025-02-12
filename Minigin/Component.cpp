@@ -1,13 +1,19 @@
 #include "Component.h"
 #include "GameObject.h"
 
-dae::Component::Component(GameObject* parent)
+dae::Component::Component(GameObject* parent) :
+	m_destroyed{ false }
 {
 	SetParent(parent);
 }
 
 dae::Component::~Component()
 {
+}
+
+void dae::Component::Destroy()
+{
+	m_destroyed = true;
 }
 
 void dae::Component::SetParent(GameObject* parent)
@@ -22,7 +28,15 @@ void dae::Component::SetTransform(TransformComponent* transform)
 	m_transform = transform; //std::shared_ptr<TransformComponent>(transform);
 }
 
+void dae::Component::FixedUpdate()
+{
+}
+
 void dae::Component::Update()
+{
+}
+
+void dae::Component::LateUpdate()
 {
 }
 

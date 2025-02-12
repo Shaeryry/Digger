@@ -21,14 +21,16 @@ namespace dae
 		GameObject& operator=(const GameObject& other) = delete;
 		GameObject& operator=(GameObject&& other) = delete;
 
+		virtual void FixedUpdate();
 		virtual void Update();
 		virtual void LateUpdate();
 		virtual void Render() const;
 
 		template<typename T,typename... Arguments> T* AddComponent(Arguments&&... args);
+		template<typename T> void RemoveComponent();
 		template<typename T> T* GetComponent();
 
-		void RemoveComponent(std::unique_ptr<Component> component);
+		void RemoveComponent(Component* component);
 	private:
 		std::vector< std::unique_ptr<Component> > m_components{}; 
 
@@ -45,6 +47,13 @@ namespace dae
 		m_components.emplace_back(std::move(newComponent));
 
 		return dynamic_cast<T*>( m_components.back().get() );
+	}
+
+	template<typename T>
+	inline void GameObject::RemoveComponent()
+	{
+		T* objectToDelete{ GetComponent<T>() };
+		RemoveComponent(objectToDelete);
 	}
 
 	template<typename T>
