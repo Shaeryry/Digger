@@ -49,7 +49,7 @@ void dae::Scene::LateUpdate()
 		object->LateUpdate();
 	}
 
-	// Delete objects marked for deletion
+	// TODO : Delete objects marked for deletion
 }
 
 void Scene::Render() const

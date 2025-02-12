@@ -19,5 +19,5 @@ void dae::Timer::FixedUpdate()
 
 float dae::Timer::GetFPS()
 {
-	return (1 / deltaTime);
+	return (1.f / deltaTime); 
 }

@@ -17,7 +17,7 @@ void dae::TransformComponent::SetPosition(const glm::vec3& position)
 
 void dae::TransformComponent::SetPosition(float x, float y, float z)
 {
-	m_position.x = x;
-	m_position.y = y;
-	m_position.z = z;
+	m_Position.x = x;	
+	m_Position.y = y;
+	m_Position.z = z;
 }

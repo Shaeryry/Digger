@@ -93,16 +93,19 @@ void dae::Minigin::Run(const std::function<void()>& load)
 	while (doContinue)
 	{ 
 		doContinue = input.ProcessInput();
+
 		// Fixed Update
 		while (timer.lag >= timer.FIXED_TIME_STEP)
 		{
-			//fixed_update(fixed_time_step);
-			sceneManager.FixedUpdate();
 			timer.FixedUpdate();
+			sceneManager.FixedUpdate();
 		}
+
 		// Regular update
 		timer.Update();
 		sceneManager.Update();
+
+		// Late update
 		sceneManager.LateUpdate();
 
 		// Draw

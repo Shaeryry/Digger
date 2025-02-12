@@ -40,6 +40,7 @@ void dae::TextComponent::SetColor(Uint8 r, Uint8 g, Uint8 b, Uint8 a)
 
 void dae::TextComponent::SetColor(SDL_Color color)
 {
+	// TODO : Consider clamping the color to make sure no funny stuff happens
 	/*color.r = std::clamp(color.r, Uint8(0) , Uint8(255));
 	color.g = std::clamp(color.g, Uint8(0) , Uint8(255));
 	color.b = std::clamp(color.b, Uint8(0) , Uint8(255));
