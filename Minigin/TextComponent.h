@@ -14,9 +14,9 @@ namespace dae {
 
 		virtual void Update() override;
 	private:
-		bool m_needsUpdate;
-		std::string m_text;
-		std::shared_ptr<Font> m_font;
+		bool m_Changed;
+		std::string m_Text;
+		std::shared_ptr<Font> m_Font;
 	};
 }
 

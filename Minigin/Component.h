@@ -18,21 +18,21 @@ namespace dae
 		Component& operator=(Component&& other) = delete;
 
 		void Destroy();
-		bool IsDestroyed() const { return m_destroyed; };
+		bool IsDestroyed() const { return m_Destroyed; };
 
 		void SetParent(GameObject* parent);
-		GameObject* GetParent() const { return m_parent; };
+		GameObject* GetParent() const { return m_Parent; };
 
 		void SetTransform(TransformComponent* transform); 
-		TransformComponent* GetTransform() const { return m_transform; }; 
+		TransformComponent* GetTransform() const { return m_Transform; }; 
 
 		virtual void FixedUpdate();
 		virtual void Update();
 		virtual void LateUpdate();
 		virtual void Render() const; 
 	private:
-		bool m_destroyed;
-		GameObject* m_parent; // A pointer to the parented gameobject
-		TransformComponent* m_transform; // A pointer to the owner's transform for easy access. 
+		bool m_Destroyed;
+		GameObject* m_Parent; // A pointer to the parented gameobject
+		TransformComponent* m_Transform; // A pointer to the owner's transform for easy access. 
 	};
 }

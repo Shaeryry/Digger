@@ -32,7 +32,7 @@ namespace dae
 
 		void RemoveComponent(Component* component);
 	private:
-		std::vector< std::unique_ptr<Component> > m_components{}; 
+		std::vector< std::unique_ptr<Component> > m_Components{}; 
 
 		// todo: mmm, every gameobject has a texture? Is that correct?
 		//std::shared_ptr<Texture2D> m_texture{};
@@ -44,9 +44,9 @@ namespace dae
 		std::unique_ptr<T> newComponent{ std::make_unique<T>( this,std::forward<Arguments>(args)... ) };
 		newComponent->SetTransform(GetComponent<TransformComponent>());
 
-		m_components.emplace_back(std::move(newComponent));
+		m_Components.emplace_back(std::move(newComponent));
 
-		return dynamic_cast<T*>( m_components.back().get() );
+		return dynamic_cast<T*>( m_Components.back().get() );
 	}
 
 	template<typename T>
@@ -59,7 +59,7 @@ namespace dae
 	template<typename T>
 	inline T* GameObject::GetComponent()
 	{
-		for (auto& component : m_components) {
+		for (auto& component : m_Components) {
 			T* castedComponent = dynamic_cast<T*>( component.get() );
 
 			if (castedComponent) {

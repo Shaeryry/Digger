@@ -12,7 +12,7 @@ dae::TextComponent::TextComponent(GameObject* gameObject, std::shared_ptr<Font> 
 
 dae::TextComponent::TextComponent(GameObject* gameObject, const std::string& text, std::shared_ptr<Font> font) :
 	TextureComponent(gameObject),
-	m_needsUpdate{ true }
+	m_Changed{ true }
 {
 	SetText(text);
 	SetFont(font);
@@ -21,22 +21,22 @@ dae::TextComponent::TextComponent(GameObject* gameObject, const std::string& tex
 
 void dae::TextComponent::SetText(const std::string& text)
 {
-	m_text = text;
-	m_needsUpdate = true;
+	m_Text = text;
+	m_Changed = true;
 }
 
 void dae::TextComponent::SetFont(std::shared_ptr<Font> font)
 {
-	m_font = std::move(font);
-	m_needsUpdate = true;
+	m_Font = std::move(font);
+	m_Changed = true;
 }
 
 void dae::TextComponent::Update()
 {
-	if (m_needsUpdate) {
+	if (m_Changed) {
 
 		const SDL_Color color = { 255,255,255,255 }; // only white text is supported now
-		const auto surf = TTF_RenderText_Blended(m_font->GetFont(), m_text.c_str(), color);
+		const auto surf = TTF_RenderText_Blended(m_Font->GetFont(), m_Text.c_str(), color);
 		if (surf == nullptr)
 		{
 			throw std::runtime_error(std::string("Render text failed: ") + SDL_GetError());
@@ -49,6 +49,6 @@ void dae::TextComponent::Update()
 		SDL_FreeSurface(surf);
 		//m_texture = std::make_shared<Texture2D>(texture);
 		SetTexture( std::make_shared<Texture2D>(texture) );
-		m_needsUpdate = false;
+		m_Changed = false;
 	}
 }

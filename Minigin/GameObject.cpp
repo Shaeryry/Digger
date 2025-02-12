@@ -16,35 +16,33 @@ dae::GameObject::~GameObject()
 
 void dae::GameObject::FixedUpdate()
 {
-	for (auto& component : m_components) {
+	for (auto& component : m_Components) {
 		component->FixedUpdate();
 	}
 }
 
 void dae::GameObject::Update()
 {
-	for (auto& component : m_components) {
+	for (auto& component : m_Components) {
 		component->Update();
 	}
 }
 
 void dae::GameObject::LateUpdate()
 {
-	//std::vector< std::unique_ptr<Component> > destroyedComponents{};
-
-	for (auto& component : m_components) {
+	for (auto& component : m_Components) {
 		component->LateUpdate();
 	}
 
-	m_components.erase( 
-		std::remove_if(m_components.begin(), m_components.end(),std::bind(&Component::IsDestroyed,std::placeholders::_1)),
-		m_components.end() 
+	m_Components.erase( 
+		std::remove_if(m_Components.begin(), m_Components.end(),std::bind(&Component::IsDestroyed,std::placeholders::_1)),
+		m_Components.end() 
 	);
 }
 
 void dae::GameObject::Render() const
 {
-	for (auto& component : m_components) {
+	for (auto& component : m_Components) {
 		component->Render();
 	}
 }

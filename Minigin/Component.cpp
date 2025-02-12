@@ -2,7 +2,7 @@
 #include "GameObject.h"
 
 dae::Component::Component(GameObject* parent) :
-	m_destroyed{ false }
+	m_Destroyed{ false }
 {
 	SetParent(parent);
 }
@@ -13,19 +13,19 @@ dae::Component::~Component()
 
 void dae::Component::Destroy()
 {
-	m_destroyed = true;
+	m_Destroyed = true;
 }
 
 void dae::Component::SetParent(GameObject* parent)
 {
-	m_parent = parent;
+	m_Parent = parent;
 }
 
 void dae::Component::SetTransform(TransformComponent* transform)
 {
 	if (transform == nullptr) return; // Make sure that the transform exists;
 	if (transform == this) return; // Make sure that the transform isn't the same component.
-	m_transform = transform; //std::shared_ptr<TransformComponent>(transform);
+	m_Transform = transform; //std::shared_ptr<TransformComponent>(transform);
 }
 
 void dae::Component::FixedUpdate()

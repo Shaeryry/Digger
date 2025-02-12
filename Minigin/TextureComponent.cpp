@@ -6,7 +6,7 @@
 
 dae::TextureComponent::TextureComponent(GameObject* gameObject) :
 	Component(gameObject),
-	m_texture{ nullptr }
+	m_Texture{ nullptr }
 {
 }
 
@@ -18,18 +18,18 @@ dae::TextureComponent::TextureComponent(GameObject* gameObject,const std::string
 
 void dae::TextureComponent::SetTexture(const std::string& filename)
 {
-	m_texture = ResourceManager::GetInstance().LoadTexture(filename);
+	m_Texture = ResourceManager::GetInstance().LoadTexture(filename);
 }
 
 void dae::TextureComponent::SetTexture(std::shared_ptr<Texture2D> texture)
 {
-	m_texture = std::move(texture);
+	m_Texture = std::move(texture);
 }
 
 void dae::TextureComponent::Render() const
 {
-	if (m_texture != nullptr) {
+	if (m_Texture != nullptr) {
 		glm::vec3 position{ GetTransform()->GetPosition()};
-		Renderer::GetInstance().RenderTexture(*m_texture, position.x, position.y);
+		Renderer::GetInstance().RenderTexture(*m_Texture, position.x, position.y);
 	}
 }
