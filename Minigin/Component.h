@@ -32,7 +32,7 @@ namespace dae
 		virtual void Render() const{}; 
 	private:
 		bool m_Destroyed;
-		GameObject* m_Parent; // A pointer to the parented gameobject
+		GameObject* m_Parent; // A pointer to the parented gameObject
 		TransformComponent* m_Transform; // A pointer to the owner's transform for easy access. 
 	};
 }

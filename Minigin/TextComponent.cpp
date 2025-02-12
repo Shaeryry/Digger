@@ -1,6 +1,6 @@
 #include "TextComponent.h"
 #include <stdexcept>
-#include <SDL_ttf.h>
+#include <algorithm>
 #include "Renderer.h"
 #include "Font.h"
 #include "Texture2D.h"
@@ -16,6 +16,7 @@ dae::TextComponent::TextComponent(GameObject* gameObject, const std::string& tex
 {
 	SetText(text);
 	SetFont(font);
+	SetColor(255, 255, 255);
 }
 
 
@@ -31,12 +32,28 @@ void dae::TextComponent::SetFont(Font* font)
 	m_Changed = true;
 }
 
-void dae::TextComponent::Update()
+void dae::TextComponent::SetColor(Uint8 r, Uint8 g, Uint8 b, Uint8 a)
 {
+	SDL_Color newColor{ r,g,b,a };
+	SetColor(newColor);
+}
+
+void dae::TextComponent::SetColor(SDL_Color color)
+{
+	/*color.r = std::clamp(color.r, Uint8(0) , Uint8(255));
+	color.g = std::clamp(color.g, Uint8(0) , Uint8(255));
+	color.b = std::clamp(color.b, Uint8(0) , Uint8(255));
+	color.a = std::clamp(color.a, Uint8(0) , Uint8(255));*/
+
+	m_Color = color;
+	m_Changed = true;
+}
+
+void dae::TextComponent::Update()
+{ 
 	if (m_Changed) {
 
-		const SDL_Color color = { 255,255,255,255 }; // only white text is supported now
-		const auto surf = TTF_RenderText_Blended(m_Font->GetFont(), m_Text.c_str(), color);
+		const auto surf = TTF_RenderText_Blended(m_Font->GetFont(), m_Text.c_str(), m_Color);
 		if (surf == nullptr)
 		{
 			throw std::runtime_error(std::string("Render text failed: ") + SDL_GetError());
@@ -47,6 +64,7 @@ void dae::TextComponent::Update()
 			throw std::runtime_error(std::string("Create text texture from surface failed: ") + SDL_GetError());
 		}
 		SDL_FreeSurface(surf);
+
 		m_TextTexture = std::make_unique<Texture2D>(texture);
 		SetTexture( m_TextTexture.get() );
 		m_Changed = false;
