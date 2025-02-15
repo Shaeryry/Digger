@@ -34,10 +34,7 @@ void dae::GameObject::LateUpdate()
 		component->LateUpdate();
 	}
 
-	m_Components.erase( 
-		std::remove_if(m_Components.begin(), m_Components.end(),std::bind(&Component::IsDestroyed,std::placeholders::_1)),
-		m_Components.end() 
-	);
+	std::erase_if(m_Components, std::bind(&Component::IsDestroyed, std::placeholders::_1) );
 }
 
 void dae::GameObject::Render() const
