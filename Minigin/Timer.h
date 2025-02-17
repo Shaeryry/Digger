@@ -9,6 +9,7 @@ namespace dae {
 		std::chrono::high_resolution_clock::time_point UpdateTimer();
 		void FixedUpdate();
 		float GetFPS();
+		float GetTotalElapsedSec();
 
 		float deltaTime{ 0.0f };
 		float lag{ 0.0f };
@@ -17,6 +18,7 @@ namespace dae {
 		const float FIXED_TIME_STEP{ 1.f / MAX_FPS };
 	private:
 		std::chrono::time_point<std::chrono::high_resolution_clock> last_time{ std::chrono::high_resolution_clock::now() };
+		float totalTimeElapsed{ 0 };
 	};
 }
 

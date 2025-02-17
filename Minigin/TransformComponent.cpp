@@ -2,23 +2,41 @@
 
 dae::TransformComponent::TransformComponent(GameObject* gameObject) :
 	Component(gameObject),
-	m_Position{ 0,0,0 }
+	m_WorldPosition{ 0,0,0 },
+	m_LocalPosition{ 0,0,0 }
 {
 }
 
-void dae::TransformComponent::SetPosition(const glm::vec2& position)
+void dae::TransformComponent::SetWorldPosition(const glm::vec2& position)
 {
-	SetPosition(position.x, position.y, 0);
+	SetWorldPosition(position.x, position.y, 0);
 }
 
-void dae::TransformComponent::SetPosition(const glm::vec3& position)
+void dae::TransformComponent::SetWorldPosition(const glm::vec3& position)
 {
-	SetPosition(position.x, position.y, position.z);
+	SetWorldPosition(position.x, position.y, position.z);
 }
 
-void dae::TransformComponent::SetPosition(float x, float y, float z)
+void dae::TransformComponent::SetWorldPosition(float x, float y, float z)
 {
-	m_Position.x = x;	
-	m_Position.y = y;
-	m_Position.z = z;
+	m_WorldPosition.x = x;
+	m_WorldPosition.y = y;
+	m_WorldPosition.z = z;
+}
+
+void dae::TransformComponent::SetLocalPosition(const glm::vec2& position)
+{
+	SetLocalPosition(position.x, position.y, 0);
+}
+
+void dae::TransformComponent::SetLocalPosition(const glm::vec3& position)
+{
+	SetLocalPosition(position.x, position.y, position.z);
+}
+
+void dae::TransformComponent::SetLocalPosition(float x, float y, float z)
+{
+	m_LocalPosition.x = x;
+	m_LocalPosition.y = y;
+	m_LocalPosition.z = z;
 }

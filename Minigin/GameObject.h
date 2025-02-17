@@ -8,15 +8,17 @@ namespace dae
 	class GameObject final
 	{
 	public:
+		explicit GameObject();
+		explicit GameObject(GameObject* parent);
 
-		GameObject();
 		~GameObject();
 		GameObject(const GameObject& other) = delete;
 		GameObject(GameObject&& other) = delete;
 		GameObject& operator=(const GameObject& other) = delete;
 		GameObject& operator=(GameObject&& other) = delete;
 
-		TransformComponent* GetTransform() const { return m_Transform; };
+		void SetParent(GameObject* parent, bool keepWorldPosition = false);
+		bool IsChild(GameObject* gameObject) const;
 
 		void FixedUpdate();
 		void Update();
@@ -28,9 +30,23 @@ namespace dae
 		template<typename T> T* GetComponent();
 
 		void RemoveComponent(Component* component);
+
+		TransformComponent* GetTransform() const { return m_Transform; };
+		glm::vec3 GetWorldPosition();
+		void UpdateWorldPosition();
+		 
+		void SetPosition(const glm::vec3& localPosition);
+		void MarkPositionForUpdate() { m_PositionChanged = true; };
 	private:
-		std::vector< std::unique_ptr<Component> > m_Components{}; 
+		void AddChild(GameObject* gameObject);
+		void RemoveChild(GameObject* gameObject);
+
+		GameObject* m_Parent;
 		TransformComponent* m_Transform;
+		bool m_PositionChanged;
+
+		std::vector< std::unique_ptr<Component> > m_Components{}; 
+		std::vector< GameObject* > m_Children{};
 	};
 	 
 	template<typename T, typename... Arguments>	

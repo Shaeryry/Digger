@@ -23,7 +23,7 @@ void dae::TextureRendererComponent::SetTexture(Texture2D* texture)
 void dae::TextureRendererComponent::Render() const
 {
 	if (m_Texture != nullptr) {
-		const glm::vec3 position{ GetOwner()->GetTransform()->GetPosition() };
+		const glm::vec3 position{ GetOwner()->GetWorldPosition() };
 		Renderer::GetInstance().RenderTexture(*m_Texture, position.x, position.y);
 	}
 }

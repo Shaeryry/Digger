@@ -9,6 +9,8 @@ std::chrono::high_resolution_clock::time_point dae::Timer::UpdateTimer()
 	lag += calculated_delta_time;
 
 	deltaTime = calculated_delta_time; // Update the delta time
+	totalTimeElapsed += calculated_delta_time; // Add accumulated time 
+
 	return current_time;
 }
 
@@ -21,4 +23,9 @@ void dae::Timer::FixedUpdate()
 float dae::Timer::GetFPS()
 {
 	return (1.f / deltaTime); 
+}
+
+float dae::Timer::GetTotalElapsedSec()
+{
+	return totalTimeElapsed;
 }
