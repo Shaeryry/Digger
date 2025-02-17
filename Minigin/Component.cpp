@@ -2,9 +2,9 @@
 #include "GameObject.h"
 
 dae::Component::Component(GameObject* gameObject) :
-	m_Destroyed{ false }
+	m_Destroyed{ false },
+	m_Parent{ gameObject }
 {
-	SetParent(gameObject);
 }
 
 dae::Component::~Component()

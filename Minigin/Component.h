@@ -28,7 +28,6 @@ namespace dae
 		virtual void LateUpdate() {};
 		virtual void Render() const {}; 
 	private:
-		void SetParent(GameObject* gameObject) { m_Parent = gameObject; };
 		bool m_Destroyed;
 		GameObject* m_Parent; // A pointer to the parented gameObject
 		TransformComponent* m_Transform; // A pointer to the owner's transform for easy access. 
