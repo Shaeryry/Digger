@@ -1,7 +1,7 @@
 #include "Timer.h"
 #include <iostream>
 
-void dae::Timer::Update()
+std::chrono::high_resolution_clock::time_point dae::Timer::UpdateTimer()
 {
 	const auto current_time = std::chrono::high_resolution_clock::now();
 	const float calculated_delta_time = std::chrono::duration<float>(current_time - last_time).count(); 
@@ -9,6 +9,7 @@ void dae::Timer::Update()
 	lag += calculated_delta_time;
 
 	deltaTime = calculated_delta_time; // Update the delta time
+	return current_time;
 }
 
 void dae::Timer::FixedUpdate()

@@ -18,7 +18,6 @@ void dae::FPSComponent::Update()
 	ss << std::fixed << std::setprecision(1) << FPS;
 	std::string formattedFPS = ss.str();
 
-
 	const std::string FPS_Text{ formattedFPS };
 	SetText(FPS_Text + " FPS");
 

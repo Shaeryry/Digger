@@ -92,7 +92,8 @@ void dae::Minigin::Run(const std::function<void()>& load)
 	bool doContinue = true;
 	while (doContinue)
 	{ 
-		doContinue = input.ProcessInput();
+		auto currentTime = timer.UpdateTimer(); // Update delta time and return the current time for this update !
+		doContinue = input.ProcessInput(); 
 
 		// Fixed Update
 		while (timer.lag >= timer.FIXED_TIME_STEP)
@@ -102,7 +103,6 @@ void dae::Minigin::Run(const std::function<void()>& load)
 		}
 
 		// Regular update
-		timer.Update();
 		sceneManager.Update();
 
 		// Late update
@@ -112,7 +112,7 @@ void dae::Minigin::Run(const std::function<void()>& load)
 		renderer.Render(); 
 
 		// Sleep 
-		const auto sleep_time = std::chrono::high_resolution_clock::now() + std::chrono::milliseconds( timer.MS_PER_FRAME ) - std::chrono::high_resolution_clock::now();
+		const auto sleep_time = currentTime + std::chrono::milliseconds( timer.MS_PER_FRAME ) - std::chrono::high_resolution_clock::now();
 		std::this_thread::sleep_for(sleep_time);
 	}
 } 

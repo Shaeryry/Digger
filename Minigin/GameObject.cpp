@@ -5,9 +5,9 @@
 #include "ResourceManager.h"
 #include "Renderer.h"
 
-dae::GameObject::GameObject()
+dae::GameObject::GameObject() :
+	m_Transform{ AddComponent<TransformComponent>() } // Add the base transform component to EVERY game object.
 {
-	AddComponent<TransformComponent>(); // Add the base transform component to EVERY game object.
 }
 
 dae::GameObject::~GameObject()
@@ -34,8 +34,8 @@ void dae::GameObject::LateUpdate()
 		component->LateUpdate();
 	}
 
-	std::erase_if(m_Components, std::bind(&Component::IsDestroyed, std::placeholders::_1) );
-}
+	std::erase_if( m_Components, std::bind(&Component::IsDestroyed, std::placeholders::_1) );
+} 
 
 void dae::GameObject::Render() const
 {

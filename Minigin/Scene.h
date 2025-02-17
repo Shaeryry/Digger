@@ -8,7 +8,7 @@ namespace dae
 	{
 		friend Scene& SceneManager::CreateScene(const std::string& name);
 	public:
-		void Add(std::unique_ptr<GameObject>& object);
+		std::unique_ptr<GameObject>& Add(std::unique_ptr<GameObject>& object);
 		void Destroy(std::unique_ptr<GameObject>& object);
 		void RemoveAll();
 

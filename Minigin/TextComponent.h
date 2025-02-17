@@ -17,7 +17,7 @@ namespace dae {
 		void SetFont(Font* font);
 
 		void SetColor(Uint8 r, Uint8 g, Uint8 b, Uint8 a = 255);
-		void SetColor(SDL_Color color);
+		void SetColor(const SDL_Color& color);
 
 		virtual void Update() override;
 	private:

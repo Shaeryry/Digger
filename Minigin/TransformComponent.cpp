@@ -1,7 +1,8 @@
 #include "TransformComponent.h"
 
-dae::TransformComponent::TransformComponent(GameObject* gameObject) : 
-	Component(gameObject)
+dae::TransformComponent::TransformComponent(GameObject* gameObject) :
+	Component(gameObject),
+	m_Position{ 0,0,0 }
 {
 }
 
