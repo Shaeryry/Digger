@@ -1,12 +1,16 @@
 #pragma once
-#include "TextComponent.h"
+#include "Component.h"
 
 namespace dae {
-	class FPSComponent final : public TextComponent
+	class Font;
+	class TextComponent;
+	class FPSComponent final : public Component
 	{
 	public: 
-		FPSComponent(GameObject* gameObject, Font* font);
+		explicit FPSComponent(GameObject* gameObject, TextComponent* textComponent);
 		virtual void Update() override;
+	private:
+		TextComponent* m_TextComponent; // Linked text component
 	};
 }
 

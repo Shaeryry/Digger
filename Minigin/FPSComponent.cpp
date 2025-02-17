@@ -1,11 +1,12 @@
 #include <iomanip>
-#include "GameObject.h"
 #include "FPSComponent.h"
 #include "TextComponent.h"
+#include "GameObject.h"
 #include "Timer.h"
 
-dae::FPSComponent::FPSComponent(GameObject* gameObject, Font* font) :
-	TextComponent(gameObject, font)
+dae::FPSComponent::FPSComponent(GameObject* gameObject, TextComponent* textComponent) :
+	Component(gameObject),
+	m_TextComponent{ textComponent }
 {
 }
 
@@ -19,7 +20,5 @@ void dae::FPSComponent::Update()
 	std::string formattedFPS = ss.str();
 
 	const std::string FPS_Text{ formattedFPS };
-	SetText(FPS_Text + " FPS");
-
-	TextComponent::Update();
+	m_TextComponent->SetText(FPS_Text + " FPS");
 }

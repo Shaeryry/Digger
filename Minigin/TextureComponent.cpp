@@ -1,35 +1,21 @@
 #include "TextureComponent.h"
-#include "ResourceManager.h"
-#include "Renderer.h"
-#include "TransformComponent.h"
+#include "GameObject.h"
+#include "TextureRendererComponent.h"
 
 
-dae::TextureComponent::TextureComponent(GameObject* gameObject) :
+dae::TextureComponent::TextureComponent(GameObject* gameObject, TextureRendererComponent* textureRenderer) :
 	Component(gameObject),
-	m_Texture{ nullptr }
+	m_Renderer{ textureRenderer }
 {
 }
-
-dae::TextureComponent::TextureComponent(GameObject* gameObject,const std::string& filename) :
-	TextureComponent(gameObject)
+		
+dae::TextureComponent::TextureComponent(GameObject* gameObject, TextureRendererComponent* textureRenderer, const std::string& filename) :
+	TextureComponent(gameObject,textureRenderer)
 {
 	SetTexture(filename);
 }
 
-void dae::TextureComponent::SetTexture(const std::string& filename)
-{
-	m_Texture = ResourceManager::GetInstance().LoadTexture(filename);
-}
-
-void dae::TextureComponent::SetTexture(Texture2D* texture)
-{
-	m_Texture = texture;
-}
-
-void dae::TextureComponent::Render() const
-{
-	if (m_Texture != nullptr) {
-		const glm::vec3 position{ GetTransform()->GetPosition() };
-		Renderer::GetInstance().RenderTexture(*m_Texture, position.x, position.y);
-	}
+void dae::TextureComponent::SetTexture(const std::string& fileName)
+{ 
+	if (m_Renderer) m_Renderer->SetTexture(fileName);
 }

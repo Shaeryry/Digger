@@ -2,17 +2,16 @@
 #include <memory>
 #include <SDL_ttf.h>
 #include "Texture2D.h"
-#include "TextureComponent.h"
-
+#include "Component.h"
 
 namespace dae {
 	class Font;
-	class TextComponent : public TextureComponent
+	class TextureRendererComponent;
+	class TextComponent final : public Component
 	{
 	public:
-		TextComponent(GameObject* gameObject, Font* font);
-		TextComponent(GameObject* gameObject,const std::string& text, Font* font);
-
+		explicit TextComponent(GameObject* gameObject, TextureRendererComponent* textureRenderer, Font* font);
+		explicit TextComponent(GameObject* gameObject, TextureRendererComponent* textureRenderer, const std::string& text, Font* font);
 		void SetText(const std::string& text);
 		void SetFont(Font* font);
 
@@ -21,11 +20,15 @@ namespace dae {
 
 		virtual void Update() override;
 	private:
-		bool m_Changed;
-		std::string m_Text;
-		Font* m_Font;
-		std::unique_ptr<Texture2D> m_TextTexture{ };
+
+		TextureRendererComponent* m_Renderer;
 		SDL_Color m_Color;
+		Font* m_Font;
+
+		std::unique_ptr<Texture2D> m_TextTexture{ };
+		std::string m_Text;
+
+		bool m_Changed;
 	};
 }
 

@@ -187,6 +187,7 @@
     <ClInclude Include="TextComponent.h" />
     <ClInclude Include="Texture2D.h" />
     <ClInclude Include="TextureComponent.h" />
+    <ClInclude Include="TextureRendererComponent.h" />
     <ClInclude Include="Timer.h" />
     <ClInclude Include="TransformComponent.h" />
   </ItemGroup>
@@ -205,6 +206,7 @@
     <ClCompile Include="TextComponent.cpp" />
     <ClCompile Include="Texture2D.cpp" />
     <ClCompile Include="TextureComponent.cpp" />
+    <ClCompile Include="TextureRendererComponent.cpp" />
     <ClCompile Include="Timer.cpp" />
     <ClCompile Include="TransformComponent.cpp" />
   </ItemGroup>

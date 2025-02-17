@@ -1,18 +1,21 @@
 #include "TextComponent.h"
 #include <stdexcept>
 #include <algorithm>
+#include "GameObject.h"
 #include "Renderer.h"
 #include "Font.h"
 #include "Texture2D.h"
+#include "TextureRendererComponent.h"
 
-dae::TextComponent::TextComponent(GameObject* gameObject, Font* font) :
-	TextComponent(gameObject, "TextComponent", font)
+dae::TextComponent::TextComponent(GameObject* gameObject, TextureRendererComponent* textureRenderer, Font* font) :
+	TextComponent(gameObject,textureRenderer , "TextComponent", font)
 {
 }
 
-dae::TextComponent::TextComponent(GameObject* gameObject, const std::string& text, Font* font) :
-	TextureComponent(gameObject),
-	m_Changed{ true }
+dae::TextComponent::TextComponent(GameObject* gameObject, TextureRendererComponent* textureRenderer, const std::string& text, Font* font) :
+	Component(gameObject),
+	m_Changed{ true },
+	m_Renderer{ textureRenderer }
 {
 	SetText(text);
 	SetFont(font);
@@ -67,7 +70,9 @@ void dae::TextComponent::Update()
 		SDL_FreeSurface(surf);
 
 		m_TextTexture = std::make_unique<Texture2D>(texture);
-		SetTexture( m_TextTexture.get() );
+
+		if (m_Renderer) { m_Renderer->SetTexture(m_TextTexture.get()); };
+
 		m_Changed = false;
 	}
 }

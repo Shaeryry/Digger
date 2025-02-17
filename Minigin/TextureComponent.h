@@ -2,21 +2,17 @@
 #include <memory>
 #include <string>
 #include "Component.h"
-#include "Texture2D.h"
 
 namespace dae {
-	class TextureComponent : public Component
+	class Texture2D;
+	class TextureRendererComponent;
+	class TextureComponent final : public Component
 	{
 	public:
-		TextureComponent(GameObject* gameObject);
-		TextureComponent(GameObject* gameObject, const std::string& filename);
-
-		const Texture2D* GetTexture() const { return m_Texture; };
-		void SetTexture(const std::string& filename);
-		void SetTexture(Texture2D* texture);
-
-		virtual void Render() const override;
+		explicit TextureComponent(GameObject* gameObject, TextureRendererComponent* textureRenderer);
+		explicit TextureComponent(GameObject* gameObject, TextureRendererComponent* textureRenderer, const std::string& filename);
+		void SetTexture(const std::string& fileName);
 	private:
-		Texture2D* m_Texture;
+		TextureRendererComponent* m_Renderer;
 	};
 }

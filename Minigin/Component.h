@@ -5,11 +5,9 @@
 namespace dae
 {
 	class GameObject;
-	class TransformComponent;
 	class Component
 	{
 	public:
-		Component(GameObject* gameObject);
 		virtual ~Component();
 		Component(const Component& other) = delete;
 		Component(Component&& other) = delete; 
@@ -19,17 +17,16 @@ namespace dae
 		void Destroy() { m_Destroyed = true; };
 		bool IsDestroyed() const { return m_Destroyed; };
 
-		GameObject* GetParent() const { return m_Parent; };
-		void SetTransform(TransformComponent* transform); 
-		TransformComponent* GetTransform() const { return m_Transform; }; 
+		GameObject* GetOwner() const { return m_Owner; };
 
 		virtual void FixedUpdate() {};
 		virtual void Update() {};
 		virtual void LateUpdate() {};
 		virtual void Render() const {}; 
+	protected:
+		explicit Component(GameObject* gameObject);
 	private:
 		bool m_Destroyed;
-		GameObject* m_Parent; // A pointer to the parented gameObject
-		TransformComponent* m_Transform; // A pointer to the owner's transform for easy access. 
+		GameObject* m_Owner; // A pointer to the parented gameObject
 	};
 }

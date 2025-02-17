@@ -16,6 +16,8 @@ namespace dae
 		GameObject& operator=(const GameObject& other) = delete;
 		GameObject& operator=(GameObject&& other) = delete;
 
+		TransformComponent* GetTransform() const { return m_Transform; };
+
 		void FixedUpdate();
 		void Update();
 		void LateUpdate();
@@ -35,8 +37,6 @@ namespace dae
 	inline T* GameObject::AddComponent(Arguments&&... args)
 	{
 		std::unique_ptr<T> newComponent{ std::make_unique<T>( this,std::forward<Arguments>(args)... ) };
-		newComponent->SetTransform(m_Transform);
-
 		m_Components.emplace_back( std::move(newComponent) );
 
 		return dynamic_cast<T*>( m_Components.back().get() );
