@@ -38,9 +38,9 @@ namespace dae
 
 		// Components
 
-		template<typename T,typename... Arguments> T* AddComponent(Arguments&&... args);
-		template<typename T> void RemoveComponent();
-		template<typename T> T* GetComponent();
+		template<typename ComponentType,typename... Arguments> ComponentType* AddComponent(Arguments&&... args);
+		template<typename ComponentType> void RemoveComponent();
+		template<typename ComponentType> ComponentType* GetComponent();
 		
 		bool HasComponent(Component* component);
 		void RemoveComponent(Component* component);
@@ -57,26 +57,26 @@ namespace dae
 		std::vector< GameObject* > m_Children{};
 	};
 	 
-	template<typename T, typename... Arguments>	
-	inline T* GameObject::AddComponent(Arguments&&... args)
+	template<typename ComponentType, typename... Arguments>	
+	inline ComponentType* GameObject::AddComponent(Arguments&&... args)
 	{
-		std::unique_ptr<T> newComponent{ std::make_unique<T>( this,std::forward<Arguments>(args)... ) };
+		std::unique_ptr<ComponentType> newComponent{ std::make_unique<ComponentType>( this,std::forward<Arguments>(args)... ) };
 		m_Components.emplace_back( std::move(newComponent) );
 
-		return dynamic_cast<T*>( m_Components.back().get() );
+		return dynamic_cast<ComponentType*>( m_Components.back().get() );
 	}
 
-	template<typename T>
+	template<typename ComponentType>
 	inline void GameObject::RemoveComponent()
 	{
-		GameObject::RemoveComponent( GetComponent<T>() );
+		GameObject::RemoveComponent( GetComponent<ComponentType>() );
 	}
 
-	template<typename T>
-	inline T* GameObject::GetComponent()
+	template<typename ComponentType>
+	inline ComponentType* GameObject::GetComponent()
 	{
 		for (auto& component : m_Components) {
-			T* castedComponent = dynamic_cast<T*>( component.get() );
+			ComponentType* castedComponent = dynamic_cast<ComponentType*>( component.get() );
 
 			if (castedComponent) {
 				return castedComponent;

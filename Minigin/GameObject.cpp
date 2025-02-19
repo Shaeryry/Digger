@@ -122,7 +122,12 @@ void dae::GameObject::Render() const
 
 bool dae::GameObject::HasComponent(Component* component)
 {
-	return std::find(m_Components.begin(), m_Components.end(), component) != m_Components.end();
+	//return std::find(m_Components.begin(), m_Components.end(), component) != m_Components.end();
+	for (auto& comp : m_Components) {
+		if (comp.get() == component) return true;
+	}
+
+	return false;
 }
 
 void dae::GameObject::RemoveComponent(Component* component)
