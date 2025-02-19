@@ -14,12 +14,14 @@ dae::GameObject::GameObject() :
 dae::GameObject::GameObject(GameObject* parent) : 
 	GameObject()
 {
-	SetParent(parent,true);
+	SetParent(parent,false);
 }
 
 dae::GameObject::~GameObject()
 {
 }
+
+// Parent
 
 void dae::GameObject::SetParent(GameObject* parent, bool keepWorldPosition)
 {
@@ -43,10 +45,48 @@ void dae::GameObject::SetParent(GameObject* parent, bool keepWorldPosition)
 	if (parent) parent->AddChild(this);
 }
 
-bool dae::GameObject::IsChild(GameObject* gameObject) const
+// Transformations
+
+void dae::GameObject::UpdateWorldPosition()
 {
-	return std::find(m_Children.begin(), m_Children.end(), gameObject) != m_Children.end();
+	if (m_PositionChanged) {
+		if (m_Parent) {
+			m_Transform->SetWorldPosition(m_Parent->GetWorldPosition() + m_Transform->GetTransformLocalPosition());
+		}
+		else {
+			m_Transform->SetWorldPosition(m_Transform->GetTransformLocalPosition());
+		}
+
+		// Mark all the children for update !
+		std::for_each(m_Children.begin(), m_Children.end(), std::bind(&GameObject::MarkPositionForUpdate, std::placeholders::_1));
+
+		m_PositionChanged = false;
+	}
 }
+
+void dae::GameObject::SetPosition(const glm::vec2& localPosition)
+{
+	SetPosition(localPosition.x, localPosition.y, 0.f);
+}
+
+void dae::GameObject::SetPosition(const glm::vec3& localPosition)
+{
+	SetPosition(localPosition.x, localPosition.y, localPosition.z);
+}
+
+void dae::GameObject::SetPosition(const float x, const float y, const float z)
+{
+	m_Transform->SetLocalPosition(x,y,z);
+	MarkPositionForUpdate();
+}
+
+glm::vec3 dae::GameObject::GetWorldPosition()
+{
+	UpdateWorldPosition();
+	return m_Transform->GetTransformWorldPosition();
+}
+
+// Methods
 
 void dae::GameObject::FixedUpdate() 
 {
@@ -78,46 +118,30 @@ void dae::GameObject::Render() const
 	}
 }
 
+// Components
+
+bool dae::GameObject::HasComponent(Component* component)
+{
+	return std::find(m_Components.begin(), m_Components.end(), component) != m_Components.end();
+}
 
 void dae::GameObject::RemoveComponent(Component* component)
 {
-	if (component != nullptr) component->Destroy();
+	if (component != nullptr and HasComponent(component) ) component->Destroy();
 }
 
-glm::vec3 dae::GameObject::GetWorldPosition()
-{
-	UpdateWorldPosition();
-	return m_Transform->GetTransformWorldPosition();
-}
-
-void dae::GameObject::UpdateWorldPosition()
-{
-	if (m_PositionChanged) {
-		if (m_Parent) {
-			m_Transform->SetWorldPosition(m_Parent->GetWorldPosition() + m_Transform->GetTransformLocalPosition());
-		}
-		else {
-			m_Transform->SetWorldPosition(m_Transform->GetTransformLocalPosition());
-		}
-
-		// Mark all the children for update !
-		//std::for_each(m_Children.begin(), m_Children.end(), std::bind(&GameObject::MarkPositionForUpdate, std::placeholders::_1));
-
-		m_PositionChanged = false;
-	}
-}
-
-void dae::GameObject::SetPosition(const glm::vec3& localPosition)
-{
-	m_Transform->SetLocalPosition(localPosition);
-	MarkPositionForUpdate();
-}
+// Children
 
 void dae::GameObject::AddChild(GameObject* gameObject)
 {
 	if (!IsChild(gameObject)) {
 		m_Children.emplace_back(gameObject);
 	}
+}
+
+bool dae::GameObject::IsChild(GameObject* gameObject) const
+{
+	return std::find(m_Children.begin(), m_Children.end(), gameObject) != m_Children.end();
 }
 
 void dae::GameObject::RemoveChild(GameObject* gameObject)

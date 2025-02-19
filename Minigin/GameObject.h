@@ -18,26 +18,34 @@ namespace dae
 		GameObject& operator=(GameObject&& other) = delete;
 
 		void SetParent(GameObject* parent, bool keepWorldPosition = false);
-		bool IsChild(GameObject* gameObject) const;
+
+		// Transformations
+
+		TransformComponent* GetTransform() const { return m_Transform; };
+
+		void SetPosition(const glm::vec2& localPosition);
+		void SetPosition(const glm::vec3& localPosition);
+		void SetPosition(const float x, const float y, const float z);
+
+		void MarkPositionForUpdate() { m_PositionChanged = true; };
+		void UpdateWorldPosition();
+		glm::vec3 GetWorldPosition();
 
 		void FixedUpdate();
 		void Update();
 		void LateUpdate();
 		void Render() const;
 
+		// Components
+
 		template<typename T,typename... Arguments> T* AddComponent(Arguments&&... args);
 		template<typename T> void RemoveComponent();
 		template<typename T> T* GetComponent();
-
+		
+		bool HasComponent(Component* component);
 		void RemoveComponent(Component* component);
-
-		TransformComponent* GetTransform() const { return m_Transform; };
-		glm::vec3 GetWorldPosition();
-		void UpdateWorldPosition();
-		 
-		void SetPosition(const glm::vec3& localPosition);
-		void MarkPositionForUpdate() { m_PositionChanged = true; };
 	private:
+		bool IsChild(GameObject* gameObject) const;
 		void AddChild(GameObject* gameObject);
 		void RemoveChild(GameObject* gameObject);
 
