@@ -62,7 +62,7 @@ void dae::TransformComponent::UpdateWorldPosition()
 			SetWorldPosition(GetTransformLocalPosition());
 		}
 
-		GetOwner()->NotifyWorldPositionChanged(); 	// Mark all the children for update !
+		GetOwner()->NotifyWorldPositionChanged(); // Mark all the children for update !
 		m_DirtyPosition = false;
 	}
 }
