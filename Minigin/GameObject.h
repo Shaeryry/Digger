@@ -17,6 +17,7 @@ namespace dae
 		GameObject& operator=(const GameObject& other) = delete;
 		GameObject& operator=(GameObject&& other) = delete;
 
+		GameObject* GetParent() const { return m_Parent; };
 		void SetParent(GameObject* parent, bool keepWorldPosition = false);
 
 		// Transformations
@@ -26,9 +27,6 @@ namespace dae
 		void SetPosition(const glm::vec2& localPosition);
 		void SetPosition(const glm::vec3& localPosition);
 		void SetPosition(const float x, const float y, const float z);
-
-		void MarkPositionForUpdate() { m_PositionChanged = true; };
-		void UpdateWorldPosition();
 		glm::vec3 GetWorldPosition();
 
 		void FixedUpdate();
@@ -44,6 +42,15 @@ namespace dae
 		
 		bool HasComponent(Component* component);
 		void RemoveComponent(Component* component);
+
+		// Notification Events
+
+		void NotifyWorldPositionChanged();
+
+		// Listener Events
+
+		void OnParentWorldPositionChanged();
+
 	private:
 		bool IsChild(GameObject* gameObject) const;
 		void AddChild(GameObject* gameObject);
@@ -51,7 +58,6 @@ namespace dae
 
 		GameObject* m_Parent;
 		TransformComponent* m_Transform;
-		bool m_PositionChanged;
 
 		std::vector< std::unique_ptr<Component> > m_Components{}; 
 		std::vector< GameObject* > m_Children{};

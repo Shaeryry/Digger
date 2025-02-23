@@ -5,8 +5,7 @@
 #include "ResourceManager.h"
 #include "Renderer.h"
 
-dae::GameObject::GameObject() :
-	m_PositionChanged{ true }
+dae::GameObject::GameObject()
 {
 	m_Transform = AddComponent<TransformComponent>(); // Add the base transform component to EVERY game object.
 }
@@ -34,10 +33,10 @@ void dae::GameObject::SetParent(GameObject* parent, bool keepWorldPosition)
 	else {
 		if (keepWorldPosition) {
 			const glm::vec3 offsetPosition{ GetWorldPosition() - parent->GetWorldPosition() };
-
 			SetPosition(offsetPosition);
 		}
-		MarkPositionForUpdate();
+
+		m_Transform->MakePositionDirty();
 	}
 
 	if (m_Parent) m_Parent->RemoveChild(this); 
@@ -45,24 +44,6 @@ void dae::GameObject::SetParent(GameObject* parent, bool keepWorldPosition)
 	if (parent) parent->AddChild(this);
 }
 
-// Transformations
-
-void dae::GameObject::UpdateWorldPosition()
-{
-	if (m_PositionChanged) {
-		if (m_Parent) {
-			m_Transform->SetWorldPosition(m_Parent->GetWorldPosition() + m_Transform->GetTransformLocalPosition());
-		}
-		else {
-			m_Transform->SetWorldPosition(m_Transform->GetTransformLocalPosition());
-		}
-
-		// Mark all the children for update !
-		std::for_each(m_Children.begin(), m_Children.end(), std::bind(&GameObject::MarkPositionForUpdate, std::placeholders::_1));
-
-		m_PositionChanged = false;
-	}
-}
 
 void dae::GameObject::SetPosition(const glm::vec2& localPosition)
 {
@@ -77,12 +58,10 @@ void dae::GameObject::SetPosition(const glm::vec3& localPosition)
 void dae::GameObject::SetPosition(const float x, const float y, const float z)
 {
 	m_Transform->SetLocalPosition(x,y,z);
-	MarkPositionForUpdate();
 }
 
 glm::vec3 dae::GameObject::GetWorldPosition()
 {
-	UpdateWorldPosition();
 	return m_Transform->GetTransformWorldPosition();
 }
 
@@ -122,7 +101,6 @@ void dae::GameObject::Render() const
 
 bool dae::GameObject::HasComponent(Component* component)
 {
-	//return std::find(m_Components.begin(), m_Components.end(), component) != m_Components.end();
 	for (auto& comp : m_Components) {
 		if (comp.get() == component) return true;
 	}
@@ -133,6 +111,18 @@ bool dae::GameObject::HasComponent(Component* component)
 void dae::GameObject::RemoveComponent(Component* component)
 {
 	if (component != nullptr and HasComponent(component) ) component->Destroy();
+}
+
+// Notifications
+
+void dae::GameObject::NotifyWorldPositionChanged()
+{
+	std::for_each(m_Children.begin(), m_Children.end(), std::bind(&GameObject::OnParentWorldPositionChanged, std::placeholders::_1)); // Call the on position changed event for all the children
+}
+
+void dae::GameObject::OnParentWorldPositionChanged()
+{
+	m_Transform->MakePositionDirty();
 }
 
 // Children
