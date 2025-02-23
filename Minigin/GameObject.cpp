@@ -122,10 +122,15 @@ void dae::GameObject::NotifyWorldPositionChanged()
 
 void dae::GameObject::OnParentWorldPositionChanged()
 {
-	m_Transform->MakePositionDirty();
+	SetPosition(m_Transform->GetTransformLocalPosition()); // Set the local position to the updated position
 }
 
 // Children
+
+bool dae::GameObject::IsChild(GameObject* gameObject) const
+{
+	return std::find(m_Children.begin(), m_Children.end(), gameObject) != m_Children.end();
+}
 
 void dae::GameObject::AddChild(GameObject* gameObject)
 {
@@ -133,14 +138,9 @@ void dae::GameObject::AddChild(GameObject* gameObject)
 		m_Children.emplace_back(gameObject);
 	}
 }
-
-bool dae::GameObject::IsChild(GameObject* gameObject) const
-{
-	return std::find(m_Children.begin(), m_Children.end(), gameObject) != m_Children.end();
-}
-
 void dae::GameObject::RemoveChild(GameObject* gameObject)
 {
-	std::erase(m_Children, gameObject);
-	//m_Children.erase(std::remove(m_Children.begin(), m_Children.end(), gameObject), m_Children.end());
+	if (IsChild(gameObject)) {
+		std::erase(m_Children, gameObject);
+	}
 }
