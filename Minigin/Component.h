@@ -26,7 +26,7 @@ namespace dae
 	protected:
 		explicit Component(GameObject* gameObject);
 	private:
-		bool m_Destroyed;
 		GameObject* m_Owner; // A pointer to the parented gameObject
+		bool m_Destroyed;
 	};
 }

@@ -10,10 +10,10 @@ dae::GameObject::GameObject()
 	m_Transform = AddComponent<TransformComponent>(); // Add the base transform component to EVERY game object.
 }
 
-dae::GameObject::GameObject(GameObject* parent) : 
+dae::GameObject::GameObject(GameObject* parent,bool keepPosition) : 
 	GameObject()
 {
-	SetParent(parent,false);
+	SetParent(parent,keepPosition);
 }
 
 dae::GameObject::~GameObject()
@@ -28,7 +28,7 @@ void dae::GameObject::SetParent(GameObject* parent, bool keepWorldPosition)
 	if (IsChild(parent) or parent == this or m_Parent == parent) return; // Check if the parent is valid !
 
 	if (parent == nullptr) {
-		SetPosition( GetWorldPosition() );	// If the parent is not there set the local position to the world position
+		SetPosition(GetWorldPosition());	// If the parent is not there set the local position to the world position
 	}
 	else {
 		if (keepWorldPosition) {
@@ -60,7 +60,7 @@ void dae::GameObject::SetPosition(const float x, const float y, const float z)
 	m_Transform->SetLocalPosition(x,y,z);
 }
 
-glm::vec3 dae::GameObject::GetWorldPosition()
+glm::vec3 dae::GameObject::GetWorldPosition() const
 {
 	return m_Transform->GetTransformWorldPosition();
 }
@@ -115,14 +115,15 @@ void dae::GameObject::RemoveComponent(Component* component)
 
 // Notifications
 
-void dae::GameObject::NotifyWorldPositionChanged()
+void dae::GameObject::NotifyPositionChanged()
 {
-	std::for_each(m_Children.begin(), m_Children.end(), std::bind(&GameObject::OnParentWorldPositionChanged, std::placeholders::_1)); // Call the on position changed event for all the children
+	std::for_each(m_Children.begin(), m_Children.end(), std::bind(&GameObject::OnParentPositionChanged, std::placeholders::_1)); // Call the on position changed event for all the children
 }
 
-void dae::GameObject::OnParentWorldPositionChanged()
+void dae::GameObject::OnParentPositionChanged()
 {
-	SetPosition(m_Transform->GetTransformLocalPosition()); // Set the local position to the updated position
+	//SetPosition(m_Transform->GetTransformLocalPosition()); // Set the local position to the updated position
+	m_Transform->MakePositionDirty();
 }
 
 // Children

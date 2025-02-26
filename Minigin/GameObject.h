@@ -9,7 +9,7 @@ namespace dae
 	{
 	public:
 		explicit GameObject();
-		explicit GameObject(GameObject* parent);
+		explicit GameObject(GameObject* parent, bool keepPosition = false);
 
 		~GameObject();
 		GameObject(const GameObject& other) = delete;
@@ -27,7 +27,7 @@ namespace dae
 		void SetPosition(const glm::vec2& localPosition);
 		void SetPosition(const glm::vec3& localPosition);
 		void SetPosition(const float x, const float y, const float z);
-		glm::vec3 GetWorldPosition();
+		glm::vec3 GetWorldPosition() const;
 
 		void FixedUpdate();
 		void Update();
@@ -45,11 +45,11 @@ namespace dae
 
 		// Notification Events
 
-		void NotifyWorldPositionChanged();
+		void NotifyPositionChanged();
 
 		// Listener Events
 
-		void OnParentWorldPositionChanged();
+		void OnParentPositionChanged();
 
 	private:
 		bool IsChild(GameObject* gameObject) const;

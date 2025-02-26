@@ -30,6 +30,7 @@ void dae::TransformComponent::SetLocalPosition(float x, float y, float z)
 	m_LocalPosition.y = y;
 	m_LocalPosition.z = z;
 	MakePositionDirty();
+	GetOwner()->NotifyPositionChanged(); // Mark all the children for update !
 }
 
 
@@ -62,7 +63,7 @@ void dae::TransformComponent::UpdateWorldPosition()
 			SetWorldPosition(GetTransformLocalPosition());
 		}
 
-		GetOwner()->NotifyWorldPositionChanged(); // Mark all the children for update !
+		//GetOwner()->NotifyWorldPositionChanged(); // Mark all the children for update !
 		m_DirtyPosition = false;
 	}
 }

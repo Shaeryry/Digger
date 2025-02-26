@@ -20,6 +20,7 @@ namespace dae {
 
 		virtual void Update() override;
 	private:
+		bool m_Changed;
 
 		TextureRendererComponent* m_Renderer;
 		SDL_Color m_Color;
@@ -27,8 +28,6 @@ namespace dae {
 
 		std::unique_ptr<Texture2D> m_TextTexture{ };
 		std::string m_Text;
-
-		bool m_Changed;
 	};
 }
 
