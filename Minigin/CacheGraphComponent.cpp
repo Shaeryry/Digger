@@ -3,15 +3,12 @@
 
 dae::CacheGraphComponent::CacheGraphComponent(GameObject* gameObject) :
 	Component(gameObject),
-	m_MaxSteps{ 1024 },
-	m_Step{ 2 },
 	m_ArraySize{ static_cast<int>(std::pow(2,26)) }
 {
-	//const std::vector<int> intContainer(m_ArraySize, 2);
 
 	//AddGraph< std::vector<int> >("Int", intContainer);
 	//auto returnData = Measure<std::vector<int>>(intContainer, &CacheGraphComponent::Exercise1);
-	m_Exercise1Data.graphName = "Ints";
+	m_Exercise1Data.graphName = "integers";
 	m_Exercise1Data.color = IM_COL32(255, 0, 0, 255);
 	m_Exercise1Data.graphType = TypeGraph::intGraph;
 	
@@ -23,16 +20,16 @@ dae::CacheGraphComponent::CacheGraphComponent(GameObject* gameObject) :
 	m_Exercise3Data.color = IM_COL32(0, 0, 255, 255);
 	m_Exercise3Data.graphType = TypeGraph::gameObjectAltGraph;
 
-	m_Window1.name = "Exercise 1";
+	m_Window1.name = "Exercise 2";
 	m_Window1.graphs = { &m_Exercise1Data };
 
-	m_Window2.name = "Exercise 2";
+	m_Window2.name = "Exercise 3";
 	m_Window2.graphs = { &m_Exercise2Data,&m_Exercise3Data };
 	m_Window2.showCombined = true;
 }
 
 
-void dae::CacheGraphComponent::Update()
+void dae::CacheGraphComponent::Update() 
 {
 	ImGui_ImplOpenGL3_NewFrame();
 	ImGui_ImplSDL2_NewFrame();
@@ -40,67 +37,143 @@ void dae::CacheGraphComponent::Update()
 
 	// Bind the member function to the object instance
 
-
 	GraphWindow(m_Window1);
 	GraphWindow(m_Window2);
-
-	/*GraphWindow<gameObject>(m_Exercise2Data, &CacheGraphComponent::Exercise2);
-	GraphWindow<gameObjectAlt>(m_Exercise3Data, &CacheGraphComponent::Exercise3);*/
-
-	// Exercise 1
-
-	//ImGui::Begin("Exercise 1");
-	//ImGui::InputInt("Samples", &m_Exercise1Data.samples, 0, 0);
-	//ImGui::SameLine(); if (ImGui::Button("+")) m_Exercise1Data.samples++;
-	//ImGui::SameLine(); if (ImGui::Button("-")) m_Exercise1Data.samples--;
-	//
-	//if (m_Exercise1Data.ready) {
-	//	ImGui::Plot("hi", m_Exercise1Data.configuration);
-	//}
-
-	//if (m_Exercise1Data.calculating) {
-	//	const std::vector<int> intContainer(m_ArraySize, 2);
-	//	m_Exercise1Data.data = Measure<std::vector<int>>(intContainer, &CacheGraphComponent::Exercise1);
-
-	//	// Create PlotConfiguration
-	//	const MeasureData& data = m_Exercise1Data.data;
-	//	const float* stepsArr = data.steps.data();
-	//	const float* durationArr = data.durations.data();
-
-	//	ImGui::PlotConfig conf;
-	//	conf.values.xs = stepsArr;
-	//	conf.values.ys = durationArr;
-
-	//	conf.values.color = IM_COL32(255, 255, 0, 255);
-	//	conf.values.count = static_cast<int>(data.steps.size());
-
-	//	conf.scale.min = 0.f;
-	//	conf.scale.max = *std::max_element(durationArr, durationArr + data.durations.size());
-
-	//	conf.tooltip.format = "x=%.0f, y=%.3f";
-	//	conf.frame_size = ImVec2(150, 100);
-	//	conf.line_thickness = 2.f;
-
-	//	conf.tooltip.show = true;
-	//	conf.grid_x.show = true;
-	//	conf.grid_y.show = true;
-
-	//	m_Exercise1Data.configuration = conf;
-	//	//
-
-	//	m_Exercise1Data.calculating = false;
-	//	m_Exercise1Data.ready = true;
-	//}
-
-	//if (ImGui::Button("Trash The Cache")) {
-	//	if (!m_Exercise1Data.calculating) {
-	//		m_Exercise1Data.calculating = true;
-	//		m_Exercise1Data.ready = false;
-	//	}
-
-	//	ImGui::Text("Wait for it...");
-	//}
-	//
-	//ImGui::End();
-
 }
+
+
+// Configuration
+
+ImGui::PlotConfig dae::CacheGraphComponent::GetPlotConfiguration()
+{
+	ImGui::PlotConfig plotConfig;
+	plotConfig.tooltip.show = true;
+	plotConfig.tooltip.format = "Step: %g\nTime: %.0f ms";
+	plotConfig.line_thickness = 2.f;
+	plotConfig.frame_size = ImVec2(150, 100);
+
+	return plotConfig;
+}
+
+ImGui::PlotConfig dae::CacheGraphComponent::CreateCombinedPlot(GraphWindowData& window)
+{
+	const float** data_y = &window.data_durations[0];
+	unsigned int* colors = &window.data_colors[0];
+
+	ImGui::PlotConfig plotConfig = GetPlotConfiguration();
+	plotConfig.values.xs = m_StepsArray;
+	plotConfig.values.ys_list = data_y;
+	plotConfig.values.ys_count = static_cast<int>(window.graphs.size());
+
+	plotConfig.values.count = m_StepsCount;
+
+	plotConfig.scale.min = 0.f;
+	plotConfig.scale.max = window.maxElement;
+	plotConfig.values.colors = colors;
+
+	return plotConfig;
+}
+
+// Window
+void dae::CacheGraphComponent::GraphWindow(GraphWindowData& window)
+{
+	auto graphs = window.graphs;
+
+	ImGui::Begin(window.name.data());
+	ImGui::InputInt("Samples", &window.samples, 0, 0);
+	ImGui::SameLine(); if (ImGui::Button("+")) window.samples++;
+	ImGui::SameLine(); if (ImGui::Button("-")) window.samples--;
+
+	bool allReady{ true };
+	for (int graphIndex{ 0 }; graphIndex < graphs.size(); graphIndex++) {
+		GraphData& graph = *graphs[graphIndex];
+
+		if (graph.ready) {
+			ImGui::Plot("Graph" + graphIndex, graph.configuration);
+		}
+
+		if (graph.calculating) {
+			// Data collection
+			MeasureData result;
+
+			switch (graph.graphType)
+			{
+			case TypeGraph::gameObjectGraph:
+				result = Measure<std::vector<gameObject>>(window.samples);
+				break;
+			case TypeGraph::gameObjectAltGraph:
+				result = Measure<std::vector<gameObjectAlt>>(window.samples);
+				break;
+			default:
+				result = Measure<std::vector<int>>(window.samples);
+				break;
+			}
+
+			graph.data = result;
+
+			// Create PlotConfiguration
+
+			const MeasureData& data = graph.data;
+			const float* durationArr = data.durations.data();
+
+			ImGui::PlotConfig conf = GetPlotConfiguration();
+			conf.values.xs = m_StepsArray;
+			conf.values.ys = durationArr;
+
+			conf.values.color = graph.color;
+			conf.values.count = m_StepsCount;
+
+			conf.scale.min = 0.f;
+			conf.scale.max = *std::max_element(durationArr, durationArr + data.durations.size());
+
+			graph.configuration = conf;
+
+			//
+
+			graph.calculating = false;
+			graph.ready = true;
+
+			UpdateWindow(window);
+		}
+
+		const std::string buttonText{ "Trash the cache with " + graph.graphName };
+		if (ImGui::Button(buttonText.data())) {
+			if (!graph.calculating) {
+				graph.calculating = true;
+				graph.ready = false;
+			}
+
+			ImGui::Text("Wait for it...");
+		}
+
+		if (!graph.ready) {
+			allReady = false;
+		}
+
+	}
+
+	if (window.showCombined) {
+		if (allReady) {
+			ImGui::Text("Combined : ");
+			ImGui::Plot("CombinedPlot", window.combinedConfiguration);
+		}
+	};
+
+	ImGui::End();
+}
+
+void dae::CacheGraphComponent::UpdateWindow(GraphWindowData& window)
+{
+	// Update the data durations storage
+	window.data_durations.clear();
+	window.data_colors.clear();
+
+	for (const auto& graph : window.graphs) {
+		window.data_durations.push_back(graph->data.durations.data());
+		window.data_colors.push_back(graph->color);
+	}
+
+	window.maxElement = **std::max_element(window.data_durations.data(), window.data_durations.data() + window.data_durations.size());
+	window.combinedConfiguration = CreateCombinedPlot(window);
+}
+
