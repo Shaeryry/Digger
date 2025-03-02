@@ -1,3 +1,5 @@
+#pragma warning(push, 0)
+
 #include <imgui_plot.h>
 #include <imgui.h>
 #include <imgui_internal.h>
@@ -258,3 +260,4 @@ PlotStatus Plot(const char* label, const PlotConfig& conf) {
     return status;
 }
 }
+#pragma warning(pop)

@@ -42,12 +42,14 @@ void dae::Renderer::Render() const
 	SDL_SetRenderDrawColor(m_Renderer, color.r, color.g, color.b, color.a);
 	SDL_RenderClear(m_Renderer);
 
+	/*ImGui_ImplOpenGL3_NewFrame();
+	ImGui_ImplSDL2_NewFrame();*/
+
+	// Game rendering
 	SceneManager::GetInstance().Render();
-	
+
 	// ImGui rendering
-	ImGui_ImplOpenGL3_NewFrame();
-	ImGui_ImplSDL2_NewFrame();
-	ImGui::Render();	
+	ImGui::Render();
 	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
 	SDL_RenderPresent(m_Renderer);

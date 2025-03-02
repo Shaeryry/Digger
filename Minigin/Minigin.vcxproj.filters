@@ -109,7 +109,7 @@
       <Filter>Header Files\ImGui</Filter>
     </ClInclude>
     <ClInclude Include="CacheGraphComponent.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Components</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
