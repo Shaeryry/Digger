@@ -31,9 +31,9 @@ dae::CacheGraphComponent::CacheGraphComponent(GameObject* gameObject) :
 
 void dae::CacheGraphComponent::Update() 
 {
-	ImGui_ImplOpenGL3_NewFrame();
-	ImGui_ImplSDL2_NewFrame();
-	ImGui::NewFrame(); 
+	//ImGui_ImplOpenGL3_NewFrame();
+	//ImGui_ImplSDL2_NewFrame();
+	//ImGui::NewFrame(); 
 
 	// Bind the member function to the object instance
 

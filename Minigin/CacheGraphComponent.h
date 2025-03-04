@@ -8,11 +8,9 @@
 
 #include "Component.h"
 #include "imgui_plot.h"
-#include "imgui_impl_sdl2.h"
-#include "imgui_impl_opengl3.h"
 
 namespace dae {
-	class CacheGraphComponent : public Component
+	class CacheGraphComponent final : public Component
 	{
 	public:
 		CacheGraphComponent(GameObject* gameObject);

@@ -3,6 +3,8 @@
 #include <string>
 #include <memory>
 #include "Singleton.h"
+#include "imgui_impl_sdl2.h"
+#include "imgui_impl_opengl3.h"
 
 namespace dae
 {
