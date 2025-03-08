@@ -16,12 +16,13 @@ namespace dae
 		Gamepad* GetGamepad(int index) { return m_Gamepads[index].get(); };
 		template<typename CommandType, typename... Arguments> Command* AddCommand(Arguments&&... args);
 	private:
-		void AddGamepad(const int index);
+		Gamepad* AddGamepad(const int index);
 		 
 		std::vector<std::unique_ptr<Command>> m_Commands; // List of all commands present
 		std::vector<std::unique_ptr<Gamepad>> m_Gamepads;
+		Gamepad* m_Keyboard;
 	};
-
+	 
 	template<typename CommandType, typename... Arguments>
 	inline Command* InputManager::AddCommand(Arguments&&... args)
 	{
