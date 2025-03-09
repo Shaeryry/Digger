@@ -8,4 +8,4 @@ void dae::MovementCommand::Execute()
 	const float movementSpeed{ m_Speed * Timer::GetInstance().deltaTime };
 
 	m_GameObject->SetPosition(currentPosition + (m_Direction * movementSpeed));
-}
+} 
