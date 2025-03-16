@@ -41,6 +41,7 @@ void dae::Gamepad::impl::Process()
 	m_ButtonsPressedThisFrame = buttonChanges & m_CurrentState.Gamepad.wButtons;
 	m_ButtonsReleasedThisFrame = buttonChanges & (~m_CurrentState.Gamepad.wButtons);
 }
+
 bool dae::Gamepad::impl::IsButtonTriggered(unsigned int button) const { return m_ButtonsPressedThisFrame & button; }
 bool dae::Gamepad::impl::IsButtonReleased(unsigned int button) const { return m_ButtonsReleasedThisFrame & button; }
 bool dae::Gamepad::impl::IsDown(unsigned int button) const { return m_CurrentState.Gamepad.wButtons & button; }

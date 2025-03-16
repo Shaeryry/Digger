@@ -6,6 +6,7 @@
 #include <SDL.h>
 #include <SDL_image.h>
 #include <SDL_ttf.h>
+#include <steam_api.h>
 
 #include "Minigin.h"
 #include "InputManager.h"
@@ -60,7 +61,7 @@ dae::Minigin::Minigin(const std::string &dataPath)
 		640,
 		480,
 		SDL_WINDOW_OPENGL
-	);
+	); 
 	if (g_window == nullptr) 
 	{
 		throw std::runtime_error(std::string("SDL_CreateWindow Error: ") + SDL_GetError());
@@ -68,7 +69,7 @@ dae::Minigin::Minigin(const std::string &dataPath)
 
 	Renderer::GetInstance().Init(g_window);
 	ResourceManager::GetInstance().Init(dataPath);
-	InputManager::GetInstance().Initialize();
+	InputManager::GetInstance().Initialize(4);
 }
 
 dae::Minigin::~Minigin()
@@ -107,6 +108,7 @@ void dae::Minigin::Run(const std::function<void()>& load)
 
 		// Late update
 		sceneManager.LateUpdate();
+		SteamAPI_RunCallbacks();
 
 		// Draw
 		renderer.Render(); 
