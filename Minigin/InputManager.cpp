@@ -13,7 +13,7 @@ void dae::InputManager::Initialize(int amountGamepads)
 
 bool dae::InputManager::ProcessInput() 
 {
-	SDL_Event e;
+	SDL_Event e{};
 	const Uint8* state = SDL_GetKeyboardState(NULL);
 
 	dae::ExecutionCommandInfo commandInformation{};

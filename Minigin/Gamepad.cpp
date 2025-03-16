@@ -14,9 +14,15 @@ class dae::Gamepad::impl {
 		bool IsButtonTriggered(unsigned int button) const;
 		bool IsButtonReleased(unsigned int button) const;
 		bool IsDown(unsigned int button) const;
-		int GetGamepadIndex() const { return m_ControllerIndex; }
 		bool IsKeyboard() const { return (m_ControllerIndex == -1); }
+
+		void AddBinding(const Binding& binding);
+
+		int GetGamepadIndex() const { return m_ControllerIndex; }
+		const std::vector<std::unique_ptr<Binding>>& GetBindings() { return m_Bindings; };
 	private:
+		std::vector<std::unique_ptr<Binding>> m_Bindings; // List of all the bindings the controllers has
+
 		XINPUT_STATE m_CurrentState{};
 		XINPUT_STATE m_PreviousState{};
 		WORD m_ButtonsPressedThisFrame{};
@@ -39,6 +45,12 @@ bool dae::Gamepad::impl::IsButtonTriggered(unsigned int button) const { return m
 bool dae::Gamepad::impl::IsButtonReleased(unsigned int button) const { return m_ButtonsReleasedThisFrame & button; }
 bool dae::Gamepad::impl::IsDown(unsigned int button) const { return m_CurrentState.Gamepad.wButtons & button; }
 
+void dae::Gamepad::impl::AddBinding(const Binding& binding)
+{
+	std::unique_ptr<Binding> newBinding{ std::make_unique<Binding>(binding) };
+	m_Bindings.emplace_back(std::move(newBinding));
+}
+
 // Gamepad implementation
 
 dae::Gamepad::Gamepad(const int index) :
@@ -52,7 +64,7 @@ dae::Gamepad::~Gamepad()
 
 void dae::Gamepad::ExecuteCommands(const ExecutionCommandInfo& commandInfo)
 {
-	for (auto& binding : m_Bindings) {
+	for (auto& binding : m_XInputPimpl->GetBindings() ) {
 		SDL_Event* event{ commandInfo.event };
 
 		bool canExecute{ false };
@@ -125,12 +137,11 @@ void dae::Gamepad::AddBinding(unsigned int button, BindingConnection connectionT
 	newBinding.connectionType = connectionType;
 	newBinding.command = command;
 
-	AddBinding(newBinding);
+	m_XInputPimpl->AddBinding(newBinding);
 }
 void dae::Gamepad::AddBinding(const Binding& binding)
 {
-	std::unique_ptr<Binding> newBinding{ std::make_unique<Binding>(binding) };
-	m_Bindings.emplace_back(std::move(newBinding));
+	m_XInputPimpl->AddBinding(binding);
 }
 
 bool dae::Gamepad::IsButtonTriggered(unsigned int button) const { return m_XInputPimpl->IsButtonTriggered(button);  }

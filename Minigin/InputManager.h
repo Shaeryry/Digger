@@ -20,7 +20,7 @@ namespace dae
 		 
 		std::vector<std::unique_ptr<Command>> m_Commands; // List of all commands present
 		std::vector<std::unique_ptr<Gamepad>> m_Gamepads;
-		Gamepad* m_Keyboard;
+		Gamepad* m_Keyboard; 
 	};
 	 
 	template<typename CommandType, typename... Arguments>

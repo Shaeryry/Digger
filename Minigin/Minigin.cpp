@@ -67,9 +67,7 @@ dae::Minigin::Minigin(const std::string &dataPath)
 	}
 
 	Renderer::GetInstance().Init(g_window);
-
 	ResourceManager::GetInstance().Init(dataPath);
-
 	InputManager::GetInstance().Initialize();
 }
 
