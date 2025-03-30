@@ -4,15 +4,15 @@
 #include "GameObject.h"
 #include "Timer.h"
 
-dae::FPSComponent::FPSComponent(GameObject* gameObject, TextComponent* textComponent) :
+FPSComponent::FPSComponent(Rinigin::GameObject* gameObject, Rinigin::TextComponent* textComponent) :
 	Component(gameObject),
 	m_TextComponent{ textComponent }
 {
 }
 
-void dae::FPSComponent::Update()
+void FPSComponent::Update()
 {
-	float FPS{ Timer::GetInstance().GetFPS() };
+	float FPS{ Rinigin::Timer::GetInstance().GetFPS() };
 
 	// Set precision of the FPS
 	std::stringstream ss;

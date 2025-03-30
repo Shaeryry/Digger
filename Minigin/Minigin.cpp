@@ -6,7 +6,6 @@
 #include <SDL.h>
 #include <SDL_image.h>
 #include <SDL_ttf.h>
-#include <steam_api.h>
 
 #include "Minigin.h"
 #include "InputManager.h"
@@ -45,7 +44,7 @@ void PrintSDLVersion()
 		version.major, version.minor, version.patch);
 }
 
-dae::Minigin::Minigin(const std::string &dataPath)
+Rinigin::Minigin::Minigin(const std::string &dataPath)
 {
 	PrintSDLVersion();
 	
@@ -72,7 +71,7 @@ dae::Minigin::Minigin(const std::string &dataPath)
 	InputManager::GetInstance().Initialize(4);
 }
 
-dae::Minigin::~Minigin()
+Rinigin::Minigin::~Minigin()
 {
 	Renderer::GetInstance().Destroy();
 	SDL_DestroyWindow(g_window);
@@ -80,9 +79,9 @@ dae::Minigin::~Minigin()
 	SDL_Quit();
 }
 
-void dae::Minigin::Run(const std::function<void()>& load)
+void Rinigin::Minigin::Run(const std::function<void()>& load)
 {
-	load();
+	load(); 
 
 	auto& renderer = Renderer::GetInstance();
 	auto& sceneManager = SceneManager::GetInstance();
@@ -108,7 +107,6 @@ void dae::Minigin::Run(const std::function<void()>& load)
 
 		// Late update
 		sceneManager.LateUpdate();
-		SteamAPI_RunCallbacks();
 
 		// Draw
 		renderer.Render(); 

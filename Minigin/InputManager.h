@@ -5,7 +5,7 @@
 #include "Gamepad.h"
 #include "Command.h"
 
-namespace dae
+namespace Rinigin
 {
 	class InputManager final : public Singleton<InputManager>
 	{

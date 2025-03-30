@@ -1,7 +1,7 @@
 #include "TransformComponent.h"
 #include "GameObject.h"
 
-dae::TransformComponent::TransformComponent(GameObject* gameObject) :
+Rinigin::TransformComponent::TransformComponent(GameObject* gameObject) :
 	Component(gameObject),
 	m_DirtyPosition{ true },
 	m_WorldPosition{ 0,0,0 },
@@ -9,22 +9,22 @@ dae::TransformComponent::TransformComponent(GameObject* gameObject) :
 {
 }
 
-void dae::TransformComponent::MakeDirty()
+void Rinigin::TransformComponent::MakeDirty()
 {
 	MakePositionDirty();
 }
 
-void dae::TransformComponent::SetLocalPosition(const glm::vec2& position)
+void Rinigin::TransformComponent::SetLocalPosition(const glm::vec2& position)
 {
 	SetLocalPosition(position.x, position.y, 0);
 }
 
-void dae::TransformComponent::SetLocalPosition(const glm::vec3& position)
+void Rinigin::TransformComponent::SetLocalPosition(const glm::vec3& position)
 {
 	SetLocalPosition(position.x, position.y, position.z);
 }
 
-void dae::TransformComponent::SetLocalPosition(float x, float y, float z)
+void Rinigin::TransformComponent::SetLocalPosition(float x, float y, float z)
 {
 	m_LocalPosition.x = x;
 	m_LocalPosition.y = y;
@@ -34,24 +34,24 @@ void dae::TransformComponent::SetLocalPosition(float x, float y, float z)
 }
 
 
-void dae::TransformComponent::SetWorldPosition(const glm::vec2& position)
+void Rinigin::TransformComponent::SetWorldPosition(const glm::vec2& position)
 {
 	SetWorldPosition(position.x, position.y, 0);
 }
 
-void dae::TransformComponent::SetWorldPosition(const glm::vec3& position)
+void Rinigin::TransformComponent::SetWorldPosition(const glm::vec3& position)
 {
 	SetWorldPosition(position.x, position.y, position.z);
 }
 
-void dae::TransformComponent::SetWorldPosition(float x, float y, float z)
+void Rinigin::TransformComponent::SetWorldPosition(float x, float y, float z)
 {
 	m_WorldPosition.x = x;
 	m_WorldPosition.y = y;
 	m_WorldPosition.z = z;
 }
 
-void dae::TransformComponent::UpdateWorldPosition()
+void Rinigin::TransformComponent::UpdateWorldPosition()
 {
 	if (m_DirtyPosition) {
 		GameObject* parent{ GetOwner()->GetParent() };

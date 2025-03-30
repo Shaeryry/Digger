@@ -3,20 +3,19 @@
 #include "Observer.h"
 #include "Event.h"
 
-namespace dae {
-	class ScoreComponent final : public Component, public Observer
-	{
-	public: 
-		explicit ScoreComponent(GameObject* gameObject);
-		void virtual Notify(EventType eventType,GameObject* gameObject) override;
+class ScoreComponent final : public Rinigin::Component, public Rinigin::Observer
+{
+public: 
+	explicit ScoreComponent(Rinigin::GameObject* gameObject);
+	void virtual Notify(Rinigin::EventArguments* eventType) override;
 
-		int GetScore() const { return m_Score; };
-		Event* GetScoreChangedEvent() const { return m_ScoreChangedEvent.get(); };
-	private:
-		void AddScore(int amount);
+	int GetScore() const { return m_Score; };
+	Rinigin::Event* GetScoreChangedEvent() const { return m_ScoreChangedEvent.get(); };
+private:
+	void AddScore(int amount);
 
-		std::unique_ptr<Event> m_ScoreChangedEvent;
-		int m_Score;
-	};
-}
+	std::unique_ptr<Rinigin::Event> m_ScoreChangedEvent;
+	int m_Score;
+};
+
 

@@ -1,13 +1,14 @@
 #pragma once
-#include "EventTypes.h"
+#include "EventArguments.h"
 
-namespace dae {
+namespace Rinigin {
 	class GameObject;
 	class Observer
 	{
 	public:
 		virtual ~Observer() = default;
-		virtual void Notify(dae::EventType eventType,GameObject* gameObject) = 0;
+		virtual void Notify(EventArguments* arguments) = 0;
+		template<typename ArgumentType> ArgumentType* GetArgumentsOfType(EventArguments* arguments) { return dynamic_cast<ArgumentType*>(arguments); };
 	};
-}
 
+}

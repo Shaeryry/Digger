@@ -3,7 +3,7 @@
 #include <string>
 #include "Component.h"
 
-namespace dae {
+namespace Rinigin {
 	class Texture2D;
 	class TextureRendererComponent;
 	class TextureComponent final : public Component

@@ -4,7 +4,7 @@
 #include "Texture2D.h"
 #include "Component.h"
 
-namespace dae {
+namespace Rinigin {
 	class Font;
 	class TextureRendererComponent;
 	class TextComponent final : public Component

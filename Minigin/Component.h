@@ -2,7 +2,7 @@
 #include <memory>
 #include <vector>
 
-namespace dae
+namespace Rinigin
 {
 	class GameObject;
 	class Component

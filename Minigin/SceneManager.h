@@ -6,7 +6,7 @@
 #include "imgui_impl_sdl2.h"
 #include "imgui_impl_opengl3.h"
 
-namespace dae
+namespace Rinigin
 {
 	class Scene;
 	class SceneManager final : public Singleton<SceneManager>

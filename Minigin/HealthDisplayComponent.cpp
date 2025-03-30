@@ -2,28 +2,34 @@
 #include "HealthComponent.h"
 #include "TextComponent.h"
 #include "GameObject.h"
+#include "EventTypes.h"
+#include "Helpers.h"
 
-dae::HealthDisplayComponent::HealthDisplayComponent(GameObject* gameObject, TextComponent* textComponent) :
+HealthDisplayComponent::HealthDisplayComponent(Rinigin::GameObject* gameObject, Rinigin::TextComponent* textComponent) :
 	Component(gameObject),
 	m_TextComponent{ textComponent }
 {
 	UpdateText(3);
 }
 
-void dae::HealthDisplayComponent::Notify(EventType event, GameObject* gameObject)
+void HealthDisplayComponent::Notify(Rinigin::EventArguments* eventArgs)
 {
-	switch (event)
+	switch (eventArgs->GetID())
 	{
-	case dae::EventType::HealthChanged:
-		auto* healthComponent{ gameObject->GetComponent<dae::HealthComponent>() };
-		if (healthComponent) {
-			UpdateText( healthComponent->GetHealth() );
+		case Rinigin::Helpers::sdbm_hash("HealthChanged") : {
+			auto arguments = GetArgumentsOfType<GameObjectEventArguments>(eventArgs);
+			auto* healthComponent{ arguments->GetGameObject()->GetComponent<HealthComponent>() };
+			if (healthComponent) {
+				UpdateText(healthComponent->GetHealth());
+			}
+			break;
 		}
-		break;
+			
 	}
+
 }
 
-void dae::HealthDisplayComponent::UpdateText(int currentHealth)
+void HealthDisplayComponent::UpdateText(int currentHealth)
 {
 	m_TextComponent->SetText("Health Remaining : " + std::to_string(currentHealth));
 }

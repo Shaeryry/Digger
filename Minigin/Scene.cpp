@@ -3,7 +3,7 @@
 
 #include <algorithm>
 
-using namespace dae;
+using namespace Rinigin;
 
 unsigned int Scene::m_IdCounter = 0;
 
@@ -27,7 +27,7 @@ void Scene::RemoveAll()
 	m_Objects.clear();
 }
 
-void dae::Scene::FixedUpdate()
+void Rinigin::Scene::FixedUpdate()
 {
 	for (auto& object : m_Objects)
 	{
@@ -43,7 +43,7 @@ void Scene::Update()
 	}
 }
 
-void dae::Scene::LateUpdate()
+void Rinigin::Scene::LateUpdate()
 {
 	for (auto& object : m_Objects)
 	{

@@ -7,12 +7,12 @@
 #include "Texture2D.h"
 #include "TextureRendererComponent.h"
 
-dae::TextComponent::TextComponent(GameObject* gameObject, TextureRendererComponent* textureRenderer, Font* font) :
+Rinigin::TextComponent::TextComponent(GameObject* gameObject, TextureRendererComponent* textureRenderer, Font* font) :
 	TextComponent(gameObject,textureRenderer , "TextComponent", font)
 {
 }
 
-dae::TextComponent::TextComponent(GameObject* gameObject, TextureRendererComponent* textureRenderer, const std::string& text, Font* font) :
+Rinigin::TextComponent::TextComponent(GameObject* gameObject, TextureRendererComponent* textureRenderer, const std::string& text, Font* font) :
 	Component(gameObject),
 	m_Changed{ true },
 	m_Renderer{ textureRenderer }
@@ -23,25 +23,25 @@ dae::TextComponent::TextComponent(GameObject* gameObject, TextureRendererCompone
 }
 
 
-void dae::TextComponent::SetText(const std::string& text)
+void Rinigin::TextComponent::SetText(const std::string& text)
 {
 	m_Text = text;
 	m_Changed = true;
 }
 
-void dae::TextComponent::SetFont(Font* font)
+void Rinigin::TextComponent::SetFont(Font* font)
 {
 	m_Font = std::move(font);
 	m_Changed = true;
 }
 
-void dae::TextComponent::SetColor(Uint8 r, Uint8 g, Uint8 b, Uint8 a)
+void Rinigin::TextComponent::SetColor(Uint8 r, Uint8 g, Uint8 b, Uint8 a)
 {
 	SDL_Color newColor{ r,g,b,a };
 	SetColor(newColor);
 }
 
-void dae::TextComponent::SetColor(const SDL_Color& color)
+void Rinigin::TextComponent::SetColor(const SDL_Color& color)
 {
 	// TODO : Consider clamping the color to make sure no funny stuff happens
 	/*color.r = std::clamp(color.r, Uint8(0) , Uint8(255));
@@ -53,7 +53,7 @@ void dae::TextComponent::SetColor(const SDL_Color& color)
 	m_Changed = true;
 }
 
-void dae::TextComponent::Update()
+void Rinigin::TextComponent::Update()
 { 
 	if (m_Changed) {
 

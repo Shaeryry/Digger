@@ -2,28 +2,32 @@
 #include "ScoreComponent.h"
 #include "TextComponent.h"
 #include "GameObject.h"
+#include "EventTypes.h"
+#include "Helpers.h"
 
-dae::ScoreDisplayComponent::ScoreDisplayComponent(GameObject* gameObject, TextComponent* textComponent) :
+ScoreDisplayComponent::ScoreDisplayComponent(Rinigin::GameObject* gameObject, Rinigin::TextComponent* textComponent) :
 	Component(gameObject),
 	m_TextComponent{ textComponent }
 {
 	UpdateScore(0);
 }
 
-void dae::ScoreDisplayComponent::Notify(EventType eventType, GameObject* gameObject)
+void ScoreDisplayComponent::Notify(Rinigin::EventArguments* eventArgs)
 {
-	switch (eventType)
+	switch (eventArgs->GetID())
 	{
-	case dae::EventType::ScoreChanged:
-		auto scoreComponent = gameObject->GetComponent<dae::ScoreComponent>();
-		if (scoreComponent) {
-			UpdateScore(scoreComponent->GetScore());
+		case Rinigin::Helpers::sdbm_hash("ScoreChanged"): {
+			auto arguments = dynamic_cast<GameObjectEventArguments*>(eventArgs);
+			auto scoreComponent = arguments->GetGameObject()->GetComponent<ScoreComponent>();
+			if (scoreComponent) {
+				UpdateScore(scoreComponent->GetScore());
+			}
+			break;
 		}
-		break;
 	}
 }
 
-void dae::ScoreDisplayComponent::UpdateScore(int score)
+void ScoreDisplayComponent::UpdateScore(int score)
 {
 	m_TextComponent->SetText("Score : " + std::to_string(score));
 }

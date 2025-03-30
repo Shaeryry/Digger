@@ -2,16 +2,14 @@
 #include "Component.h"
 #include "Observer.h"
 
-namespace dae {
-	class TextComponent;
-	class HealthDisplayComponent final : public Component, public Observer
-	{
-	public:
-		explicit HealthDisplayComponent(GameObject* gameObject, TextComponent* textComponent);
-		virtual void Notify(EventType event,GameObject* gameObject) override;
-	private:
-		void UpdateText(int currentHealth);
-		TextComponent* m_TextComponent;
-	};
-}
+namespace Rinigin { class TextComponent; };
+class HealthDisplayComponent final : public Rinigin::Component, public Rinigin::Observer
+{
+public:
+	explicit HealthDisplayComponent(Rinigin::GameObject* gameObject, Rinigin::TextComponent* textComponent);
+	virtual void Notify(Rinigin::EventArguments* eventArgs) override;
+private:
+	void UpdateText(int currentHealth);
+	Rinigin::TextComponent* m_TextComponent;
+};
 

@@ -2,7 +2,7 @@
 #include <glm.hpp>
 #include "Component.h"
 
-namespace dae {
+namespace Rinigin {
 	class TransformComponent final : public Component
 	{
 	public:

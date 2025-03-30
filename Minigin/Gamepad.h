@@ -3,7 +3,7 @@
 #include <vector>
 #include <SDL.h>
 
-namespace dae {
+namespace Rinigin {
 	class Command;
 
 	enum class BindingConnection {

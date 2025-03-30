@@ -1,12 +1,13 @@
 #include "KillEnemyCommand.h"
+#include "EventTypes.h"
 
-dae::KillEnemyCommand::KillEnemyCommand() :
-	m_EnemyDiedEvent{ std::make_unique<Event>() }
+KillEnemyCommand::KillEnemyCommand() :
+	m_EnemyDiedEvent{ std::make_unique<Rinigin::Event>( Rinigin::EventArguments("EnemyDied")) }
 {
 }
 
-void dae::KillEnemyCommand::Execute()
+void KillEnemyCommand::Execute()
 {
-	m_EnemyDiedEvent->NotifyObservers(EventType::EnemyDied, nullptr);
+	m_EnemyDiedEvent->NotifyObservers();
 }
  

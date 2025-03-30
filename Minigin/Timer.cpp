@@ -1,7 +1,7 @@
 #include "Timer.h"
 #include <iostream>
 
-std::chrono::high_resolution_clock::time_point dae::Timer::UpdateTimer()
+std::chrono::high_resolution_clock::time_point Rinigin::Timer::UpdateTimer()
 {
 	const auto current_time = std::chrono::high_resolution_clock::now();
 	const float calculated_delta_time = std::chrono::duration<float>(current_time - last_time).count(); 
@@ -14,18 +14,18 @@ std::chrono::high_resolution_clock::time_point dae::Timer::UpdateTimer()
 	return current_time;
 }
 
-void dae::Timer::FixedUpdate()
+void Rinigin::Timer::FixedUpdate()
 {
 	lag -= FIXED_TIME_STEP;
 }
 
 
-float dae::Timer::GetFPS()
+float Rinigin::Timer::GetFPS()
 {
 	return (1.f / deltaTime); 
 }
 
-float dae::Timer::GetTotalElapsedSec()
+float Rinigin::Timer::GetTotalElapsedSec()
 {
 	return totalTimeElapsed;
 }

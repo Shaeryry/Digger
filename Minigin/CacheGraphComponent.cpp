@@ -1,7 +1,7 @@
 #include "CacheGraphComponent.h"
 #include <iostream>
 
-dae::CacheGraphComponent::CacheGraphComponent(GameObject* gameObject) :
+Rinigin::CacheGraphComponent::CacheGraphComponent(GameObject* gameObject) :
 	Component(gameObject),
 	m_ArraySize{ static_cast<int>(std::pow(2,26)) }
 {
@@ -29,7 +29,7 @@ dae::CacheGraphComponent::CacheGraphComponent(GameObject* gameObject) :
 }
 
 
-void dae::CacheGraphComponent::Update() 
+void Rinigin::CacheGraphComponent::Update() 
 {
 	//ImGui_ImplOpenGL3_NewFrame();
 	//ImGui_ImplSDL2_NewFrame();
@@ -44,7 +44,7 @@ void dae::CacheGraphComponent::Update()
 
 // Configuration
 
-ImGui::PlotConfig dae::CacheGraphComponent::GetPlotConfiguration()
+ImGui::PlotConfig Rinigin::CacheGraphComponent::GetPlotConfiguration()
 {
 	ImGui::PlotConfig plotConfig;
 	plotConfig.tooltip.show = true;
@@ -55,7 +55,7 @@ ImGui::PlotConfig dae::CacheGraphComponent::GetPlotConfiguration()
 	return plotConfig;
 }
 
-ImGui::PlotConfig dae::CacheGraphComponent::CreateCombinedPlot(GraphWindowData& window)
+ImGui::PlotConfig Rinigin::CacheGraphComponent::CreateCombinedPlot(GraphWindowData& window)
 {
 	const float** data_y = &window.data_durations[0];
 	unsigned int* colors = &window.data_colors[0];
@@ -75,7 +75,7 @@ ImGui::PlotConfig dae::CacheGraphComponent::CreateCombinedPlot(GraphWindowData& 
 }
 
 // Window
-void dae::CacheGraphComponent::GraphWindow(GraphWindowData& window)
+void Rinigin::CacheGraphComponent::GraphWindow(GraphWindowData& window)
 {
 	auto graphs = window.graphs;
 
@@ -162,7 +162,7 @@ void dae::CacheGraphComponent::GraphWindow(GraphWindowData& window)
 	ImGui::End();
 }
 
-void dae::CacheGraphComponent::UpdateWindow(GraphWindowData& window)
+void Rinigin::CacheGraphComponent::UpdateWindow(GraphWindowData& window)
 {
 	// Update the data durations storage
 	window.data_durations.clear();

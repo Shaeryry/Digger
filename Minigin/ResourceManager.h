@@ -7,7 +7,7 @@
 #include "Font.h"
 #include "Texture2D.h"
 
-namespace dae
+namespace Rinigin
 {
 	class Texture2D;
 	class Font;

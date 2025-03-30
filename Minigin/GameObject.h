@@ -3,7 +3,7 @@
 #include "TransformComponent.h"
 #include "Component.h"
 
-namespace dae
+namespace Rinigin
 {
 	class GameObject final
 	{

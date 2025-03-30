@@ -7,7 +7,7 @@
 
 // Pimpl
 
-class dae::Gamepad::impl {
+class Rinigin::Gamepad::impl {
 	public:
 		explicit impl(const int index) : m_ControllerIndex{ index } {};
 		void Process();
@@ -31,7 +31,7 @@ class dae::Gamepad::impl {
 };  
 
 
-void dae::Gamepad::impl::Process()
+void Rinigin::Gamepad::impl::Process()
 {
 	CopyMemory(&m_PreviousState, &m_CurrentState, sizeof(XINPUT_STATE));
 	ZeroMemory(&m_CurrentState, sizeof(XINPUT_STATE));
@@ -42,11 +42,11 @@ void dae::Gamepad::impl::Process()
 	m_ButtonsReleasedThisFrame = buttonChanges & (~m_CurrentState.Gamepad.wButtons);
 }
 
-bool dae::Gamepad::impl::IsButtonTriggered(unsigned int button) const { return m_ButtonsPressedThisFrame & button; }
-bool dae::Gamepad::impl::IsButtonReleased(unsigned int button) const { return m_ButtonsReleasedThisFrame & button; }
-bool dae::Gamepad::impl::IsDown(unsigned int button) const { return m_CurrentState.Gamepad.wButtons & button; }
+bool Rinigin::Gamepad::impl::IsButtonTriggered(unsigned int button) const { return m_ButtonsPressedThisFrame & button; }
+bool Rinigin::Gamepad::impl::IsButtonReleased(unsigned int button) const { return m_ButtonsReleasedThisFrame & button; }
+bool Rinigin::Gamepad::impl::IsDown(unsigned int button) const { return m_CurrentState.Gamepad.wButtons & button; }
 
-void dae::Gamepad::impl::AddBinding(const Binding& binding)
+void Rinigin::Gamepad::impl::AddBinding(const Binding& binding)
 {
 	std::unique_ptr<Binding> newBinding{ std::make_unique<Binding>(binding) };
 	m_Bindings.emplace_back(std::move(newBinding));
@@ -54,16 +54,16 @@ void dae::Gamepad::impl::AddBinding(const Binding& binding)
 
 // Gamepad implementation
 
-dae::Gamepad::Gamepad(const int index) :
+Rinigin::Gamepad::Gamepad(const int index) :
 	m_XInputPimpl{ std::make_unique<impl>(index) }
 {
 } 
 
-dae::Gamepad::~Gamepad()
+Rinigin::Gamepad::~Gamepad()
 {
 }
 
-void dae::Gamepad::ExecuteCommands(const ExecutionCommandInfo& commandInfo)
+void Rinigin::Gamepad::ExecuteCommands(const ExecutionCommandInfo& commandInfo)
 {
 	for (auto& binding : m_XInputPimpl->GetBindings() ) {
 		SDL_Event* event{ commandInfo.event };
@@ -80,13 +80,13 @@ void dae::Gamepad::ExecuteCommands(const ExecutionCommandInfo& commandInfo)
 		if (useGamepadLogic) {
 			switch (binding->connectionType)
 			{
-			case dae::BindingConnection::OnTrigger:
+			case Rinigin::BindingConnection::OnTrigger:
 				canExecute = IsButtonTriggered(button);
 				break;
-			case dae::BindingConnection::OnRelease:
+			case Rinigin::BindingConnection::OnRelease:
 				canExecute = IsButtonReleased(button);
 				break;
-			case dae::BindingConnection::OnHeld:
+			case Rinigin::BindingConnection::OnHeld:
 				canExecute = IsDown(button);
 				break;
 			}
@@ -104,13 +104,13 @@ void dae::Gamepad::ExecuteCommands(const ExecutionCommandInfo& commandInfo)
 
 			switch (binding->connectionType)
 			{
-			case dae::BindingConnection::OnTrigger:
+			case Rinigin::BindingConnection::OnTrigger:
 				canExecute = typeEvent == SDL_KEYDOWN and validPress; //IsButtonTriggered(button);
 				break;
-			case dae::BindingConnection::OnRelease:
+			case Rinigin::BindingConnection::OnRelease:
 				canExecute = typeEvent == SDL_KEYUP and validPress;//IsButtonReleased(button);
 				break;
-			case dae::BindingConnection::OnHeld:
+			case Rinigin::BindingConnection::OnHeld:
 				canExecute = not commandInfo.polling and commandInfo.keyboardState[button];
 				break;
 			}
@@ -123,15 +123,15 @@ void dae::Gamepad::ExecuteCommands(const ExecutionCommandInfo& commandInfo)
 	}
 }
 
-void dae::Gamepad::AddBinding(GamepadButton button, BindingConnection connectionType, Command* command)
+void Rinigin::Gamepad::AddBinding(GamepadButton button, BindingConnection connectionType, Command* command)
 {
 	AddBinding(static_cast<unsigned int>(button), connectionType, command);
 }
-void dae::Gamepad::AddBinding(int button, BindingConnection connectionType, Command* command)
+void Rinigin::Gamepad::AddBinding(int button, BindingConnection connectionType, Command* command)
 {
 	AddBinding(static_cast<unsigned int>(button), connectionType, command);
 }
-void dae::Gamepad::AddBinding(unsigned int button, BindingConnection connectionType, Command* command)
+void Rinigin::Gamepad::AddBinding(unsigned int button, BindingConnection connectionType, Command* command)
 {
 	Binding newBinding{};
 	newBinding.button = button;
@@ -140,20 +140,20 @@ void dae::Gamepad::AddBinding(unsigned int button, BindingConnection connectionT
 
 	m_XInputPimpl->AddBinding(newBinding);
 }
-void dae::Gamepad::AddBinding(const Binding& binding)
+void Rinigin::Gamepad::AddBinding(const Binding& binding)
 {
 	m_XInputPimpl->AddBinding(binding);
 }
 
-bool dae::Gamepad::IsButtonTriggered(unsigned int button) const { return m_XInputPimpl->IsButtonTriggered(button);  }
-bool dae::Gamepad::IsButtonReleased(unsigned int button) const { return m_XInputPimpl->IsButtonReleased(button); }
-bool dae::Gamepad::IsDown(unsigned int button) const { return m_XInputPimpl->IsDown(button); }
+bool Rinigin::Gamepad::IsButtonTriggered(unsigned int button) const { return m_XInputPimpl->IsButtonTriggered(button);  }
+bool Rinigin::Gamepad::IsButtonReleased(unsigned int button) const { return m_XInputPimpl->IsButtonReleased(button); }
+bool Rinigin::Gamepad::IsDown(unsigned int button) const { return m_XInputPimpl->IsDown(button); }
 
-bool dae::Gamepad::IsButtonTriggered(int button) const { return IsButtonTriggered(static_cast<unsigned int>(button)); }
-bool dae::Gamepad::IsButtonReleased(int button) const { return IsButtonReleased(static_cast<unsigned int>(button)); }
-bool dae::Gamepad::IsDown(int button) const { return IsDown(static_cast<unsigned int>(button)); }
+bool Rinigin::Gamepad::IsButtonTriggered(int button) const { return IsButtonTriggered(static_cast<unsigned int>(button)); }
+bool Rinigin::Gamepad::IsButtonReleased(int button) const { return IsButtonReleased(static_cast<unsigned int>(button)); }
+bool Rinigin::Gamepad::IsDown(int button) const { return IsDown(static_cast<unsigned int>(button)); }
 
-bool dae::Gamepad::IsKeyboard() const { return m_XInputPimpl->IsKeyboard(); }
-int dae::Gamepad::GetGamepadIndex() const { return m_XInputPimpl->GetGamepadIndex(); };
+bool Rinigin::Gamepad::IsKeyboard() const { return m_XInputPimpl->IsKeyboard(); }
+int Rinigin::Gamepad::GetGamepadIndex() const { return m_XInputPimpl->GetGamepadIndex(); };
 
-void dae::Gamepad::Process() { m_XInputPimpl->Process(); };
+void Rinigin::Gamepad::Process() { m_XInputPimpl->Process(); };

@@ -9,7 +9,7 @@
 #include "Component.h"
 #include "imgui_plot.h"
 
-namespace dae {
+namespace Rinigin {
 	class CacheGraphComponent final : public Component
 	{
 	public:

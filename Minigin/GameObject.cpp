@@ -5,24 +5,24 @@
 #include "ResourceManager.h"
 #include "Renderer.h"
 
-dae::GameObject::GameObject()
+Rinigin::GameObject::GameObject()
 {
 	m_Transform = AddComponent<TransformComponent>(); // Add the base transform component to EVERY game object.
 }
 
-dae::GameObject::GameObject(GameObject* parent,bool keepPosition) : 
+Rinigin::GameObject::GameObject(GameObject* parent,bool keepPosition) : 
 	GameObject()
 {
 	SetParent(parent,keepPosition);
 }
 
-dae::GameObject::~GameObject()
+Rinigin::GameObject::~GameObject()
 {
 }
 
 // Parent
 
-void dae::GameObject::SetParent(GameObject* parent, bool keepWorldPosition)
+void Rinigin::GameObject::SetParent(GameObject* parent, bool keepWorldPosition)
 {
 	// 1. Validation
 	if (IsChild(parent) or parent == this or m_Parent == parent) return; // Check if the parent is valid !
@@ -45,43 +45,43 @@ void dae::GameObject::SetParent(GameObject* parent, bool keepWorldPosition)
 }
 
 
-void dae::GameObject::SetPosition(const glm::vec2& localPosition)
+void Rinigin::GameObject::SetPosition(const glm::vec2& localPosition)
 {
 	SetPosition(localPosition.x, localPosition.y, 0.f);
 }
 
-void dae::GameObject::SetPosition(const glm::vec3& localPosition)
+void Rinigin::GameObject::SetPosition(const glm::vec3& localPosition)
 {
 	SetPosition(localPosition.x, localPosition.y, localPosition.z);
 }
 
-void dae::GameObject::SetPosition(const float x, const float y, const float z)
+void Rinigin::GameObject::SetPosition(const float x, const float y, const float z)
 {
 	m_Transform->SetLocalPosition(x,y,z);
 }
 
-glm::vec3 dae::GameObject::GetWorldPosition() const
+glm::vec3 Rinigin::GameObject::GetWorldPosition() const
 {
 	return m_Transform->GetTransformWorldPosition();
 }
 
 // Methods
 
-void dae::GameObject::FixedUpdate() 
+void Rinigin::GameObject::FixedUpdate() 
 {
 	for (auto& component : m_Components) {
 		component->FixedUpdate();
 	}
 }
 
-void dae::GameObject::Update()
+void Rinigin::GameObject::Update()
 {
 	for (auto& component : m_Components) {
 		component->Update();
 	}
 }
 
-void dae::GameObject::LateUpdate()
+void Rinigin::GameObject::LateUpdate()
 {
 	for (auto& component : m_Components) {
 		component->LateUpdate();
@@ -90,7 +90,7 @@ void dae::GameObject::LateUpdate()
 	std::erase_if( m_Components, std::bind(&Component::IsDestroyed, std::placeholders::_1) );
 } 
 
-void dae::GameObject::Render() const
+void Rinigin::GameObject::Render() const
 {
 	for (auto& component : m_Components) {
 		component->Render();
@@ -99,7 +99,7 @@ void dae::GameObject::Render() const
 
 // Components
 
-bool dae::GameObject::HasComponent(Component* component)
+bool Rinigin::GameObject::HasComponent(Component* component)
 {
 	for (auto& comp : m_Components) {
 		if (comp.get() == component) return true;
@@ -108,19 +108,19 @@ bool dae::GameObject::HasComponent(Component* component)
 	return false;
 }
 
-void dae::GameObject::RemoveComponent(Component* component)
+void Rinigin::GameObject::RemoveComponent(Component* component)
 {
 	if (component != nullptr and HasComponent(component) ) component->Destroy();
 }
 
 // Notifications
 
-void dae::GameObject::NotifyPositionChanged()
+void Rinigin::GameObject::NotifyPositionChanged()
 {
 	std::for_each(m_Children.begin(), m_Children.end(), std::bind(&GameObject::OnParentPositionChanged, std::placeholders::_1)); // Call the on position changed event for all the children
 }
 
-void dae::GameObject::OnParentPositionChanged()
+void Rinigin::GameObject::OnParentPositionChanged()
 {
 	//SetPosition(m_Transform->GetTransformLocalPosition()); // Set the local position to the updated position
 	m_Transform->MakePositionDirty();
@@ -128,18 +128,18 @@ void dae::GameObject::OnParentPositionChanged()
 
 // Children
 
-bool dae::GameObject::IsChild(GameObject* gameObject) const
+bool Rinigin::GameObject::IsChild(GameObject* gameObject) const
 {
 	return std::find(m_Children.begin(), m_Children.end(), gameObject) != m_Children.end();
 }
 
-void dae::GameObject::AddChild(GameObject* gameObject)
+void Rinigin::GameObject::AddChild(GameObject* gameObject)
 {
 	if (!IsChild(gameObject)) {
 		m_Children.emplace_back(gameObject);
 	}
 }
-void dae::GameObject::RemoveChild(GameObject* gameObject)
+void Rinigin::GameObject::RemoveChild(GameObject* gameObject)
 {
 	if (IsChild(gameObject)) {
 		std::erase(m_Children, gameObject);

@@ -2,7 +2,7 @@
 #include <chrono>
 #include "Singleton.h"
 
-namespace dae {
+namespace Rinigin {
 	class Timer : public Singleton<Timer>
 	{
 	public:
