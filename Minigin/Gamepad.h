@@ -71,7 +71,6 @@ namespace Rinigin {
 	private:
 		class impl;
 		std::unique_ptr<impl> m_XInputPimpl;
-		//std::vector<std::unique_ptr<Binding>> m_Bindings; // List of all the bindings the controllers has
 	};
 }
 

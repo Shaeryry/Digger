@@ -1,7 +1,6 @@
 #include "Event.h"
 #include "Observer.h"
 
-
 void Rinigin::Event::AddObserver(Observer* observer)
 {
 	if (!IsObserver(observer)) {

@@ -7,7 +7,7 @@
 
 // Pimpl
 
-class Rinigin::Gamepad::impl {
+class Rinigin::Gamepad::impl final {
 	public:
 		explicit impl(const int index) : m_ControllerIndex{ index } {};
 		void Process();

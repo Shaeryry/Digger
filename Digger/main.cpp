@@ -8,6 +8,9 @@
 #include "Minigin.h"
 #include "Scene.h"
 
+#include "ServiceLocator.h"
+#include "SDLMixerSoundSystem.h"
+
 #include "InputManager.h"
 #include "ResourceManager.h"
 #include "SceneManager.h"
@@ -97,7 +100,7 @@ Rinigin::GameObject* InitalizePlayerAndUI(Rinigin::Scene& scene, bool keyboard, 
 	auto* font = Rinigin::ResourceManager::GetInstance().LoadFont("Lingua.otf", 20);
 
 	const float offset{ 50.f * playerIndex };
-	const glm::vec3 UIPosition{ 10,(60 + offset),0 };
+	const glm::vec3 UIPosition{ 10,(100 + offset),0 }; 
 
 	// Create UI
 
@@ -108,7 +111,6 @@ Rinigin::GameObject* InitalizePlayerAndUI(Rinigin::Scene& scene, bool keyboard, 
 	auto healthDisplayComponent = livesGO->AddComponent<HealthDisplayComponent>(livesGOTextComponent);
 
 	healthComponent->GetHealthChangedEvent()->AddObserver(healthDisplayComponent); // Allow this thing to listen
-
 
 	// Add Score
 	auto scoreGO = std::make_unique<Rinigin::GameObject>();
@@ -132,6 +134,8 @@ Rinigin::GameObject* InitalizePlayerAndUI(Rinigin::Scene& scene, bool keyboard, 
 
 void load() {
 	auto& scene = Rinigin::SceneManager::GetInstance().CreateScene("Demo");
+	auto font = Rinigin::ResourceManager::GetInstance().LoadFont("Lingua.otf", 36);
+	auto fontLower = Rinigin::ResourceManager::GetInstance().LoadFont("Lingua.otf", 12);
 
 	// WEEK 1
 	auto background = std::make_unique<Rinigin::GameObject>();
@@ -145,7 +149,6 @@ void load() {
 	logo->SetPosition({ 216, 180,0 });
 	scene.Add(logo);
 
-	auto font = Rinigin::ResourceManager::GetInstance().LoadFont("Lingua.otf", 36);
 
 	auto textObject = std::make_unique<Rinigin::GameObject>();
 	auto textRenderer = textObject->AddComponent<Rinigin::TextureRendererComponent>();
@@ -159,12 +162,32 @@ void load() {
 	FPSTextObject->AddComponent<FPSComponent>(textComponent);
 	scene.Add(FPSTextObject);
 
+	auto tutorialKeyboard = std::make_unique<Rinigin::GameObject>();
+	auto tutorialKeyboardTextRenderer = tutorialKeyboard->AddComponent<Rinigin::TextureRendererComponent>();
+	auto tutorialKeyboardTextComponent = tutorialKeyboard->AddComponent<Rinigin::TextComponent>(tutorialKeyboardTextRenderer, fontLower);
+	tutorialKeyboardTextComponent->SetText("Use WASD to move Player 1, X to kill enemies and F to inflict damage on yourself and play a damage sound.");
+	tutorialKeyboard->SetPosition({ 10,80,0 });
+	scene.Add(tutorialKeyboard);
+
+	auto tutorialController = std::make_unique<Rinigin::GameObject>();
+	auto tutorialControllerTextRenderer = tutorialController->AddComponent<Rinigin::TextureRendererComponent>();
+	auto tutorialControllerTextComponent = tutorialController->AddComponent<Rinigin::TextComponent>(tutorialControllerTextRenderer, fontLower);
+	tutorialControllerTextComponent->SetText("Use the D-Pad to move Player 2, A to kill enemies and B to inflict damage on yourself and play a damage sound.");
+	tutorialController->SetPosition({ 10,100,0 });
+	scene.Add(tutorialController);
 
 	InitalizePlayerAndUI(scene,true,0);
 	InitalizePlayerAndUI(scene, false, 1);
 }
 
 int main(int, char* []) {
+	// Sound system
+
+	auto SDLMixerSoundSystem = std::make_unique<Rinigin::SDLMixerSoundService>();
+	SDLMixerSoundSystem->Init("../Data/Sounds/");
+	Rinigin::ServiceLocator::RegisterSoundSystem(std::move(SDLMixerSoundSystem));
+
+	//
 	Rinigin::Minigin engine("../Data/");
 	engine.Run(load);
 	return 0;

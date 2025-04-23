@@ -1,6 +1,7 @@
 #include <algorithm>
 #include "HealthComponent.h"
 #include "EventTypes.h"
+#include "ServiceLocator.h"
 	
 HealthComponent::HealthComponent(Rinigin::GameObject* gameObject, int maxHealth, int minHealth) :
 	Component(gameObject),
@@ -15,20 +16,21 @@ HealthComponent::HealthComponent(Rinigin::GameObject* gameObject, int maxHealth,
 void HealthComponent::TakeDamage(int damage)
 {
 	SetHealth(m_Health - damage);
-	if (m_Health <= 0) {
+	if (m_Health <= 0) { 
 		m_DiedEvent->NotifyObservers();
 	}
 }
 
 void HealthComponent::SetHealth(int health)
 {
-	const int currentHealth{m_Health};
-	
+	const int currentHealth{ m_Health };
 	const int newHealth{ std::clamp(health,m_MinHealth,m_MaxHealth) };
 
 	m_Health = newHealth;
 	if (currentHealth != newHealth) {
 		m_HealthChangedEvent->NotifyObservers();
+
+		Rinigin::ServiceLocator::GetSoundService().Play({ "bruh.wav", .25f }); 
 	}
 }
 

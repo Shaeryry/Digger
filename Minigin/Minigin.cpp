@@ -8,6 +8,7 @@
 #include <SDL_ttf.h>
 
 #include "Minigin.h"
+#include "ServiceLocator.h"
 #include "InputManager.h"
 #include "SceneManager.h"
 #include "Renderer.h"
