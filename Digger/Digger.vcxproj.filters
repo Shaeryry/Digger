@@ -25,6 +25,12 @@
     <Filter Include="Source Files\Commands">
       <UniqueIdentifier>{4411f8cf-f837-4e30-8d27-683f77dc3fb7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\GameStates">
+      <UniqueIdentifier>{ff4b81d9-1a27-470c-804e-03cc91ac5488}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\GameState">
+      <UniqueIdentifier>{e4d000a7-a67b-47a3-88e8-6aa2cee963e8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -60,6 +66,18 @@
     <ClCompile Include="EventTypes.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Game.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GameStateScene.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MainMenuState.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="InGameState.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Minigin\FPSComponent.h">
@@ -90,6 +108,18 @@
       <Filter>Header Files\Commands</Filter>
     </ClInclude>
     <ClInclude Include="EventTypes.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Game.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GameStateScene.h">
+      <Filter>Header Files\GameState</Filter>
+    </ClInclude>
+    <ClInclude Include="MainMenuState.h">
+      <Filter>Header Files\GameState</Filter>
+    </ClInclude>
+    <ClInclude Include="InGameState.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

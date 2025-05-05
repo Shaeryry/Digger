@@ -120,9 +120,6 @@
     <ClInclude Include="Event.h">
       <Filter>Header Files\EventSystem</Filter>
     </ClInclude>
-    <ClInclude Include="EventArguments.h">
-      <Filter>Header Files\EventSystem</Filter>
-    </ClInclude>
     <ClInclude Include="Command.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -214,9 +211,6 @@
     </ClCompile>
     <ClCompile Include="Event.cpp">
       <Filter>Source Files\EventSystem</Filter>
-    </ClCompile>
-    <ClCompile Include="EventArguments.cpp">
-      <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="SDLMixerSoundSystem.cpp">
       <Filter>Source Files</Filter>

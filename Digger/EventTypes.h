@@ -1,5 +1,5 @@
 #pragma once
-#include "EventArguments.h"
+#include "Event.h"
 
 namespace Rinigin { class GameObject; };
 

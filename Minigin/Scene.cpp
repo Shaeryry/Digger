@@ -1,20 +1,29 @@
 #include "Scene.h"
 #include "GameObject.h"
+#include "Helpers.h"
 
 #include <algorithm>
-
 using namespace Rinigin;
 
-unsigned int Scene::m_IdCounter = 0;
-
-Scene::Scene(const std::string& name) : m_Name(name) {}
+Scene::Scene(const std::string& name) :
+	m_Name(name),
+	m_SceneId(Helpers::sdbm_hash(name.c_str()))
+{
+}
 
 Scene::~Scene() = default;
 
-std::unique_ptr<GameObject>& Scene::Add(std::unique_ptr<GameObject>& object)
+GameObject* Rinigin::Scene::AddObject(std::unique_ptr<GameObject>& object)
 {
 	m_Objects.emplace_back(std::move(object));
-	return m_Objects.back();
+	return m_Objects.back().get();
+}
+
+GameObject* Rinigin::Scene::CreateObject(GameObject* object)
+{
+	std::unique_ptr<GameObject> addedObject = std::make_unique<GameObject>(object);
+	m_Objects.emplace_back(std::move(addedObject));
+	return m_Objects.back().get();
 }
 
 void Scene::Destroy(std::unique_ptr<GameObject>& object)

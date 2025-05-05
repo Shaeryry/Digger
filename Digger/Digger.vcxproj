@@ -164,7 +164,11 @@
     <ClCompile Include="..\Minigin\ScoreComponent.cpp" />
     <ClCompile Include="..\Minigin\ScoreDisplayComponent.cpp" />
     <ClCompile Include="EventTypes.cpp" />
+    <ClCompile Include="Game.cpp" />
+    <ClCompile Include="InGameState.cpp" />
+    <ClCompile Include="GameStateScene.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="MainMenuState.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Minigin\DamageCommand.h" />
@@ -177,6 +181,10 @@
     <ClInclude Include="..\Minigin\ScoreComponent.h" />
     <ClInclude Include="..\Minigin\ScoreDisplayComponent.h" />
     <ClInclude Include="EventTypes.h" />
+    <ClInclude Include="Game.h" />
+    <ClInclude Include="InGameState.h" />
+    <ClInclude Include="GameStateScene.h" />
+    <ClInclude Include="MainMenuState.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

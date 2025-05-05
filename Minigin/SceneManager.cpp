@@ -1,12 +1,12 @@
 #include "SceneManager.h"
 #include "Scene.h"
 
-void Rinigin::SceneManager::FixedUpdate()
+Rinigin::SceneManager::SceneManager() :
+	m_ActiveScene(nullptr),
+	m_ActiveSceneChangedEvent{ std::make_unique<Event>( NullEventArguments("SceneChanged") )},
+	m_SceneCreatedEvent{ std::make_unique<Event>( NullEventArguments("SceneCreated") ) },
+	m_SceneRemovedEvent{ std::make_unique<Event>(NullEventArguments("SceneRemoved") ) }
 {
-	for (auto& scene : m_Scenes)
-	{
-		scene->FixedUpdate();
-	}
 }
 
 void Rinigin::SceneManager::Update()
@@ -15,31 +15,63 @@ void Rinigin::SceneManager::Update()
 	ImGui_ImplSDL2_NewFrame();
 	ImGui::NewFrame();
 
-	for(auto& scene : m_Scenes)
-	{
-		scene->Update();
+	if (m_ActiveScene) {
+		m_ActiveScene->Update();
+	}
+}
+
+void Rinigin::SceneManager::FixedUpdate()
+{
+	if (m_ActiveScene) {
+		m_ActiveScene->FixedUpdate();
 	}
 }
 
 void Rinigin::SceneManager::LateUpdate()
 {
-	for (auto& scene : m_Scenes)
-	{
-		scene->LateUpdate();
+
+	if (m_ActiveScene) {
+		m_ActiveScene->LateUpdate();
 	}
 }
 
 void Rinigin::SceneManager::Render() const
 {
-	for (const auto& scene : m_Scenes)
-	{
-		scene->Render();
+
+	if (m_ActiveScene) {
+		m_ActiveScene->Render();
 	}
 }
 
-Rinigin::Scene& Rinigin::SceneManager::CreateScene(const std::string& name)
+Rinigin::Scene* Rinigin::SceneManager::CreateScene(const std::string& name)
 {
 	const auto& scene = std::shared_ptr<Scene>(new Scene(name));
+	Scene* newScene = scene.get();  
+
+	if (m_ActiveScene == nullptr) m_ActiveScene = newScene; // Set the default scene if there are no scenes !
+
 	m_Scenes.emplace_back(scene);
-	return *scene;
+	return newScene;
+}
+
+
+void Rinigin::SceneManager::RemoveScene(Scene* scene)
+{
+	if (scene) {
+		if (scene == m_ActiveScene) {
+			m_ActiveScene = nullptr; // Remove the active scene
+		}
+
+		m_Scenes.erase(
+			std::remove_if(m_Scenes.begin(), m_Scenes.end(), [&](const std::shared_ptr<Scene>& currentScene)
+				{
+					return currentScene.get() == scene;
+				}
+			), m_Scenes.end());
+	}
+} 
+
+void Rinigin::SceneManager::SetActiveScene(Scene* sceneToLoad)
+{
+	m_ActiveScene = sceneToLoad;
 }

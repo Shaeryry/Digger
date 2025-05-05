@@ -224,7 +224,6 @@ xcopy $(SolutionDir)3rdParty\SDL2_ttf\lib\x64\*.dll $(OutputPath) /R /Y</Command
     <ClInclude Include="..\3rdParty\SDL_mixer\include\SDL3_mixer\SDL_mixer.h" />
     <ClInclude Include="Command.h" />
     <ClInclude Include="Component.h" />
-    <ClInclude Include="EventArguments.h" />
     <ClInclude Include="Font.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="Gamepad.h" />
@@ -256,7 +255,6 @@ xcopy $(SolutionDir)3rdParty\SDL2_ttf\lib\x64\*.dll $(OutputPath) /R /Y</Command
     <ClCompile Include="..\3rdParty\imgui-1.91.8\imgui_draw.cpp" />
     <ClCompile Include="..\3rdParty\imgui-1.91.8\imgui_tables.cpp" />
     <ClCompile Include="..\3rdParty\imgui-1.91.8\imgui_widgets.cpp" />
-    <ClCompile Include="EventArguments.cpp" />
     <ClCompile Include="Component.cpp" />
     <ClCompile Include="Font.cpp" />
     <ClCompile Include="GameObject.cpp" />

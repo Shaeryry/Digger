@@ -6,26 +6,31 @@ namespace Rinigin
 {
 	class Scene final
 	{
-		friend Scene& SceneManager::CreateScene(const std::string& name);
 	public:
-		std::unique_ptr<GameObject>& Add(std::unique_ptr<GameObject>& object);
-		void Destroy(std::unique_ptr<GameObject>& object);
-		void RemoveAll();
-
-		void FixedUpdate();
-		void Update();
-		void LateUpdate();
-		void Render() const;
-
-		~Scene(); 
+		explicit Scene(const std::string& name);
+		~Scene();
 		Scene(const Scene& other) = delete;
 		Scene(Scene&& other) = delete;
 		Scene& operator=(const Scene& other) = delete;
 		Scene& operator=(Scene&& other) = delete;
-	private: 
-		explicit Scene(const std::string& name);
 
+		GameObject* CreateObject(GameObject* object = nullptr);
+		GameObject* AddObject(std::unique_ptr<GameObject>& object);
+		void Destroy(std::unique_ptr<GameObject>& object); 
+		void RemoveAll();
+
+		void FixedUpdate(); 
+		void Update(); 
+		void LateUpdate();
+		void Render() const;
+
+		const std::string& GetName() const { return m_Name; };
+		const unsigned int GetID() const { return m_SceneId; };
+
+		// Events
+	private: 		 
 		std::string m_Name;
+		unsigned int m_SceneId;
 		std::vector < std::unique_ptr<GameObject> > m_Objects{};
 
 		static unsigned int m_IdCounter; 
