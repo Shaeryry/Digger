@@ -14,7 +14,7 @@ namespace Rinigin
 		bool ProcessInput();	
 		
 		Gamepad* GetGamepad(int index) { return m_Gamepads[index].get(); };
-		template<typename CommandType, typename... Arguments> Command* AddCommand(Arguments&&... args);
+		template<typename CommandType, typename... Arguments> CommandType* AddCommand(Arguments&&... args);
 	private:
 		Gamepad* AddGamepad(const int index);
 		 
@@ -24,10 +24,10 @@ namespace Rinigin
 	};
 	 
 	template<typename CommandType, typename... Arguments>
-	inline Command* InputManager::AddCommand(Arguments&&... args)
+	inline CommandType* InputManager::AddCommand(Arguments&&... args)
 	{
 		std::unique_ptr<CommandType> newCommand{ std::make_unique<CommandType>( std::forward<Arguments>(args)... ) };
 		m_Commands.emplace_back( std::move(newCommand) );
-		return m_Commands.back().get();
+		return dynamic_cast<CommandType*>( m_Commands.back().get() );
 	}
 }

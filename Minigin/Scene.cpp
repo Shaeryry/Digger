@@ -19,6 +19,14 @@ GameObject* Rinigin::Scene::AddObject(std::unique_ptr<GameObject>& object)
 	return m_Objects.back().get();
 }
 
+std::vector<GameObject*> Rinigin::Scene::GetObjects() const
+{
+	std::vector<GameObject*> objects{};
+	for (auto& object : m_Objects) objects.emplace_back(object.get());
+
+	return objects;
+}
+
 GameObject* Rinigin::Scene::CreateObject(GameObject* object)
 {
 	std::unique_ptr<GameObject> addedObject = std::make_unique<GameObject>(object);
@@ -44,7 +52,7 @@ void Rinigin::Scene::FixedUpdate()
 	}
 }
 
-void Scene::Update()
+void Rinigin::Scene::Update()
 {
 	for(auto& object : m_Objects)
 	{
@@ -58,11 +66,9 @@ void Rinigin::Scene::LateUpdate()
 	{
 		object->LateUpdate();
 	}
-
-	// TODO : Delete objects marked for deletion
 }
 
-void Scene::Render() const
+void Rinigin::Scene::Render() const
 {
 	for (const auto& object : m_Objects)
 	{

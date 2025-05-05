@@ -163,12 +163,14 @@
     <ClCompile Include="..\Minigin\RotatorComponent.cpp" />
     <ClCompile Include="..\Minigin\ScoreComponent.cpp" />
     <ClCompile Include="..\Minigin\ScoreDisplayComponent.cpp" />
+    <ClCompile Include="Digger.cpp" />
     <ClCompile Include="EventTypes.cpp" />
-    <ClCompile Include="Game.cpp" />
-    <ClCompile Include="InGameState.cpp" />
-    <ClCompile Include="GameStateScene.cpp" />
+    <ClCompile Include="DiggerGame.cpp" />
+    <ClCompile Include="GameScreenState.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="MainMenuState.cpp" />
+    <ClCompile Include="Character.cpp" />
+    <ClCompile Include="StartScreenMenuCommand.cpp" />
+    <ClCompile Include="StartScreenState.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Minigin\DamageCommand.h" />
@@ -180,11 +182,13 @@
     <ClInclude Include="..\Minigin\RotatorComponent.h" />
     <ClInclude Include="..\Minigin\ScoreComponent.h" />
     <ClInclude Include="..\Minigin\ScoreDisplayComponent.h" />
+    <ClInclude Include="Digger.h" />
     <ClInclude Include="EventTypes.h" />
-    <ClInclude Include="Game.h" />
-    <ClInclude Include="InGameState.h" />
-    <ClInclude Include="GameStateScene.h" />
-    <ClInclude Include="MainMenuState.h" />
+    <ClInclude Include="DiggerGame.h" />
+    <ClInclude Include="GameScreenState.h" />
+    <ClInclude Include="Character.h" />
+    <ClInclude Include="StartScreenMenuCommand.h" />
+    <ClInclude Include="StartScreenState.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

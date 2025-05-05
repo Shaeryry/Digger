@@ -7,7 +7,7 @@
 
 #include "Minigin.h"
 #include "Scene.h"
-#include "Game.h"
+#include "DiggerGame.h"
 #include "ServiceLocator.h"
 #include "SDLMixerSoundSystem.h"
 
@@ -140,8 +140,8 @@ void load() {
 
 int main(int, char* []) {
 	Rinigin::Minigin engine("../Data/");
-	Game digger{};
-
+	DiggerGame digger{};
+	
 	engine.Run(load);
 	return 0;
 } 

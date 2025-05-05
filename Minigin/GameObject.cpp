@@ -6,6 +6,7 @@
 #include "Renderer.h"
 
 Rinigin::GameObject::GameObject()
+	: m_IsActive{ true }
 {
 	m_Transform = AddComponent<TransformComponent>(); // Add the base transform component to EVERY game object.
 }
@@ -69,22 +70,28 @@ glm::vec3 Rinigin::GameObject::GetWorldPosition() const
 
 void Rinigin::GameObject::FixedUpdate() 
 {
-	for (auto& component : m_Components) {
-		component->FixedUpdate();
+	if (IsActive()) {
+		for (auto& component : m_Components) {
+			component->FixedUpdate();
+		}
 	}
 }
 
 void Rinigin::GameObject::Update()
 {
-	for (auto& component : m_Components) {
-		component->Update();
+	if (IsActive()) {
+		for (auto& component : m_Components) {
+			component->Update();
+		}
 	}
 }
 
 void Rinigin::GameObject::LateUpdate()
 {
-	for (auto& component : m_Components) {
-		component->LateUpdate();
+	if (IsActive()) {
+		for (auto& component : m_Components) {
+			component->LateUpdate();
+		}
 	}
 
 	std::erase_if( m_Components, std::bind(&Component::IsDestroyed, std::placeholders::_1) );
@@ -92,8 +99,10 @@ void Rinigin::GameObject::LateUpdate()
 
 void Rinigin::GameObject::Render() const
 {
-	for (auto& component : m_Components) {
-		component->Render();
+	if (IsActive()) {
+		for (auto& component : m_Components) {
+			component->Render();
+		}
 	}
 }
 

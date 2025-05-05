@@ -240,6 +240,9 @@ xcopy $(SolutionDir)3rdParty\SDL2_ttf\lib\x64\*.dll $(OutputPath) /R /Y</Command
     <ClInclude Include="Singleton.h" />
     <ClInclude Include="Event.h" />
     <ClInclude Include="SoundService.h" />
+    <ClInclude Include="SpriteSheetComponent.h" />
+    <ClInclude Include="State.h" />
+    <ClInclude Include="StateContextComponent.h" />
     <ClInclude Include="TextComponent.h" />
     <ClInclude Include="Texture2D.h" />
     <ClInclude Include="TextureComponent.h" />
@@ -268,6 +271,8 @@ xcopy $(SolutionDir)3rdParty\SDL2_ttf\lib\x64\*.dll $(OutputPath) /R /Y</Command
     <ClCompile Include="Event.cpp" />
     <ClCompile Include="SDLMixerSoundSystem.cpp" />
     <ClCompile Include="ServiceLocator.cpp" />
+    <ClCompile Include="SpriteSheetComponent.cpp" />
+    <ClCompile Include="StateContextComponent.cpp" />
     <ClCompile Include="TextComponent.cpp" />
     <ClCompile Include="Texture2D.cpp" />
     <ClCompile Include="TextureComponent.cpp" />

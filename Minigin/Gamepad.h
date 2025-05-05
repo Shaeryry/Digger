@@ -51,10 +51,11 @@ namespace Rinigin {
 		void Process();
 		void ExecuteCommands(const ExecutionCommandInfo& commandInfo); // Execute all bindings, if you can !
 
-		void AddBinding(GamepadButton button, BindingConnection connectionType, Command* command);
-		void AddBinding(unsigned int button, BindingConnection connectionType, Command* command);
-		void AddBinding(int button, BindingConnection connectionType, Command* command);
-		void AddBinding(const Binding& binding);
+		Binding* AddBinding(GamepadButton button, BindingConnection connectionType, Command* command);
+		Binding* AddBinding(unsigned int button, BindingConnection connectionType, Command* command);
+		Binding* AddBinding(int button, BindingConnection connectionType, Command* command);
+		Binding* AddBinding(const Binding& binding);
+		void RemoveBinding(Binding* binding); 
 
 		bool IsKeyboard() const;
 

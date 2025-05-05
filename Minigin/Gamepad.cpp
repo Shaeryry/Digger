@@ -16,7 +16,8 @@ class Rinigin::Gamepad::impl final {
 		bool IsDown(unsigned int button) const;
 		bool IsKeyboard() const { return (m_ControllerIndex == -1); }
 
-		void AddBinding(const Binding& binding);
+		Binding* AddBinding(const Binding& binding);
+		bool RemoveBinding(Binding* binding);
 
 		int GetGamepadIndex() const { return m_ControllerIndex; }
 		const std::vector<std::unique_ptr<Binding>>& GetBindings() { return m_Bindings; };
@@ -46,10 +47,30 @@ bool Rinigin::Gamepad::impl::IsButtonTriggered(unsigned int button) const { retu
 bool Rinigin::Gamepad::impl::IsButtonReleased(unsigned int button) const { return m_ButtonsReleasedThisFrame & button; }
 bool Rinigin::Gamepad::impl::IsDown(unsigned int button) const { return m_CurrentState.Gamepad.wButtons & button; }
 
-void Rinigin::Gamepad::impl::AddBinding(const Binding& binding)
+Rinigin::Binding* Rinigin::Gamepad::impl::AddBinding(const Binding& binding)
 {
 	std::unique_ptr<Binding> newBinding{ std::make_unique<Binding>(binding) };
 	m_Bindings.emplace_back(std::move(newBinding));
+	return m_Bindings.back().get();
+}
+
+bool Rinigin::Gamepad::impl::RemoveBinding(Binding* binding)
+{
+	if (!binding) return false; // If there is no binding then simply don't perform this
+
+    auto removedIt = std::remove_if(m_Bindings.begin(), m_Bindings.end(),
+		[&](std::unique_ptr<Binding>& currentbinding)
+		{
+			return currentbinding.get() == binding;
+		}
+    );
+
+	if (removedIt != m_Bindings.end()) {
+		m_Bindings.erase(removedIt, m_Bindings.end());
+		return true;
+	};
+
+    return false;
 }
 
 // Gamepad implementation
@@ -123,26 +144,33 @@ void Rinigin::Gamepad::ExecuteCommands(const ExecutionCommandInfo& commandInfo)
 	}
 }
 
-void Rinigin::Gamepad::AddBinding(GamepadButton button, BindingConnection connectionType, Command* command)
+Rinigin::Binding* Rinigin::Gamepad::AddBinding(GamepadButton button, BindingConnection connectionType, Command* command)
 {
-	AddBinding(static_cast<unsigned int>(button), connectionType, command);
+	return AddBinding(static_cast<unsigned int>(button), connectionType, command);
 }
-void Rinigin::Gamepad::AddBinding(int button, BindingConnection connectionType, Command* command)
+Rinigin::Binding* Rinigin::Gamepad::AddBinding(int button, BindingConnection connectionType, Command* command)
 {
-	AddBinding(static_cast<unsigned int>(button), connectionType, command);
+	return AddBinding(static_cast<unsigned int>(button), connectionType, command);
 }
-void Rinigin::Gamepad::AddBinding(unsigned int button, BindingConnection connectionType, Command* command)
+
+Rinigin::Binding* Rinigin::Gamepad::AddBinding(unsigned int button, BindingConnection connectionType, Command* command)
 {
 	Binding newBinding{};
 	newBinding.button = button;
 	newBinding.connectionType = connectionType;
 	newBinding.command = command;
 
-	m_XInputPimpl->AddBinding(newBinding);
+	return m_XInputPimpl->AddBinding(newBinding);
 }
-void Rinigin::Gamepad::AddBinding(const Binding& binding)
+
+Rinigin::Binding* Rinigin::Gamepad::AddBinding(const Binding& binding)
 {
-	m_XInputPimpl->AddBinding(binding);
+	return m_XInputPimpl->AddBinding(binding);
+}
+
+void Rinigin::Gamepad::RemoveBinding(Binding* binding)
+{
+	m_XInputPimpl->RemoveBinding(binding); 
 }
 
 bool Rinigin::Gamepad::IsButtonTriggered(unsigned int button) const { return m_XInputPimpl->IsButtonTriggered(button);  }

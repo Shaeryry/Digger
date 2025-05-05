@@ -5,7 +5,7 @@ Rinigin::SceneManager::SceneManager() :
 	m_ActiveScene(nullptr),
 	m_ActiveSceneChangedEvent{ std::make_unique<Event>( NullEventArguments("SceneChanged") )},
 	m_SceneCreatedEvent{ std::make_unique<Event>( NullEventArguments("SceneCreated") ) },
-	m_SceneRemovedEvent{ std::make_unique<Event>(NullEventArguments("SceneRemoved") ) }
+	m_SceneRemovedEvent{ std::make_unique<Event>( NullEventArguments("SceneRemoved") ) }
 {
 }
 
@@ -47,10 +47,9 @@ Rinigin::Scene* Rinigin::SceneManager::CreateScene(const std::string& name)
 {
 	const auto& scene = std::shared_ptr<Scene>(new Scene(name));
 	Scene* newScene = scene.get();  
-
-	if (m_ActiveScene == nullptr) m_ActiveScene = newScene; // Set the default scene if there are no scenes !
-
 	m_Scenes.emplace_back(scene);
+
+	m_SceneCreatedEvent->NotifyObservers();
 	return newScene;
 }
 
@@ -68,10 +67,13 @@ void Rinigin::SceneManager::RemoveScene(Scene* scene)
 					return currentScene.get() == scene;
 				}
 			), m_Scenes.end());
+
+		m_SceneRemovedEvent->NotifyObservers();
 	}
 } 
 
 void Rinigin::SceneManager::SetActiveScene(Scene* sceneToLoad)
 {
 	m_ActiveScene = sceneToLoad;
+	m_ActiveSceneChangedEvent->NotifyObservers();
 }

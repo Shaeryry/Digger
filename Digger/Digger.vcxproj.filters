@@ -28,8 +28,11 @@
     <Filter Include="Source Files\GameStates">
       <UniqueIdentifier>{ff4b81d9-1a27-470c-804e-03cc91ac5488}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\GameState">
+    <Filter Include="Header Files\GameStates">
       <UniqueIdentifier>{e4d000a7-a67b-47a3-88e8-6aa2cee963e8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Characters">
+      <UniqueIdentifier>{2cd35ef2-54bb-484b-ad55-130974789852}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -66,16 +69,22 @@
     <ClCompile Include="EventTypes.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Game.cpp">
+    <ClCompile Include="DiggerGame.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="GameStateScene.cpp">
+    <ClCompile Include="StartScreenState.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="MainMenuState.cpp">
+    <ClCompile Include="GameScreenState.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="InGameState.cpp">
+    <ClCompile Include="StartScreenMenuCommand.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Digger.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Character.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -110,17 +119,23 @@
     <ClInclude Include="EventTypes.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Game.h">
+    <ClInclude Include="DiggerGame.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="GameStateScene.h">
-      <Filter>Header Files\GameState</Filter>
+    <ClInclude Include="StartScreenState.h">
+      <Filter>Header Files\GameStates</Filter>
     </ClInclude>
-    <ClInclude Include="MainMenuState.h">
-      <Filter>Header Files\GameState</Filter>
+    <ClInclude Include="StartScreenMenuCommand.h">
+      <Filter>Header Files\Commands</Filter>
     </ClInclude>
-    <ClInclude Include="InGameState.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="GameScreenState.h">
+      <Filter>Header Files\GameStates</Filter>
+    </ClInclude>
+    <ClInclude Include="Digger.h">
+      <Filter>Header Files\Characters</Filter>
+    </ClInclude>
+    <ClInclude Include="Character.h">
+      <Filter>Header Files\Characters</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
