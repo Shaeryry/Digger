@@ -34,6 +34,12 @@
     <Filter Include="Header Files\Characters">
       <UniqueIdentifier>{2cd35ef2-54bb-484b-ad55-130974789852}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\DiggerMobileStates">
+      <UniqueIdentifier>{5dfe24ba-2815-4267-8bba-6f02b4bd1340}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\DiggerMobileStates">
+      <UniqueIdentifier>{18373e2a-47bb-4fa5-9c03-7058cf7398ca}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -72,7 +78,7 @@
     <ClCompile Include="DiggerGame.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Digger.cpp">
+    <ClCompile Include="DiggerMobile.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Character.cpp">
@@ -86,6 +92,15 @@
     </ClCompile>
     <ClCompile Include="GameScreenState.cpp">
       <Filter>Source Files\GameStates</Filter>
+    </ClCompile>
+    <ClCompile Include="DiggerMobileDiggingState.cpp">
+      <Filter>Source Files\DiggerMobileStates</Filter>
+    </ClCompile>
+    <ClCompile Include="DiggerMobileDyingState.cpp">
+      <Filter>Source Files\DiggerMobileStates</Filter>
+    </ClCompile>
+    <ClCompile Include="DiggerMobileDeadState.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -131,11 +146,20 @@
     <ClInclude Include="GameScreenState.h">
       <Filter>Header Files\GameStates</Filter>
     </ClInclude>
-    <ClInclude Include="Digger.h">
+    <ClInclude Include="DiggerMobile.h">
       <Filter>Header Files\Characters</Filter>
     </ClInclude>
     <ClInclude Include="Character.h">
       <Filter>Header Files\Characters</Filter>
+    </ClInclude>
+    <ClInclude Include="DiggerMobileDiggingState.h">
+      <Filter>Header Files\DiggerMobileStates</Filter>
+    </ClInclude>
+    <ClInclude Include="DiggerMobileDyingState.h">
+      <Filter>Header Files\DiggerMobileStates</Filter>
+    </ClInclude>
+    <ClInclude Include="DiggerMobileDeadState.h">
+      <Filter>Header Files\DiggerMobileStates</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

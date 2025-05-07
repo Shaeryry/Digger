@@ -6,7 +6,7 @@
 namespace Rinigin { class Scene; class Gamepad; }
 
 class Character;
-class Digger;
+class DiggerMobile;
 
 enum class GameMode {
 	SOLO,
@@ -35,8 +35,11 @@ private:
 	GameMode m_GameMode;
 	Rinigin::Scene* m_Scene; 
 
-	Digger* m_DiggerOne;
-	Digger* m_DiggerTwo;
+	DiggerMobile* m_DiggerOne;
+	DiggerMobile* m_DiggerTwo;
 	Character* m_Nobbin; // TODO : Add nobbin character
+
+	std::vector< std::unique_ptr<Character> > m_Characters; 
+
 };
 

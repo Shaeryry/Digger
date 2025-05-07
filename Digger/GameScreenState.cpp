@@ -4,9 +4,9 @@
 
 #include "GameObject.h"
 #include "Character.h"
-#include "Digger.h"
+#include "DiggerMobile.h"
 #include "Gamepad.h"
-#include "MovementCommands.h"
+#include "MovementCommands.h" 
 
 GameScreenState::GameScreenState(Rinigin::StateContextComponent* context,Rinigin::Gamepad* playerOneGamepad, Rinigin::Gamepad* playerTwoGamepad) :
 	Rinigin::State(context),
@@ -17,26 +17,27 @@ GameScreenState::GameScreenState(Rinigin::StateContextComponent* context,Rinigin
 	m_PlayerTwoGamepad(playerTwoGamepad)
 {
 	// TODO : Create characters
-	m_DiggerOne = dynamic_cast<Digger*>(AddCharacter(new Digger()));
-	m_PlayerOneGamepad->AddBinding(SDL_SCANCODE_UP, Rinigin::BindingConnection::OnHeld, m_DiggerOne->UpDirectionCommand());
-	m_PlayerOneGamepad->AddBinding(SDL_SCANCODE_DOWN, Rinigin::BindingConnection::OnHeld, m_DiggerOne->DownDirectionCommand());
-	m_PlayerOneGamepad->AddBinding(SDL_SCANCODE_LEFT, Rinigin::BindingConnection::OnHeld, m_DiggerOne->LeftDirectionCommand());
-	m_PlayerOneGamepad->AddBinding(SDL_SCANCODE_RIGHT, Rinigin::BindingConnection::OnHeld, m_DiggerOne->RightDirectionCommand());
+	m_DiggerOne = dynamic_cast<DiggerMobile*>(AddCharacter( new DiggerMobile(0) ));
+	m_PlayerOneGamepad->AddBinding(SDL_SCANCODE_UP, Rinigin::BindingConnection::OnTrigger, m_DiggerOne->UpDirectionCommand());
+	m_PlayerOneGamepad->AddBinding(SDL_SCANCODE_DOWN, Rinigin::BindingConnection::OnTrigger, m_DiggerOne->DownDirectionCommand());
+	m_PlayerOneGamepad->AddBinding(SDL_SCANCODE_LEFT, Rinigin::BindingConnection::OnTrigger, m_DiggerOne->LeftDirectionCommand());
+	m_PlayerOneGamepad->AddBinding(SDL_SCANCODE_RIGHT, Rinigin::BindingConnection::OnTrigger, m_DiggerOne->RightDirectionCommand());
 
 	m_PlayerOneGamepad->AddBinding(SDL_SCANCODE_UP, Rinigin::BindingConnection::OnHeld, m_DiggerOne->GetMoveCommand());
 	m_PlayerOneGamepad->AddBinding(SDL_SCANCODE_DOWN, Rinigin::BindingConnection::OnHeld, m_DiggerOne->GetMoveCommand());
 	m_PlayerOneGamepad->AddBinding(SDL_SCANCODE_LEFT, Rinigin::BindingConnection::OnHeld, m_DiggerOne->GetMoveCommand());
 	m_PlayerOneGamepad->AddBinding(SDL_SCANCODE_RIGHT, Rinigin::BindingConnection::OnHeld, m_DiggerOne->GetMoveCommand());
 
-	m_DiggerTwo = dynamic_cast<Digger*>(AddCharacter(new Digger()));
+	m_DiggerTwo = dynamic_cast<DiggerMobile*>(AddCharacter(new DiggerMobile(1)));
 } 
 
 
 void GameScreenState::Enter()
 {
 	std::cout << "Game started !" << std::endl;
-	// TODO : Generate map
 	Reset();
+
+	// TODO : Generate map
 
 	switch (m_GameMode)
 	{
@@ -69,6 +70,7 @@ void GameScreenState::Reset()
 {
 	m_DiggerOne->GetCharacterObject()->SetActive(false); 
 	m_DiggerTwo->GetCharacterObject()->SetActive(false);
+	
 }
 
 void GameScreenState::StartSolo()

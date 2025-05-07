@@ -1,8 +1,13 @@
 #pragma once
 #include "Component.h"
+#include <map>
+#include <memory>
 
 // TODO : Consider adding events to this
+// TODO : Consider adding unique ptr for animations?
+
 namespace Rinigin {
+	class Event;
 	class GameObject;
 	class SpriteSheetComponent;
 
@@ -21,18 +26,30 @@ namespace Rinigin {
 		explicit SpriteAnimatorComponent(GameObject* gameObject,SpriteSheetComponent* spriteSheetComponent);
 		virtual void Update() override;
 
-		void PlayAnimation(const SpriteAnimationData& data);
-		const SpriteAnimationData& GetCurrentAnimation() const { return m_CurrentAnimation; }
-		// TODO : ADD ANIMATION STARTED EVENT
-		// TODO : ADD ANIMATION ENDED EVENT
-		// TODO : ADD ANIMATION COMPLETED EVENT(Whenever the animation completes a loop, so while this can be the same as ended it doesn't have to be)
+		void PlayAnimation(const char* animationName);
+		void AddAnimation(const char* animationName, const SpriteAnimationData& data);
+
+		SpriteAnimationData* GetAnimation(unsigned int id) const;
+		SpriteAnimationData* GetAnimation(const char* animationName) const;
+		SpriteAnimationData* GetCurrentAnimation() const { return m_CurrentAnimation; };
+		 
+		Rinigin::Event* GetStartedEvent() const { return m_StartedEvent.get(); }
+		Rinigin::Event* GetEndedEvent() const { return m_EndedEvent.get(); }
+		Rinigin::Event* GetCompletedEvent() const { return m_CompletedEvent.get(); }
 	private:
 		void ResetStartTime();
-		bool m_Ended;
+
+		std::unique_ptr<Rinigin::Event> m_StartedEvent;
+		std::unique_ptr<Rinigin::Event> m_EndedEvent;
+		std::unique_ptr<Rinigin::Event> m_CompletedEvent;
+
 
 		SpriteSheetComponent* m_SpriteSheet;
-		SpriteAnimationData m_CurrentAnimation;
+		SpriteAnimationData* m_CurrentAnimation;
 		float m_CurrentAnimationClock;
+		bool m_Ended; 
+
+		std::map<unsigned int, std::unique_ptr<SpriteAnimationData>> m_Animations;
 	};
 }
 

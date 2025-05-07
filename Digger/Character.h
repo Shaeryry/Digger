@@ -1,4 +1,5 @@
 #pragma once
+#include <string>
 
 namespace Rinigin { 
 	class GameObject;
@@ -14,7 +15,7 @@ class ChangeDirectionCommand;
 class Character
 { 
 public:
-	Character();
+	Character(const std::string& fileName);
 	virtual ~Character() = default;
 
 	Character(const Character& other) = delete;
