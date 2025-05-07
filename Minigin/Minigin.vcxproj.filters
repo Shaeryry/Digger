@@ -150,6 +150,9 @@
     <ClInclude Include="SpriteSheetComponent.h">
       <Filter>Header Files\Components</Filter>
     </ClInclude>
+    <ClInclude Include="SpriteAnimatorComponent.h">
+      <Filter>Header Files\Components</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ResourceManager.cpp">
@@ -234,6 +237,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="SpriteSheetComponent.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SpriteAnimatorComponent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

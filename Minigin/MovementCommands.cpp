@@ -8,4 +8,11 @@ void MovementCommand::Execute()
 	const float movementSpeed{ m_Speed * Rinigin::Timer::GetInstance().deltaTime };
 
 	m_GameObject->SetPosition(currentPosition + (m_Direction * movementSpeed));
-} 
+}
+
+void ChangeDirectionCommand::Execute()
+{
+	if (m_Movement) {
+		m_Movement->SetDirection(m_Direction);
+	}
+}

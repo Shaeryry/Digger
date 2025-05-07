@@ -5,16 +5,32 @@
 #include "GameObject.h"
 #include "Character.h"
 #include "Digger.h"
+#include "Gamepad.h"
+#include "MovementCommands.h"
 
-GameScreenState::GameScreenState(Rinigin::StateContextComponent* context) :
+GameScreenState::GameScreenState(Rinigin::StateContextComponent* context,Rinigin::Gamepad* playerOneGamepad, Rinigin::Gamepad* playerTwoGamepad) :
 	Rinigin::State(context),
 	m_Scene(Rinigin::SceneManager::GetInstance().GetActiveScene()),
-	m_GameMode(GameMode::SOLO)
+	m_GameMode(GameMode::SOLO),
+
+	m_PlayerOneGamepad(playerOneGamepad),
+	m_PlayerTwoGamepad(playerTwoGamepad)
 {
 	// TODO : Create characters
 	m_DiggerOne = dynamic_cast<Digger*>(AddCharacter(new Digger()));
+	m_PlayerOneGamepad->AddBinding(SDL_SCANCODE_UP, Rinigin::BindingConnection::OnHeld, m_DiggerOne->UpDirectionCommand());
+	m_PlayerOneGamepad->AddBinding(SDL_SCANCODE_DOWN, Rinigin::BindingConnection::OnHeld, m_DiggerOne->DownDirectionCommand());
+	m_PlayerOneGamepad->AddBinding(SDL_SCANCODE_LEFT, Rinigin::BindingConnection::OnHeld, m_DiggerOne->LeftDirectionCommand());
+	m_PlayerOneGamepad->AddBinding(SDL_SCANCODE_RIGHT, Rinigin::BindingConnection::OnHeld, m_DiggerOne->RightDirectionCommand());
+
+	m_PlayerOneGamepad->AddBinding(SDL_SCANCODE_UP, Rinigin::BindingConnection::OnHeld, m_DiggerOne->GetMoveCommand());
+	m_PlayerOneGamepad->AddBinding(SDL_SCANCODE_DOWN, Rinigin::BindingConnection::OnHeld, m_DiggerOne->GetMoveCommand());
+	m_PlayerOneGamepad->AddBinding(SDL_SCANCODE_LEFT, Rinigin::BindingConnection::OnHeld, m_DiggerOne->GetMoveCommand());
+	m_PlayerOneGamepad->AddBinding(SDL_SCANCODE_RIGHT, Rinigin::BindingConnection::OnHeld, m_DiggerOne->GetMoveCommand());
+
 	m_DiggerTwo = dynamic_cast<Digger*>(AddCharacter(new Digger()));
-}
+} 
+
 
 void GameScreenState::Enter()
 {

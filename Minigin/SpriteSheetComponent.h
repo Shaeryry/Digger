@@ -16,12 +16,15 @@ namespace Rinigin {
 		explicit SpriteSheetComponent(GameObject* gameObject, TextureRendererComponent* textureRendererComponent, TextureComponent* textureComponent);
 		virtual ~SpriteSheetComponent() = default;
 
-		void SetRows(int row) { m_Row = row; };
-		void SetColumns(int column) { m_Column = column; };
+		void SetTileWidth(float width) { m_TileWidth = width; UpdateSpriteSheet(); }
+		void SetTileHeight(float height) { m_TileHeight = height; UpdateSpriteSheet(); }
 
-		void SetCurrentRow(int row) { m_Row = row; };
-		void SetCurrentColumn(int column) { m_Column = column; };
-		void SetDisplayMode(SpriteDisplayMode displayMode) { m_DisplayMode = displayMode; UpdateDisplayMode(); }
+		void SetRows(int row) { m_Rows = row; UpdateSpriteSheet(); };
+		void SetColumns(int column) { m_Columns = column; UpdateSpriteSheet(); };
+
+		void SetCurrentRow(int row) { m_Row = row; UpdateSpriteSheet(); };
+		void SetCurrentColumn(int column) { m_Column = column; UpdateSpriteSheet(); };
+		void SetDisplayMode(SpriteDisplayMode displayMode) { m_DisplayMode = displayMode; UpdateSpriteSheet(); }
 
 		int GetRows() const { return m_Rows; };
 		int GetColumns() const { return m_Columns; };
@@ -32,11 +35,14 @@ namespace Rinigin {
 
 	private:
 		void UpdateFrame(int rows,int columns);
-		void UpdateDisplayMode();
+		void UpdateSpriteSheet();
 		TextureRendererComponent* m_Renderer;
 		TextureComponent* m_TextureComponent;
 
 		SpriteDisplayMode m_DisplayMode;
+
+		float m_TileWidth;
+		float m_TileHeight;
 
 		int m_Row;
 		int m_Column;

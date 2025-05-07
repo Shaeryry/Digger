@@ -87,4 +87,9 @@ void Rinigin::Renderer::RenderTexture(const Texture2D& texture, const float x, c
 	SDL_RenderCopy(GetSDLRenderer(), texture.GetSDLTexture(), nullptr, &dst);
 }
 
+void Rinigin::Renderer::RenderTexture(const Texture2D& texture,const SDL_Rect& rect,const SDL_Rect& srcRect) const
+{
+	SDL_RenderCopy(GetSDLRenderer(), texture.GetSDLTexture(), &srcRect,&rect);
+}
+
 SDL_Renderer* Rinigin::Renderer::GetSDLRenderer() const { return m_Renderer; }

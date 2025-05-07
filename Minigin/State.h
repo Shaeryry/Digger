@@ -13,6 +13,7 @@ namespace Rinigin
 		State& operator=(const State& other) = delete;
 		State& operator=(State&& other) = delete;
 
+		StateContextComponent* GetContext() const { return m_Context; };
 		virtual void Enter() = 0;
 		virtual void Update() = 0;
 		virtual void Exit() = 0;

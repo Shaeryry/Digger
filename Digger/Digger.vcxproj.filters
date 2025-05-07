@@ -72,20 +72,20 @@
     <ClCompile Include="DiggerGame.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="StartScreenState.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GameScreenState.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="StartScreenMenuCommand.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Digger.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Character.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="StartScreenMenuCommand.cpp">
+      <Filter>Source Files\Commands</Filter>
+    </ClCompile>
+    <ClCompile Include="StartScreenState.cpp">
+      <Filter>Source Files\GameStates</Filter>
+    </ClCompile>
+    <ClCompile Include="GameScreenState.cpp">
+      <Filter>Source Files\GameStates</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

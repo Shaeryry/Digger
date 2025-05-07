@@ -17,4 +17,13 @@ private:
 	float m_Speed;
 };
 
+class ChangeDirectionCommand final : public Rinigin::Command {
+	public: 
+		explicit ChangeDirectionCommand(MovementCommand* movementCommand, const glm::vec3& direction)
+			: m_Movement(movementCommand), m_Direction(direction) {};
+		virtual void Execute() override;
+	private:
+		MovementCommand* m_Movement;
+		glm::vec3 m_Direction;
+};
 

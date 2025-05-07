@@ -7,8 +7,8 @@
 Rinigin::TextureRendererComponent::TextureRendererComponent(GameObject* gameObject) :
 	Component(gameObject),
 	m_Texture(nullptr),
-	m_Rect( RendererRect(0,0,0,0) ),
-	m_SrcRect( RendererRect(0,0,0,0) )
+	m_Rect( SDL_Rect(0,0,0,0) ),
+	m_SrcRect( SDL_Rect(0,0,0,0) )
 {
 }
 
@@ -23,14 +23,19 @@ void Rinigin::TextureRendererComponent::SetTexture(Texture2D* texture)
 	
 	// Set the image sizes
 	glm::vec2 imageSize = m_Texture->GetSize();
-	SetWidth(imageSize.x);
-	SetHeight(imageSize.y);
+	SetRectWidth(imageSize.x);
+	SetRectHeight(imageSize.y);
 }
 
 void Rinigin::TextureRendererComponent::Render() const
 {
 	if (m_Texture != nullptr) {
-		const glm::vec3 position{ GetOwner()->GetWorldPosition()  };
-		Renderer::GetInstance().RenderTexture(*m_Texture, position.x, position.y,m_Rect.w,m_Rect.h);
+		const glm::vec3 position{ GetOwner()->GetWorldPosition() };
+
+		SDL_Rect dstRect = m_Rect;
+		dstRect.x += static_cast<int>(position.x);
+		dstRect.y += static_cast<int>(position.y);
+
+		Renderer::GetInstance().RenderTexture(*m_Texture, dstRect, m_SrcRect);
 	}
 }

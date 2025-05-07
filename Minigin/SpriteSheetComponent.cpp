@@ -9,6 +9,9 @@ Rinigin::SpriteSheetComponent::SpriteSheetComponent(GameObject* gameObject, Text
 	m_Renderer(textureRendererComponent),  
 	m_TextureComponent(texture),
 
+	m_TileWidth(-1),
+	m_TileHeight(-1),
+
 	m_Row(0),
 	m_Column(0),
 	 
@@ -17,19 +20,25 @@ Rinigin::SpriteSheetComponent::SpriteSheetComponent(GameObject* gameObject, Text
 {
 }
 
-void Rinigin::SpriteSheetComponent::UpdateFrame(int /*rows*/, int /*columns*/)
+void Rinigin::SpriteSheetComponent::UpdateFrame(int rows, int columns)
 {
-	//const glm::vec2 imageSize{ m_Renderer->GetTexture()->GetSize() };
-	//const float tileWidth = rows > 0 ? (imageSize.x / rows) : imageSize.x;
-	//const float tileHeight = columns > 0 ? (imageSize.y / columns) : imageSize.y;
-	///*const float tileX = rows > 0 ? (tileWidth * m_Row) : 0;
-	//const float tileY = columns > 0 ? (tileHeight * m_Column) : 0;*/
+	const glm::vec2 imageSize{ m_Renderer->GetTexture()->GetSize() };
+	const float srcTileWidth = rows > 0 ? (imageSize.x / rows) : imageSize.x;
+	const float srcTileHeight = columns > 0 ? (imageSize.y / columns) : imageSize.y;
 
-	//m_Renderer->SetRect(200, 200); // Set tile rect
-	//m_Renderer->SetOffset(tileX, tileY); // Set position
+	const float tileWidth = m_TileWidth > -1 ? m_TileWidth : srcTileWidth;
+	const float tileHeight = m_TileHeight > -1 ? m_TileHeight : srcTileHeight;
+
+	const float tileX = rows > 0 ? (srcTileWidth * m_Row) : 0;
+	const float tileY = columns > 0 ? (srcTileHeight * m_Column) : 0;
+
+	m_Renderer->SetSourcePosition(tileX, tileY);
+	m_Renderer->SetSourceSize(srcTileWidth, srcTileHeight);
+
+	m_Renderer->SetRectSize(tileWidth, tileHeight);
 }
 
-void Rinigin::SpriteSheetComponent::UpdateDisplayMode()
+void Rinigin::SpriteSheetComponent::UpdateSpriteSheet()
 {
 	switch (m_DisplayMode)
 	{
