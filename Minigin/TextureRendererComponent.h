@@ -14,6 +14,7 @@ namespace Rinigin {
 		explicit TextureRendererComponent(GameObject* gameObject);
 		const Texture2D* GetTexture() const { return m_Texture; };
 
+		void UseSourceRect(bool state) { m_UseSrcRect = state; };
 		void SetTexture(const std::string& filename);
 		void SetTexture(Texture2D* texture);
 
@@ -37,6 +38,7 @@ namespace Rinigin {
 
 		virtual void Render() const override;
 	private:
+		bool m_UseSrcRect;
 		SDL_Rect m_Rect;
 		SDL_Rect m_SrcRect;
 		Texture2D* m_Texture;

@@ -1,7 +1,6 @@
 #include <algorithm>
 #include "HealthComponent.h"
 #include "EventTypes.h"
-#include "ServiceLocator.h"
 	
 HealthComponent::HealthComponent(Rinigin::GameObject* gameObject, int maxHealth, int minHealth) :
 	Component(gameObject),
@@ -29,8 +28,6 @@ void HealthComponent::SetHealth(int health)
 	m_Health = newHealth;
 	if (currentHealth != newHealth) {
 		m_HealthChangedEvent->NotifyObservers();
-
-		Rinigin::ServiceLocator::GetSoundService().Play({ "bruh.wav", .25f }); 
 	}
 }
 

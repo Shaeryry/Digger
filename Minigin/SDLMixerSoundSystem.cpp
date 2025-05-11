@@ -16,11 +16,10 @@ struct Audio {
 
 class Rinigin::SDLMixerSoundService::SDLpimpl {
 public:
-	SDLpimpl() = default;
+	SDLpimpl(const std::string& path);
 	~SDLpimpl();
 	void Play(const Rinigin::AudioRequest& request);
 	void Update(const std::stop_token& stopToken);
-	void Init(const std::string& path);
 private:
 	const Audio& GetAudio(const std::string& soundPath, const bool music);
 	void UnloadSounds();
@@ -33,6 +32,18 @@ private:
 	std::map<unsigned int, Audio> m_LoadedAudio;
 	std::queue<Rinigin::AudioRequest> m_SoundQueue;
 };
+
+Rinigin::SDLMixerSoundService::SDLpimpl::SDLpimpl(const std::string& path)
+{
+	m_Path = path;
+	Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048);
+
+	m_SoundThread = std::jthread([&](const std::stop_token& stoptoken)
+		{
+			Update(stoptoken);
+		}
+	);
+}
 
 Rinigin::SDLMixerSoundService::SDLpimpl::~SDLpimpl()
 {
@@ -67,7 +78,7 @@ void Rinigin::SDLMixerSoundService::SDLpimpl::Update(const std::stop_token& stop
 	{
 		// Threading
 		std::unique_lock<std::mutex> lock(m_Mutex); 
-		m_ConditionVariable.wait(lock, [&] { return !m_SoundQueue.empty() || stopToken.stop_requested(); });
+		m_ConditionVariable.wait(lock, [this,stopToken] { return !m_SoundQueue.empty() || stopToken.stop_requested(); });
 		if (stopToken.stop_requested()) return;
 		//
 
@@ -75,6 +86,8 @@ void Rinigin::SDLMixerSoundService::SDLpimpl::Update(const std::stop_token& stop
 		m_SoundQueue.pop();
 
 		const Audio& pSound = GetAudio(soundRequest.sound, soundRequest.isMusic);
+		lock.unlock();
+
 		const int volume = static_cast<int>(soundRequest.volume * MIX_MAX_VOLUME);
 
 		if (pSound.isMusic)
@@ -104,18 +117,6 @@ void Rinigin::SDLMixerSoundService::SDLpimpl::Play(const Rinigin::AudioRequest& 
 	m_ConditionVariable.notify_one();
 }
 
-void Rinigin::SDLMixerSoundService::SDLpimpl::Init(const std::string& path)
-{
-	m_Path = path;
-	Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048);
-
-	m_SoundThread = std::jthread([&](const std::stop_token& stoptoken)
-		{
-			Update(stoptoken);
-		}
-	);
-
-}
 
 void Rinigin::SDLMixerSoundService::SDLpimpl::UnloadSounds()
 {
@@ -140,8 +141,8 @@ void Rinigin::SDLMixerSoundService::SDLpimpl::UnloadSounds()
 
 // Main class
 
-Rinigin::SDLMixerSoundService::SDLMixerSoundService() :
-	m_pimpl{ std::make_unique<SDLpimpl>() }
+Rinigin::SDLMixerSoundService::SDLMixerSoundService(const std::string& path) :
+	m_pimpl{ std::make_unique<SDLpimpl>(path) }
 {
 }
 
@@ -149,10 +150,6 @@ Rinigin::SDLMixerSoundService::~SDLMixerSoundService()
 {
 }
 
-void Rinigin::SDLMixerSoundService::Init(const std::string& path)
-{
-	m_pimpl->Init(path);
-}
 
 void Rinigin::SDLMixerSoundService::Play(const AudioRequest& request)
 {

@@ -18,6 +18,7 @@ Rinigin::SpriteSheetComponent::SpriteSheetComponent(GameObject* gameObject, Text
 	m_Rows(0),  
 	m_Columns(0)
 {
+	m_Renderer->UseSourceRect(true);
 }
 
 void Rinigin::SpriteSheetComponent::UpdateFrame(int rows, int columns)

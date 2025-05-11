@@ -7,6 +7,7 @@
 Rinigin::TextureRendererComponent::TextureRendererComponent(GameObject* gameObject) :
 	Component(gameObject),
 	m_Texture(nullptr),
+	m_UseSrcRect(false),
 	m_Rect( SDL_Rect(0,0,0,0) ),
 	m_SrcRect( SDL_Rect(0,0,0,0) )
 {
@@ -36,6 +37,11 @@ void Rinigin::TextureRendererComponent::Render() const
 		dstRect.x += static_cast<int>(position.x);
 		dstRect.y += static_cast<int>(position.y);
 
-		Renderer::GetInstance().RenderTexture(*m_Texture, dstRect, m_SrcRect);
+		if (m_UseSrcRect) {
+			Renderer::GetInstance().RenderTexture(*m_Texture, dstRect, m_SrcRect);
+		}
+		else {
+			Renderer::GetInstance().RenderTexture(*m_Texture, position.x,position.y);
+		}
 	}
 }

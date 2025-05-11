@@ -99,8 +99,11 @@
     <ClCompile Include="DiggerMobileDyingState.cpp">
       <Filter>Source Files\DiggerMobileStates</Filter>
     </ClCompile>
+    <ClCompile Include="DestructibleEnviromentComponent.cpp">
+      <Filter>Source Files\Components</Filter>
+    </ClCompile>
     <ClCompile Include="DiggerMobileDeadState.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\DiggerMobileStates</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -160,6 +163,9 @@
     </ClInclude>
     <ClInclude Include="DiggerMobileDeadState.h">
       <Filter>Header Files\DiggerMobileStates</Filter>
+    </ClInclude>
+    <ClInclude Include="DestructibleEnviromentComponent.h">
+      <Filter>Header Files\Components</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

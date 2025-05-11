@@ -4,7 +4,7 @@
 #include "Helpers.h"
 #include "StateContextComponent.h"
 #include "DiggerMobileDeadState.h"
-
+#include "ServiceLocator.h"
 
 #include <iostream>
 
@@ -17,6 +17,7 @@ DiggerMobileDyingState::DiggerMobileDyingState(Rinigin::StateContextComponent* c
 void DiggerMobileDyingState::Enter()
 {
 	std::cout << "dying" << std::endl;
+	Rinigin::ServiceLocator::GetSoundService().Play({ "bruh.wav", .25f });
 
 	m_DiggerMobile->GetAnimator()->PlayAnimation("Dying");
 	m_DiggerMobile->GetAnimator()->GetEndedEvent()->AddObserver(this);

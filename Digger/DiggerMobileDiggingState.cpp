@@ -28,7 +28,6 @@ void DiggerMobileDiggingState::Enter()
 
 void DiggerMobileDiggingState::Update()
 {
-	GetContext()->SetState( m_DiggerMobile->GetDyingState() );
 } 
 
 void DiggerMobileDiggingState::Exit()

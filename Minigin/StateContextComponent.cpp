@@ -11,8 +11,9 @@ Rinigin::StateContextComponent::StateContextComponent(GameObject* gameObject) :
 bool Rinigin::StateContextComponent::SetState(State* state)
 {
 	if (state) {
-		if (!HasState(state)) return false; // Check if this state is a part of this context
 		if (m_Transitioning) return false;
+		if (state == m_CurrentState) return false;
+		if (!HasState(state)) return false; // Check if this state is a part of this context
 
 		m_Transitioning = true;
 

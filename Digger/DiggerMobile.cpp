@@ -4,9 +4,11 @@
 #include "SpriteAnimatorComponent.h"
 #include "StateContextComponent.h"
 #include "GameObject.h"
+#include "HealthComponent.h"
 #include "DiggerMobileDiggingState.h"
 #include "DiggerMobileDyingState.h"
 #include "DiggerMobileDeadState.h"
+#include "Helpers.h"
 
 DiggerMobile::DiggerMobile(int index) :
 	Character("DiggerMobile.png"),
@@ -16,6 +18,10 @@ DiggerMobile::DiggerMobile(int index) :
 	m_DiggingState(nullptr),
 	m_DiggerIndex(index)
 {
+	// Setup components
+
+	GetHealthComponent()->GetDiedEvent()->AddObserver(this);
+	GetHealthComponent()->SetMaxHealth(1);
 
 	// Setup sprite
 	Rinigin::SpriteSheetComponent* spriteSheet = GetSpriteSheetComponent();
@@ -45,5 +51,17 @@ DiggerMobile::DiggerMobile(int index) :
 	m_DeadState = m_DiggerMobileStateContext->CreateState<DiggerMobileDeadState>(this);
 
 	m_DiggerMobileStateContext->SetState(m_DiggingState);
+}
+
+void DiggerMobile::Notify(Rinigin::EventArguments* eventArguments)
+{
+	switch (eventArguments->GetID())
+	{
+	case Rinigin::Helpers::sdbm_hash("Died"): 
+		m_DiggerMobileStateContext->SetState(m_DyingState);
+		break;
+	default:
+		break;
+	}
 }
  

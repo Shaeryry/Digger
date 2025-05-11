@@ -3,7 +3,7 @@
 #include <memory>
 #include <vector>
 
-namespace Rinigin { class Scene; class Gamepad; }
+namespace Rinigin { class Scene; class Gamepad; class GameObject; }
 
 class Character;
 class DiggerMobile;
@@ -17,22 +17,21 @@ enum class GameMode {
 class GameScreenState : public Rinigin::State
 {
 public:
-	explicit GameScreenState(Rinigin::StateContextComponent* context, Rinigin::Gamepad* playerOneGamepad, Rinigin::Gamepad* playerTwoGamepad);
+	explicit GameScreenState(Rinigin::StateContextComponent* context);
 	virtual void Enter() override;
 	virtual void Update() override;
 	virtual void Exit() override;
 
 	void SetGameMode(GameMode gameMode) { m_GameMode = gameMode; };
+	
 private:
 	void Reset();
+	void LoadLevel();
 	void StartSolo();
-
 	Character* AddCharacter(Character* character);
 
-	Rinigin::Gamepad* m_PlayerOneGamepad;
-	Rinigin::Gamepad* m_PlayerTwoGamepad;
-		
 	GameMode m_GameMode;
+	Rinigin::GameObject* m_BackgroundGameObject;
 	Rinigin::Scene* m_Scene; 
 
 	DiggerMobile* m_DiggerOne;

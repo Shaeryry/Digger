@@ -1,16 +1,22 @@
 #include "Character.h"
+
 #include "SceneManager.h"
+#include "InputManager.h"
+
 #include "Scene.h"
 #include "TextureRendererComponent.h"
 #include "TextureComponent.h"
 #include "SpriteSheetComponent.h"
 #include "SpriteAnimatorComponent.h"
+#include "HealthComponent.h"
+
+#include "DamageCommand.h"
 #include "MovementCommands.h"
-#include "InputManager.h"
  
 Character::Character(const std::string& fileName) :
 	m_CharacterObject(Rinigin::SceneManager::GetInstance().GetActiveScene()->CreateObject()),
 	m_Renderer(nullptr),
+	m_HealthComponent(nullptr),
 	m_TextureComponent(nullptr),
 	m_SpriteSheetComponent(nullptr),
 	m_Animator(nullptr), 
@@ -19,6 +25,7 @@ Character::Character(const std::string& fileName) :
 {
 	m_CharacterObject->SetActive(false);
 
+	m_HealthComponent = m_CharacterObject->AddComponent<HealthComponent>();
 	m_Renderer = m_CharacterObject->AddComponent<Rinigin::TextureRendererComponent>();
 	m_TextureComponent = m_CharacterObject->AddComponent<Rinigin::TextureComponent>(m_Renderer);
 	m_SpriteSheetComponent = m_CharacterObject->AddComponent<Rinigin::SpriteSheetComponent>(m_Renderer,m_TextureComponent);
@@ -26,6 +33,7 @@ Character::Character(const std::string& fileName) :
 
 	m_TextureComponent->SetTexture(fileName);
 
+	m_DamageCommand = Rinigin::InputManager::GetInstance().AddCommand<DamageCommand>(m_CharacterObject);
 	m_MoveCommand = Rinigin::InputManager::GetInstance().AddCommand<MovementCommand>(m_CharacterObject,glm::vec3(0, 0, 0),m_Speed);
 
 	m_UpDirectionCommand = Rinigin::InputManager::GetInstance().AddCommand<ChangeDirectionCommand>(m_MoveCommand, glm::vec3(0, 1, 0));
