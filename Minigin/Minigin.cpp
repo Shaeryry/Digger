@@ -15,37 +15,8 @@
 #include "ResourceManager.h"
 #include "Timer.h"
 
-SDL_Window* g_window{};
-
-void PrintSDLVersion()
-{
-	SDL_version version{};
-	SDL_VERSION(&version);
-	printf("We compiled against SDL version %u.%u.%u ...\n",
-		version.major, version.minor, version.patch);
-
-	SDL_GetVersion(&version);
-	printf("We are linking against SDL version %u.%u.%u.\n",
-		version.major, version.minor, version.patch);
-
-	SDL_IMAGE_VERSION(&version);
-	printf("We compiled against SDL_image version %u.%u.%u ...\n",
-		version.major, version.minor, version.patch);
-
-	version = *IMG_Linked_Version();
-	printf("We are linking against SDL_image version %u.%u.%u.\n",
-		version.major, version.minor, version.patch);
-
-	SDL_TTF_VERSION(&version)
-	printf("We compiled against SDL_ttf version %u.%u.%u ...\n",
-		version.major, version.minor, version.patch);
-
-	version = *TTF_Linked_Version();
-	printf("We are linking against SDL_ttf version %u.%u.%u.\n",
-		version.major, version.minor, version.patch);
-}
-
-Rinigin::Minigin::Minigin(const std::string &dataPath)
+Rinigin::Minigin::Minigin(const std::string &dataPath,int screenWidth,int screenHeight) :
+	m_Window(nullptr)
 {
 	PrintSDLVersion();
 	
@@ -54,20 +25,22 @@ Rinigin::Minigin::Minigin(const std::string &dataPath)
 		throw std::runtime_error(std::string("SDL_Init Error: ") + SDL_GetError());
 	}
 
-	g_window = SDL_CreateWindow(
-		"Programming 4 assignment",
+	m_Window = SDL_CreateWindow(
+		"Minigin Window",
 		SDL_WINDOWPOS_CENTERED,
 		SDL_WINDOWPOS_CENTERED,
-		640,
-		480,
+		screenWidth,
+		screenHeight,
 		SDL_WINDOW_OPENGL
 	); 
-	if (g_window == nullptr) 
+
+	
+	if (m_Window == nullptr) 
 	{
 		throw std::runtime_error(std::string("SDL_CreateWindow Error: ") + SDL_GetError());
 	}
 
-	Renderer::GetInstance().Init(g_window);
+	Renderer::GetInstance().Init(m_Window);
 	ResourceManager::GetInstance().Init(dataPath);
 	InputManager::GetInstance().Initialize(4);
 }
@@ -75,8 +48,8 @@ Rinigin::Minigin::Minigin(const std::string &dataPath)
 Rinigin::Minigin::~Minigin()
 {
 	Renderer::GetInstance().Destroy();
-	SDL_DestroyWindow(g_window);
-	g_window = nullptr;
+	SDL_DestroyWindow(m_Window);
+	m_Window = nullptr;
 	SDL_Quit();
 }
 
@@ -116,4 +89,38 @@ void Rinigin::Minigin::Run(const std::function<void()>& load)
 		const auto sleep_time = currentTime + std::chrono::milliseconds( timer.MS_PER_FRAME ) - std::chrono::high_resolution_clock::now();
 		std::this_thread::sleep_for(sleep_time);
 	}
-} 
+}
+
+void Rinigin::Minigin::SetWindowTitle(const char* windowName)
+{
+	SDL_SetWindowTitle(m_Window, windowName);
+}
+
+
+void Rinigin::Minigin::PrintSDLVersion()
+{
+	SDL_version version{};
+	SDL_VERSION(&version);
+	printf("We compiled against SDL version %u.%u.%u ...\n",
+		version.major, version.minor, version.patch);
+
+	SDL_GetVersion(&version);
+	printf("We are linking against SDL version %u.%u.%u.\n",
+		version.major, version.minor, version.patch);
+
+	SDL_IMAGE_VERSION(&version);
+	printf("We compiled against SDL_image version %u.%u.%u ...\n",
+		version.major, version.minor, version.patch);
+
+	version = *IMG_Linked_Version();
+	printf("We are linking against SDL_image version %u.%u.%u.\n",
+		version.major, version.minor, version.patch);
+
+	SDL_TTF_VERSION(&version)
+		printf("We compiled against SDL_ttf version %u.%u.%u ...\n",
+			version.major, version.minor, version.patch);
+
+	version = *TTF_Linked_Version();
+	printf("We are linking against SDL_ttf version %u.%u.%u.\n",
+		version.major, version.minor, version.patch);
+}

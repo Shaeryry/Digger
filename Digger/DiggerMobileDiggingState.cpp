@@ -6,6 +6,10 @@
 #include "Timer.h"
 #include "StateContextComponent.h"
 #include "DiggerMobileDyingState.h"
+#include "DestructibleEnviromentComponent.h"
+#include "GameObject.h"
+#include "TransformComponent.h"
+#include "SpriteSheetComponent.h"
 
 DiggerMobileDiggingState::DiggerMobileDiggingState(Rinigin::StateContextComponent* context, DiggerMobile* digger) :
 	State(context),
@@ -28,6 +32,15 @@ void DiggerMobileDiggingState::Enter()
 
 void DiggerMobileDiggingState::Update()
 {
+	// DIG DIG DIG
+	DestructibleEnvironmentComponent* map{ m_DiggerMobile->Map() };
+	if (map) {
+		glm::vec3 diggerMobilePosition{ m_DiggerMobile->GetCharacterObject()->GetTransform()->GetTransformLocalPosition() };
+		float xPos{ diggerMobilePosition.x + (m_DiggerMobile->GetSpriteSheetComponent()->GetTileWidth() / 2) };
+		float yPos{ diggerMobilePosition.y + (m_DiggerMobile->GetSpriteSheetComponent()->GetTileHeight() / 2) };
+
+		map->DigAt(xPos, yPos, m_TunnelSize);
+	}
 } 
 
 void DiggerMobileDiggingState::Exit()

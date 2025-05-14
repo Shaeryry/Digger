@@ -6,7 +6,9 @@
 namespace Rinigin { class Scene; class Gamepad; class GameObject; }
 
 class Character;
+class DiggerGame;
 class DiggerMobile;
+class DestructibleEnvironmentComponent;
 
 enum class GameMode {
 	SOLO,
@@ -17,7 +19,7 @@ enum class GameMode {
 class GameScreenState : public Rinigin::State
 {
 public:
-	explicit GameScreenState(Rinigin::StateContextComponent* context);
+	explicit GameScreenState(Rinigin::StateContextComponent* context,DiggerGame* game);
 	virtual void Enter() override;
 	virtual void Update() override;
 	virtual void Exit() override;
@@ -30,9 +32,13 @@ private:
 	void StartSolo();
 	Character* AddCharacter(Character* character);
 
+	DiggerGame* m_Game;
+	Rinigin::Scene* m_Scene;
 	GameMode m_GameMode;
+
 	Rinigin::GameObject* m_BackgroundGameObject;
-	Rinigin::Scene* m_Scene; 
+	DestructibleEnvironmentComponent* m_MapComponent;
+
 
 	DiggerMobile* m_DiggerOne;
 	DiggerMobile* m_DiggerTwo;

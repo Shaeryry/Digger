@@ -135,13 +135,10 @@
 //}
 
 
-void load() {
-}
-
 int main(int, char* []) {
-	Rinigin::Minigin engine("../Data/");
-	DiggerGame digger{};
+	//Rinigin::Minigin engine("../Data/");
+	DiggerGame digger(640,480);
 	
-	engine.Run(load);
+	//engine.Run(load);
 	return 0;
 } 

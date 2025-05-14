@@ -19,6 +19,9 @@ namespace Rinigin {
 		void SetTileWidth(float width) { m_TileWidth = width; UpdateSpriteSheet(); }
 		void SetTileHeight(float height) { m_TileHeight = height; UpdateSpriteSheet(); }
 
+		float GetTileWidth() const { return m_TileWidth; }
+		float GetTileHeight() const { return m_TileHeight; }
+
 		void SetRows(int row) { m_Rows = row; UpdateSpriteSheet(); };
 		void SetColumns(int column) { m_Columns = column; UpdateSpriteSheet(); };
 

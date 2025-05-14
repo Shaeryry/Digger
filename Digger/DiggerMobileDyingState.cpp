@@ -27,7 +27,7 @@ void DiggerMobileDyingState::Enter()
 
 void DiggerMobileDyingState::Update()
 {
-}
+}	
 
 void DiggerMobileDyingState::Exit()
 {

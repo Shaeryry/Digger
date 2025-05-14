@@ -36,7 +36,7 @@ namespace Rinigin {
 		void SetRectHeight(float height) { m_Rect.h = static_cast<int>(height); };
 
 
-		virtual void Render() const override;
+		virtual void Render() const override; 
 	private:
 		bool m_UseSrcRect;
 		SDL_Rect m_Rect;

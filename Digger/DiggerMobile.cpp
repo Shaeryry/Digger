@@ -5,18 +5,20 @@
 #include "StateContextComponent.h"
 #include "GameObject.h"
 #include "HealthComponent.h"
+#include "DestructibleEnviromentComponent.h"
 #include "DiggerMobileDiggingState.h"
 #include "DiggerMobileDyingState.h"
 #include "DiggerMobileDeadState.h"
 #include "Helpers.h"
 
-DiggerMobile::DiggerMobile(int index) :
+DiggerMobile::DiggerMobile(int index,DestructibleEnvironmentComponent* map) :
 	Character("DiggerMobile.png"),
 	m_DiggerMobileStateContext(nullptr),
 	m_DyingState(nullptr), 
 	m_DeadState(nullptr),
 	m_DiggingState(nullptr),
-	m_DiggerIndex(index)
+	m_DiggerIndex(index),
+	m_Map(map)
 {
 	// Setup components
 
