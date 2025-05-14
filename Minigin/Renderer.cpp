@@ -1,6 +1,7 @@
 #include <stdexcept>
 #include "Renderer.h"
 #include "SceneManager.h"
+#include "PhysicsManager.h"
 #include "Texture2D.h"
 #include "imgui.h"
 #include "imgui_impl_opengl3.h"
@@ -47,6 +48,7 @@ void Rinigin::Renderer::Render() const
 
 	// Game rendering
 	SceneManager::GetInstance().Render();
+	Physics::GetInstance().Render();
 
 	// ImGui rendering
 	ImGui::Render();

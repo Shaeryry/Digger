@@ -9,6 +9,7 @@
 #include "SpriteSheetComponent.h"
 #include "SpriteAnimatorComponent.h"
 #include "HealthComponent.h"
+#include "ColliderComponent.h"
 
 #include "DamageCommand.h"
 #include "MovementCommands.h"
@@ -20,6 +21,7 @@ Character::Character(const std::string& fileName) :
 	m_TextureComponent(nullptr),
 	m_SpriteSheetComponent(nullptr),
 	m_Animator(nullptr), 
+	m_Collider(nullptr),
 
 	m_MoveCommand(nullptr)
 {
@@ -30,6 +32,7 @@ Character::Character(const std::string& fileName) :
 	m_TextureComponent = m_CharacterObject->AddComponent<Rinigin::TextureComponent>(m_Renderer);
 	m_SpriteSheetComponent = m_CharacterObject->AddComponent<Rinigin::SpriteSheetComponent>(m_Renderer,m_TextureComponent);
 	m_Animator = m_CharacterObject->AddComponent<Rinigin::SpriteAnimatorComponent>(m_SpriteSheetComponent);
+	m_Collider = m_CharacterObject->AddComponent<Rinigin::ColliderComponent>(glm::vec3{0,0,0}, glm::vec3{0,0,0},false);
 
 	m_TextureComponent->SetTexture(fileName);
 

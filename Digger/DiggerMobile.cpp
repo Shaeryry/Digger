@@ -10,6 +10,7 @@
 #include "DiggerMobileDyingState.h"
 #include "DiggerMobileDeadState.h"
 #include "Helpers.h"
+#include "ColliderComponent.h"
 
 DiggerMobile::DiggerMobile(int index,DestructibleEnvironmentComponent* map) :
 	Character("DiggerMobile.png"),
@@ -21,7 +22,7 @@ DiggerMobile::DiggerMobile(int index,DestructibleEnvironmentComponent* map) :
 	m_Map(map)
 {
 	// Setup components
-
+	GetCollider()->SetBounds(glm::vec3{40,40,0});
 	GetHealthComponent()->GetDiedEvent()->AddObserver(this);
 	GetHealthComponent()->SetMaxHealth(1);
 

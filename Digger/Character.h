@@ -7,6 +7,7 @@ namespace Rinigin {
 	class TextureComponent;
 	class SpriteSheetComponent;
 	class SpriteAnimatorComponent;
+	class ColliderComponent;
 }
 
 class HealthComponent;
@@ -38,10 +39,12 @@ public:
 	ChangeDirectionCommand* RightDirectionCommand() const { return m_RightDirectionCommand; }
 	ChangeDirectionCommand* LeftDirectionCommand() const { return m_LeftDirectionCommand; }
 
+	Rinigin::ColliderComponent* GetCollider() const { return m_Collider; };
 	void SetSpeed(float speed);
 private:
 	Rinigin::GameObject* m_CharacterObject;
 	
+	Rinigin::ColliderComponent* m_Collider;
 	Rinigin::TextureRendererComponent* m_Renderer;
 	Rinigin::TextureComponent* m_TextureComponent;
 	Rinigin::SpriteSheetComponent* m_SpriteSheetComponent;

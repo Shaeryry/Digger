@@ -13,6 +13,7 @@
 #include "SceneManager.h"
 #include "Renderer.h"
 #include "ResourceManager.h"
+#include "PhysicsManager.h"
 #include "Timer.h"
 
 Rinigin::Minigin::Minigin(const std::string &dataPath,int screenWidth,int screenHeight) :
@@ -57,6 +58,7 @@ void Rinigin::Minigin::Run(const std::function<void()>& load)
 {
 	load(); 
 
+	auto& physics = Physics::GetInstance();
 	auto& renderer = Renderer::GetInstance();
 	auto& sceneManager = SceneManager::GetInstance();
 	auto& input = InputManager::GetInstance();
@@ -73,6 +75,7 @@ void Rinigin::Minigin::Run(const std::function<void()>& load)
 		while (timer.lag >= timer.FIXED_TIME_STEP)
 		{
 			timer.FixedUpdate();
+			physics.FixedUpdate();
 			sceneManager.FixedUpdate();
 		}
 
@@ -84,6 +87,7 @@ void Rinigin::Minigin::Run(const std::function<void()>& load)
 
 		// Draw
 		renderer.Render(); 
+		physics.Render();
 
 		// Sleep 
 		const auto sleep_time = currentTime + std::chrono::milliseconds( timer.MS_PER_FRAME ) - std::chrono::high_resolution_clock::now();
