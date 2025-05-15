@@ -15,7 +15,7 @@ namespace Rinigin
 
 		StateContextComponent* GetContext() const { return m_Context; };
 		virtual void Enter() = 0;
-		virtual void Update() = 0;
+		virtual State* Update() = 0;
 		virtual void Exit() = 0;
 	private:
 		StateContextComponent* m_Context;

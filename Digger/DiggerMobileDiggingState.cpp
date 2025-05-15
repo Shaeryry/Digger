@@ -30,7 +30,7 @@ void DiggerMobileDiggingState::Enter()
 	UpdateAnimation();
 }
 
-void DiggerMobileDiggingState::Update()
+Rinigin::State* DiggerMobileDiggingState::Update()
 {
 	// DIG DIG DIG
 	DestructibleEnvironmentComponent* map{ m_DiggerMobile->Map() };
@@ -41,6 +41,8 @@ void DiggerMobileDiggingState::Update()
 
 		map->DigAt(xPos, yPos, m_TunnelSize);
 	}
+
+	return nullptr;
 } 
 
 void DiggerMobileDiggingState::Exit()

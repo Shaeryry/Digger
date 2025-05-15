@@ -7,8 +7,8 @@
 Rinigin::ColliderComponent::ColliderComponent(GameObject* gameObject, const glm::vec3& size, const glm::vec3& offset, bool isTrigger) :
 	Component(gameObject),
 
-	m_ColliderEnterEvent(),
-	m_ColliderExitEvent(),
+	m_ColliderEnterEvent( std::make_unique<Event>( Rinigin::CollisionEventArguments("CollisionEnter",this) ) ),
+	m_ColliderExitEvent( std::make_unique<Event>(Rinigin::CollisionEventArguments("CollisionExit", this) ) ),
 	m_IsTrigger(isTrigger),
 
 	m_Bounds(size),
@@ -22,6 +22,18 @@ Rinigin::ColliderComponent::~ColliderComponent()
 	Physics::GetInstance().RemoveCollider(this);
 }
 
+void Rinigin::ColliderComponent::FixedUpdate()
+{
+}
+
+glm::vec3 Rinigin::ColliderComponent::GetCenter() const {
+	return GetPosition() + (m_Bounds * 0.5f);
+}
+
+glm::vec3 Rinigin::ColliderComponent::GetHalfExtents() const {
+	return m_Bounds * 0.5f;
+}
+
 glm::vec3 Rinigin::ColliderComponent::GetPosition() const
 {
 	glm::vec3 origin{ GetOwner()->GetWorldPosition() };
@@ -30,10 +42,10 @@ glm::vec3 Rinigin::ColliderComponent::GetPosition() const
 
 void Rinigin::ColliderComponent::AddCollidingCollider(ColliderComponent* other)
 {
-	if ( IsColliding(other) ) return;
+	if ( IsTouching(other) ) return;
 	m_CollidingColliders.emplace_back(other);
 	std::cout << "did collision" << std::endl;
-	//m_ColliderEnterEvent->NotifyObservers();
+	m_ColliderEnterEvent->NotifyObservers();
 }
 
 void Rinigin::ColliderComponent::RemoveCollidingCollider(ColliderComponent* other)
@@ -42,10 +54,10 @@ void Rinigin::ColliderComponent::RemoveCollidingCollider(ColliderComponent* othe
 	m_CollidingColliders.erase(std::remove(m_CollidingColliders.begin(), m_CollidingColliders.end(), other), m_CollidingColliders.end());
 	std::cout << "lost collision" << std::endl;
 
-	//m_ColliderExitEvent->NotifyObservers();
+	m_ColliderExitEvent->NotifyObservers();
 }
 
-bool Rinigin::ColliderComponent::IsColliding(ColliderComponent* other)
+bool Rinigin::ColliderComponent::IsTouching(ColliderComponent* other)
 {
 	auto foundIt = std::find(m_CollidingColliders.begin(), m_CollidingColliders.end(), other);
 	return (foundIt != m_CollidingColliders.end());

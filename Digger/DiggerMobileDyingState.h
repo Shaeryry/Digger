@@ -7,9 +7,9 @@ class DiggerMobileDyingState final : public Rinigin::State,public Rinigin::Obser
 {
 public: 
 	explicit DiggerMobileDyingState(Rinigin::StateContextComponent* context, DiggerMobile* digger);
-	void Enter() override;
-	void Update() override;
-	void Exit() override;
+	virtual void Enter() override;
+	virtual Rinigin::State* Update() override;
+	virtual void Exit() override;
 
 	void Notify(Rinigin::EventArguments* arguments) override;
 private:

@@ -1,5 +1,7 @@
 #include "PhysicsManager.h"
+#include "GameObject.h"
 #include "ColliderComponent.h"
+#include "RigidbodyComponent.h"
 
 #include "Renderer.h"
 #include <glm.hpp>
@@ -12,6 +14,7 @@ void Rinigin::Physics::Render() const
 	auto* renderer{ Renderer::GetInstance().GetSDLRenderer() };
 
 	for (auto* collider : m_Colliders) {
+		if (!collider->GetOwner()->IsActive()) continue;
 		const glm::vec3 position{ collider->GetPosition() };
 		const glm::vec3 bounds{ collider->Bounds() };
 
@@ -30,27 +33,9 @@ void Rinigin::Physics::Render() const
 void Rinigin::Physics::FixedUpdate()
 {
 	if (m_Colliders.empty()) return;
-	for (auto* collider : m_Colliders) {
-		
-		for (auto* other : m_Colliders) {
-			if (other == collider) continue;
-			const bool wasColliding = collider->IsColliding(other);
-			const bool currentlyColliding = IsColliding(collider, other);
 
-			if (wasColliding) {
-				// The collider remembers this other collide
-				if (!currentlyColliding) { // The collider lost contact with the other collider !
-					collider->RemoveCollidingCollider(other);
-				}
-			}
-			else { // The collider wasn't colliding with this collider before !
-				if (currentlyColliding) { // The collider is now colliding however 
-					collider->AddCollidingCollider(other);
-				}
-			}
-
- 		}
-	}
+	DetectCollisions(); // Trigger enter/Exit events on colliders
+	SolveCollisions(); // Solve rigidbodies
 }
 
 void Rinigin::Physics::AddCollider(ColliderComponent* collider)
@@ -64,7 +49,18 @@ void Rinigin::Physics::RemoveCollider(ColliderComponent* collider)
 	m_Colliders.erase(std::remove(m_Colliders.begin(), m_Colliders.end(), collider), m_Colliders.end());
 }
 
-bool Rinigin::Physics::IsColliding(ColliderComponent* collider_A, ColliderComponent* collider_B)
+void Rinigin::Physics::AddRigidbody(RigidbodyComponent* rigidbody)
+{
+	m_Rigidbodies.emplace_back(rigidbody);
+}
+
+void Rinigin::Physics::RemoveRigidbody(RigidbodyComponent* rigidbody)
+{
+	if (m_Rigidbodies.empty()) return;
+	m_Rigidbodies.erase(std::remove(m_Rigidbodies.begin(), m_Rigidbodies.end(), rigidbody), m_Rigidbodies.end());
+}
+
+bool Rinigin::Physics::AreCollidersOverlapping(ColliderComponent* collider_A, ColliderComponent* collider_B)
 {
 	const glm::vec3 positionA{ collider_A->GetPosition() };
 	const glm::vec3 boundsA{ collider_A->Bounds() };
@@ -77,5 +73,95 @@ bool Rinigin::Physics::IsColliding(ColliderComponent* collider_A, ColliderCompon
 		positionA.x + boundsA.x > boundsB.x &&
 		positionA.y < positionB.y + boundsB.y &&
 		positionA.y + boundsA.y > boundsB.y;
+}
+
+void Rinigin::Physics::DetectCollisions()
+{
+	for (auto* collider : m_Colliders) {
+		GameObject* colliderOwner{ collider->GetOwner() };
+		if (!colliderOwner->IsActive()) continue;
+		if (!collider->IsTrigger()) continue;
+
+		for (auto* other : m_Colliders) { 
+			if (other == collider) continue;
+
+			GameObject* otherOwner{ other->GetOwner() };
+			if (!otherOwner->IsActive()) continue;
+			if (!other->IsTrigger()) continue;
+
+
+			const bool wasColliding = collider->IsTouching(other);
+			const bool currentlyColliding = AreCollidersOverlapping(collider, other);
+
+			if (wasColliding) {
+				// The collider remembers this other collide
+				if (!currentlyColliding) { // The collider lost contact with the other collider !
+					collider->RemoveCollidingCollider(other);
+				}
+			}
+			else { // The collider wasn't colliding with this collider before !
+				if (currentlyColliding) { // The collider is now colliding however 
+					collider->AddCollidingCollider(other);
+				}
+			}
+
+		}
+	}
+}
+
+void Rinigin::Physics::SolveCollisions()
+{
+	for (auto* rigidbodyA : m_Rigidbodies) {
+		GameObject* ownerA{ rigidbodyA->GetOwner() };
+		if (!ownerA->IsActive()) continue;
+
+		for (auto* rigidbodyB : m_Rigidbodies) {
+			if (rigidbodyA == rigidbodyB) continue;
+
+			GameObject* ownerB{ rigidbodyB->GetOwner() };
+			if (!ownerB->IsActive()) continue;
+
+			ColliderComponent* colliderA{ rigidbodyA->GetCollider() };
+			ColliderComponent* colliderB{ rigidbodyB->GetCollider() };
+
+			if (colliderA->IsTrigger() or colliderB->IsTrigger()) continue;
+
+			if (!colliderA || !colliderB) continue;
+			if (!AreCollidersOverlapping(colliderA, colliderB)) continue;
+
+			glm::vec3 centerA = colliderA->GetCenter();
+			glm::vec3 centerB = colliderB->GetCenter();
+
+			glm::vec3 delta = centerA - centerB;
+			glm::vec3 totalHalfSize = colliderA->GetHalfExtents() + colliderB->GetHalfExtents();
+			glm::vec3 overlap = totalHalfSize - glm::abs(delta);
+
+			// Check if truly overlapping
+			if (overlap.x <= 0.f || overlap.y <= 0.f) continue;
+
+			// Find minimum axis of penetration
+			glm::vec3 correction{};
+			if (overlap.x < overlap.y)
+				correction.x = (delta.x > 0.f ? 1.f : -1.f) * overlap.x;
+			else
+				correction.y = (delta.y > 0.f ? 1.f : -1.f) * overlap.y;
+
+			// Apply correction based on mass
+			float massA = (rigidbodyA && !rigidbodyA->IsKinematic()) ? rigidbodyA->Mass() : 0.f;
+			float massB = (rigidbodyB && !rigidbodyB->IsKinematic()) ? rigidbodyB->Mass() : 0.f;
+			float totalMass = (massA + massB);
+
+			if (massA > 0.f)
+			{
+				glm::vec3 moveA = correction * (massB / totalMass);
+				ownerA->SetPosition(ownerA->GetWorldPosition() + moveA);
+			}
+			if (massB > 0.f)
+			{
+				glm::vec3 moveB = -correction * (massA / totalMass);
+				ownerB->SetPosition(ownerB->GetWorldPosition() + moveB);
+			}
+		}
+	}
 }
 

@@ -42,5 +42,7 @@ void DiggerGame::InitializeGame()
 	GameScreenState* gameState = gameContext->CreateState<GameScreenState>(this);
 
 	gameContext->SetState(startScreenState); // Set the first state to the start screen
+
+	gameState->SetGameMode(GameMode::COOP);
 	gameContext->SetState(gameState);
 }

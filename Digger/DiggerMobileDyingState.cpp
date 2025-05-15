@@ -25,8 +25,9 @@ void DiggerMobileDyingState::Enter()
 	m_DiggerMobile->SetSpeed(0);
 }
 
-void DiggerMobileDyingState::Update()
+Rinigin::State* DiggerMobileDyingState::Update()
 {
+	return m_DiggerMobile->GetDeadState();
 }	
 
 void DiggerMobileDyingState::Exit()
@@ -36,15 +37,15 @@ void DiggerMobileDyingState::Exit()
 
 // TEMPORARY TO TRANSITION TO DEAD STATE
 
-void DiggerMobileDyingState::Notify(Rinigin::EventArguments* arguments)
+void DiggerMobileDyingState::Notify(Rinigin::EventArguments* /*arguments*/)
 {
-	switch (arguments->GetID())
+	/*switch (arguments->GetID())
 	{
 	case Rinigin::Helpers::sdbm_hash("AnimationEnded"):
 		GetContext()->SetState( m_DiggerMobile->GetDeadState() );
 		break;
 	default:
 		break;
-	}
+	}*/
 }
 

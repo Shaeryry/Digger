@@ -17,8 +17,9 @@ void DiggerMobileDeadState::Enter()
 	m_DiggerMobile->SetSpeed(0);
 }
 
-void DiggerMobileDeadState::Update()
+Rinigin::State* DiggerMobileDeadState::Update()
 {
+	return nullptr;
 }
 
 void DiggerMobileDeadState::Exit()

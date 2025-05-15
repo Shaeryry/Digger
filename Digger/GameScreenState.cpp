@@ -33,6 +33,7 @@ GameScreenState::GameScreenState(Rinigin::StateContextComponent* context, Digger
 
 	// TODO : Create characters
 	m_DiggerOne = dynamic_cast<DiggerMobile*>(AddCharacter( new DiggerMobile(0, m_MapComponent) ));
+	m_DiggerOne->GetCharacterObject()->SetPosition(screenSize.x / 2, screenSize.y / 2, 0);
 
 	playerOneGamepad->AddBinding(SDL_SCANCODE_UP, Rinigin::BindingConnection::OnTrigger, m_DiggerOne->UpDirectionCommand());
 	playerOneGamepad->AddBinding(SDL_SCANCODE_DOWN, Rinigin::BindingConnection::OnTrigger, m_DiggerOne->DownDirectionCommand());
@@ -44,11 +45,12 @@ GameScreenState::GameScreenState(Rinigin::StateContextComponent* context, Digger
 	playerOneGamepad->AddBinding(SDL_SCANCODE_LEFT, Rinigin::BindingConnection::OnHeld, m_DiggerOne->GetMoveCommand());
 	playerOneGamepad->AddBinding(SDL_SCANCODE_RIGHT, Rinigin::BindingConnection::OnHeld, m_DiggerOne->GetMoveCommand());
 
-	m_DiggerTwo = dynamic_cast<DiggerMobile*>(AddCharacter(new DiggerMobile(1,m_MapComponent)));
-
-
 	// TEMPORARY WAY OF DAMAGING YOUR OWN CHARACTER
 	playerOneGamepad->AddBinding(SDL_SCANCODE_F, Rinigin::BindingConnection::OnTrigger, m_DiggerOne->GetDamageCommand());
+
+	m_DiggerTwo = dynamic_cast<DiggerMobile*>(AddCharacter(new DiggerMobile(1,m_MapComponent)));
+	m_DiggerTwo->GetCharacterObject()->SetPosition(screenSize.x / 2, screenSize.y / 2, 0);
+
 
 	// TEMPORARY DISPLAY
 } 
@@ -68,6 +70,7 @@ void GameScreenState::Enter()
 			break;
 		case GameMode::COOP:
 			// TODO : Spawn 2 players
+			StartCoop();
 			break;
 		case GameMode::PVP:
 			// TODO : Spawn 1 player digger and 1 player enemy
@@ -77,8 +80,9 @@ void GameScreenState::Enter()
 	}
 }
 
-void GameScreenState::Update()
+Rinigin::State* GameScreenState::Update()
 {
+	return nullptr;
 }
 
 void GameScreenState::Exit()
@@ -110,13 +114,18 @@ void GameScreenState::LoadLevel()
 	// MAP SETTING
 
 	m_MapComponent->ChangeBackgroundTexture("../Data/MapTextures/Level3.png");
-
 }
 
 void GameScreenState::StartSolo()
 {
 	m_DiggerOne->GetCharacterObject()->SetActive(true);
 	std::cout << "Solo game!" << std::endl;
+}
+
+void GameScreenState::StartCoop()
+{
+	m_DiggerOne->GetCharacterObject()->SetActive(true);
+	m_DiggerTwo->GetCharacterObject()->SetActive(true);
 }
 
 Character* GameScreenState::AddCharacter(Character* character)

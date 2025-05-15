@@ -33,8 +33,9 @@ void StartScreenState::Enter()
 	std::cout << "entered start screen" << std::endl;
 }
 
-void StartScreenState::Update()
+Rinigin::State* StartScreenState::Update()
 {
+	return nullptr;
 }
 
 void StartScreenState::Exit()

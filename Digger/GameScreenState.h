@@ -21,7 +21,7 @@ class GameScreenState : public Rinigin::State
 public:
 	explicit GameScreenState(Rinigin::StateContextComponent* context,DiggerGame* game);
 	virtual void Enter() override;
-	virtual void Update() override;
+	virtual Rinigin::State* Update() override;
 	virtual void Exit() override;
 
 	void SetGameMode(GameMode gameMode) { m_GameMode = gameMode; };
@@ -30,6 +30,7 @@ private:
 	void Reset();
 	void LoadLevel();
 	void StartSolo();
+	void StartCoop();
 	Character* AddCharacter(Character* character);
 
 	DiggerGame* m_Game;

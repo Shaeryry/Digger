@@ -37,7 +37,6 @@ DestructibleEnvironmentComponent::DestructibleEnvironmentComponent(Rinigin::Game
 
 	m_MaskPixels = new Uint32[m_ScreenWidth * m_ScreenHeight];
 	ResetPixels();
-
 } 
 
 DestructibleEnvironmentComponent::~DestructibleEnvironmentComponent()

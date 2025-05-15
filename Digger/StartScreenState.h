@@ -12,7 +12,7 @@ public:
 	explicit StartScreenState(Rinigin::StateContextComponent* context,Rinigin::Gamepad* gamepad); 
 
 	virtual void Enter() override;
-	virtual void Update() override;
+	virtual Rinigin::State* Update() override;
 	virtual void Exit() override;
 
 	virtual void Notify(Rinigin::EventArguments* arguments) override;

@@ -35,7 +35,10 @@ void Rinigin::StateContextComponent::RemoveState(State* state)
 
 void Rinigin::StateContextComponent::Update()
 {
-	if (m_CurrentState)	m_CurrentState->Update();
+	if (m_CurrentState) {
+		State* nextState = m_CurrentState->Update();
+		if (nextState) { SetState(nextState); };
+	};
 }
 
 bool Rinigin::StateContextComponent::HasState(State* state)
