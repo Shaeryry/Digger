@@ -1,7 +1,6 @@
 #include "RigidbodyComponent.h"
 #include "GameObject.h"
 #include "PhysicsManager.h"
-#include "GameObject.h"
 #include "Timer.h"
 
 Rinigin::RigidbodyComponent::RigidbodyComponent(GameObject* gameObject, ColliderComponent* collider, float mass, bool isKinematic) :

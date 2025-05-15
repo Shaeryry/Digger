@@ -84,6 +84,7 @@ void Rinigin::Physics::DetectCollisions()
 
 		for (auto* other : m_Colliders) { 
 			if (other == collider) continue;
+			if (collider->IsLayerExcluded(other->GetCollisionLayer())) continue;
 
 			GameObject* otherOwner{ other->GetOwner() };
 			if (!otherOwner->IsActive()) continue;
@@ -125,6 +126,8 @@ void Rinigin::Physics::SolveCollisions()
 			ColliderComponent* colliderB{ rigidbodyB->GetCollider() };
 
 			if (colliderA->IsTrigger() or colliderB->IsTrigger()) continue;
+			if (colliderA->IsLayerExcluded(colliderB->GetCollisionLayer())) continue;
+
 
 			if (!colliderA || !colliderB) continue;
 			if (!AreCollidersOverlapping(colliderA, colliderB)) continue;

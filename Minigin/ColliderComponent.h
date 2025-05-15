@@ -28,12 +28,22 @@ namespace Rinigin {
 
 		void SetOffset(const glm::vec3& offset) { m_Offset = offset; };
 		void SetBounds(const glm::vec3& bounds) { m_Bounds = bounds; };
+
+		void SetLayer(const char* layerName);
+		void SetLayer(unsigned int id) { m_LayerId = id; };
+		unsigned int GetCollisionLayer() const { return m_LayerId; };
+
+		void AddExcludedLayer(const char* layerName);
+		void AddExcludedLayer(unsigned int layerId);
+		void RemoveExcludedLayer(unsigned int layerId);
+		bool IsLayerExcluded(unsigned int layerId);
 	private:
 		friend void Physics::DetectCollisions();
 
 		void AddCollidingCollider(ColliderComponent* other);
 		void RemoveCollidingCollider(ColliderComponent* other);
 
+		std::vector<unsigned int> m_ExcludedLayers;
 		std::vector<ColliderComponent*> m_CollidingColliders;
 
 		std::unique_ptr<Event> m_ColliderEnterEvent;
@@ -44,6 +54,8 @@ namespace Rinigin {
 		glm::vec3 m_Offset;
 		glm::vec3 m_Bounds;
 		glm::vec3 m_Velocity;
+
+		unsigned int m_LayerId;
 	};
 }
 

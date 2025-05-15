@@ -62,3 +62,32 @@ bool Rinigin::ColliderComponent::IsTouching(ColliderComponent* other)
 	auto foundIt = std::find(m_CollidingColliders.begin(), m_CollidingColliders.end(), other);
 	return (foundIt != m_CollidingColliders.end());
 }
+
+void Rinigin::ColliderComponent::SetLayer(const char* layerName)
+{
+	SetLayer(Rinigin::Helpers::sdbm_hash(layerName));
+}
+
+void Rinigin::ColliderComponent::AddExcludedLayer(const char* layerName)
+{
+	AddExcludedLayer(Rinigin::Helpers::sdbm_hash(layerName));
+}
+
+void Rinigin::ColliderComponent::AddExcludedLayer(unsigned int layerId)
+{
+	m_ExcludedLayers.emplace_back(layerId);
+}
+
+void Rinigin::ColliderComponent::RemoveExcludedLayer(unsigned int layerId) 
+{
+	std::erase_if(m_ExcludedLayers, [&layerId](const auto& id) {
+		return (id == layerId);
+		}
+	);
+}
+
+bool Rinigin::ColliderComponent::IsLayerExcluded(unsigned int layerId)
+{
+	auto foundIt = std::find(m_ExcludedLayers.begin(), m_ExcludedLayers.end(), layerId);
+	return (foundIt != m_ExcludedLayers.end());
+}

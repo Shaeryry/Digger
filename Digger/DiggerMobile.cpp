@@ -22,6 +22,9 @@ DiggerMobile::DiggerMobile(int index,DestructibleEnvironmentComponent* map) :
 	m_Map(map)
 {
 	// Setup components
+	GetCollider()->SetLayer("Player");
+	GetCollider()->AddExcludedLayer("Player");
+
 	GetCollider()->SetBounds(glm::vec3{40,40,0});
 	GetHealthComponent()->GetDiedEvent()->AddObserver(this);
 	GetHealthComponent()->SetMaxHealth(1);
