@@ -1,9 +1,9 @@
-#include "DestructibleEnviromentComponent.h"
+#include "TerrainComponent.h"
 #include "Renderer.h"
 #include <glm.hpp>
-#include <SDL_image.h>
+#include <SDL_image.h> 
 
-DestructibleEnvironmentComponent::DestructibleEnvironmentComponent(Rinigin::GameObject* gameObject, const glm::vec2& screenSize, const glm::vec2& mapSize,int tileSize) :
+TerrainComponent::TerrainComponent(Rinigin::GameObject* gameObject, const glm::vec2& screenSize, const glm::vec2& mapSize,int tileSize) :
 	Component(gameObject),
 	m_TileSize(tileSize)
 { 
@@ -39,26 +39,26 @@ DestructibleEnvironmentComponent::DestructibleEnvironmentComponent(Rinigin::Game
 	ResetPixels();
 } 
 
-DestructibleEnvironmentComponent::~DestructibleEnvironmentComponent()
+TerrainComponent::~TerrainComponent()
 {
 	delete[] m_MaskPixels;
 	SDL_DestroyTexture(m_BackgroundTilesTexture);
 	SDL_DestroyTexture(m_MaskTexture);
 }
 
-void DestructibleEnvironmentComponent::UnlockMask()
+void TerrainComponent::UnlockMask()
 {
 	SDL_UnlockTexture(m_BackgroundTilesTexture);
 }
 
-void DestructibleEnvironmentComponent::LockMask()
+void TerrainComponent::LockMask()
 {
 	SDL_LockTexture(m_BackgroundTilesTexture, nullptr, &m_BackgroundPixels, &m_BackgroundPitch);
 	m_BackgroundPixelPtr = static_cast<uint32_t*>(m_BackgroundPixels);
 }
 
 
-void DestructibleEnvironmentComponent::ChangeBackgroundTexture(const char* filePath)
+void TerrainComponent::ChangeBackgroundTexture(const char* filePath)
 {
 	if (!filePath) return;
 
@@ -95,7 +95,7 @@ void DestructibleEnvironmentComponent::ChangeBackgroundTexture(const char* fileP
 	SDL_FreeSurface(textureSurface);
 }
 
-void DestructibleEnvironmentComponent::DigAt(float cx, float cy, int radius)
+void TerrainComponent::DigAt(float cx, float cy, int radius)
 {
 
 	for (int y = -radius; y <= radius; ++y) {
@@ -114,7 +114,7 @@ void DestructibleEnvironmentComponent::DigAt(float cx, float cy, int radius)
 
 }
 
-void DestructibleEnvironmentComponent::Update()
+void TerrainComponent::Update()
 {
 	SDL_UpdateTexture(m_MaskTexture, nullptr, m_MaskPixels, m_ScreenWidth * sizeof(Uint32));
 
@@ -133,34 +133,23 @@ void DestructibleEnvironmentComponent::Update()
 	UnlockMask();
 } 
 
-void DestructibleEnvironmentComponent::Render() const
+void TerrainComponent::Render() const
 {
 	SDL_Renderer* renderer = Rinigin::Renderer::GetInstance().GetSDLRenderer();
-	//SDL_RenderClear(renderer);
-
-	// Draw repeated dirt texture
-	//for (int x{ 0 }; x < m_Width; x += m_TileSize) {
-	//	for (int y{ 0 }; y < m_Height; y += m_TileSize) {
-	//		SDL_Rect dst = { x, y, m_TileSize, m_TileSize };
-
-	//		//SDL_RenderCopy(renderer, dirtTile, NULL, &dst);
-	//		//Rinigin::Renderer::GetInstance().RenderTexture();
-	//		Rinigin::Renderer::GetInstance().RenderTexture(
-	//			*m_BackgroundTexture,
-	//			static_cast<float>(dst.x),
-	//			static_cast<float>(dst.y),
-	//			static_cast<float>(dst.w),
-	//			static_cast<float>(dst.h)
-	//		);
-	//	}
-	//}
-
 	// Apply the destruction mask on top
 	SDL_RenderCopy(renderer, m_BackgroundTilesTexture, nullptr, nullptr);
 	//SDL_RenderPresent(renderer);
 }
 
-void DestructibleEnvironmentComponent::ResetPixels()
+bool TerrainComponent::IsSolidAt(int x, int y) const 
+{
+	if (x < 0 or x >= m_Width or y < 0 or y >= m_Height) return false;
+
+	Uint32 maskColor = m_MaskPixels[y * m_Width + x];
+	return (maskColor & 0xFF000000) != 0; // Alpha != 0 means solid
+}
+
+void TerrainComponent::ResetPixels()
 {
 	for (int pixelIndex{ 0 }; pixelIndex < (m_ScreenWidth * m_ScreenHeight); pixelIndex++) m_MaskPixels[pixelIndex] = 0xFFFFFFFF;
 }

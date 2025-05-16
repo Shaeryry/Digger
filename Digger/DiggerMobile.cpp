@@ -5,14 +5,16 @@
 #include "StateContextComponent.h"
 #include "GameObject.h"
 #include "HealthComponent.h"
-#include "DestructibleEnviromentComponent.h"
+#include "TerrainComponent.h"
+#include "TerrainColliderComponent.h"
+
 #include "DiggerMobileDiggingState.h"
 #include "DiggerMobileDyingState.h"
 #include "DiggerMobileDeadState.h"
 #include "Helpers.h"
 #include "ColliderComponent.h"
 
-DiggerMobile::DiggerMobile(int index,DestructibleEnvironmentComponent* map) :
+DiggerMobile::DiggerMobile(int index,TerrainComponent* map) :
 	Character("DiggerMobile.png"),
 	m_DiggerMobileStateContext(nullptr),
 	m_DyingState(nullptr), 
@@ -22,8 +24,12 @@ DiggerMobile::DiggerMobile(int index,DestructibleEnvironmentComponent* map) :
 	m_Map(map)
 {
 	// Setup components
+	/*auto terrainCollider = GetCharacterObject()->AddComponent<TerrainColliderComponent>( GetRigidbody(),map );
+	terrainCollider->SetWidth(40);
+	terrainCollider->SetHeight(40);*/
+
 	GetCollider()->SetLayer("Player");
-	GetCollider()->AddExcludedLayer("Player");
+	//GetCollider()->AddExcludedLayer("Player");
 
 	GetCollider()->SetBounds(glm::vec3{40,40,0});
 	GetHealthComponent()->GetDiedEvent()->AddObserver(this);

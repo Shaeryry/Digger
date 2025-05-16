@@ -99,7 +99,7 @@
     <ClCompile Include="DiggerMobileDyingState.cpp">
       <Filter>Source Files\DiggerMobileStates</Filter>
     </ClCompile>
-    <ClCompile Include="DestructibleEnviromentComponent.cpp">
+    <ClCompile Include="TerrainComponent.cpp">
       <Filter>Source Files\Components</Filter>
     </ClCompile>
     <ClCompile Include="DiggerMobileDeadState.cpp">
@@ -164,7 +164,7 @@
     <ClInclude Include="DiggerMobileDeadState.h">
       <Filter>Header Files\DiggerMobileStates</Filter>
     </ClInclude>
-    <ClInclude Include="DestructibleEnviromentComponent.h">
+    <ClInclude Include="TerrainComponent.h">
       <Filter>Header Files\Components</Filter>
     </ClInclude>
   </ItemGroup>

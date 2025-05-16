@@ -4,7 +4,7 @@
 
 namespace Rinigin { class StateContextComponent; }
 
-class DestructibleEnvironmentComponent;
+class TerrainComponent;
 class DiggerMobileDiggingState;
 class DiggerMobileDyingState;
 class DiggerMobileDeadState;
@@ -12,13 +12,13 @@ class DiggerMobileDeadState;
 class DiggerMobile final : public Character,public Rinigin::Observer
 {
 public:
-	explicit DiggerMobile(int index,DestructibleEnvironmentComponent* map);
+	explicit DiggerMobile(int index,TerrainComponent* map);
 
 	DiggerMobileDiggingState* GetDiggingState() const { return m_DiggingState; }
 	DiggerMobileDyingState* GetDyingState() const { return m_DyingState; }
 	DiggerMobileDeadState* GetDeadState() const { return m_DeadState; }
 
-	DestructibleEnvironmentComponent* Map() const { return m_Map; }
+	TerrainComponent* Map() const { return m_Map; }
 	void Notify(Rinigin::EventArguments* eventArguments) override;
 private:
 	int m_DiggerIndex;
@@ -28,6 +28,6 @@ private:
 	DiggerMobileDyingState* m_DyingState;
 	DiggerMobileDeadState* m_DeadState;
 
-	DestructibleEnvironmentComponent* m_Map;
+	TerrainComponent* m_Map;
 };
 

@@ -43,7 +43,9 @@ namespace Rinigin {
 		void AddCollidingCollider(ColliderComponent* other);
 		void RemoveCollidingCollider(ColliderComponent* other);
 
+		unsigned int m_LayerId;
 		std::vector<unsigned int> m_ExcludedLayers;
+
 		std::vector<ColliderComponent*> m_CollidingColliders;
 
 		std::unique_ptr<Event> m_ColliderEnterEvent;
@@ -53,9 +55,6 @@ namespace Rinigin {
 
 		glm::vec3 m_Offset;
 		glm::vec3 m_Bounds;
-		glm::vec3 m_Velocity;
-
-		unsigned int m_LayerId;
 	};
 }
 

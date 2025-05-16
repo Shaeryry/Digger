@@ -13,8 +13,9 @@
 #include "Scene.h"
 #include "DamageCommand.h"
 #include "TextComponent.h"
-#include "DestructibleEnviromentComponent.h"
+#include "TerrainComponent.h"
 #include "DiggerGame.h"
+#include "RigidbodyComponent.h"
 
 GameScreenState::GameScreenState(Rinigin::StateContextComponent* context, DiggerGame* game) :
 	Rinigin::State(context),
@@ -26,7 +27,7 @@ GameScreenState::GameScreenState(Rinigin::StateContextComponent* context, Digger
 	glm::vec2 screenSize = m_Game->GetScreenSize();
 
 	m_BackgroundGameObject = m_Scene->CreateObject();
-	m_MapComponent = m_BackgroundGameObject->AddComponent<DestructibleEnvironmentComponent>(screenSize,screenSize,40);
+	m_MapComponent = m_BackgroundGameObject->AddComponent<TerrainComponent>(screenSize,screenSize,40);
 
 	Rinigin::Gamepad* playerOneGamepad{ Rinigin::InputManager::GetInstance().GetGamepad(0) }; // Keyboard
 	//Rinigin::Gamepad* playerTwoGamepad{ Rinigin::InputManager::GetInstance().GetGamepad(1) };
@@ -34,6 +35,7 @@ GameScreenState::GameScreenState(Rinigin::StateContextComponent* context, Digger
 	// TODO : Create characters
 	m_DiggerOne = dynamic_cast<DiggerMobile*>(AddCharacter( new DiggerMobile(0, m_MapComponent) ));
 	m_DiggerOne->GetCharacterObject()->SetPosition(screenSize.x / 2, screenSize.y / 2, 0);
+	m_DiggerOne->GetRigidbody()->GravityEnabled(false);
 
 	playerOneGamepad->AddBinding(SDL_SCANCODE_UP, Rinigin::BindingConnection::OnTrigger, m_DiggerOne->UpDirectionCommand());
 	playerOneGamepad->AddBinding(SDL_SCANCODE_DOWN, Rinigin::BindingConnection::OnTrigger, m_DiggerOne->DownDirectionCommand());
@@ -51,6 +53,7 @@ GameScreenState::GameScreenState(Rinigin::StateContextComponent* context, Digger
 	m_DiggerTwo = dynamic_cast<DiggerMobile*>(AddCharacter(new DiggerMobile(1,m_MapComponent)));
 	m_DiggerTwo->GetCharacterObject()->SetPosition(screenSize.x / 2, screenSize.y / 2, 0);
 
+	m_MapComponent->DigAt(screenSize.x / 2, screenSize.y / 2, 100);
 
 	// TEMPORARY DISPLAY
 } 

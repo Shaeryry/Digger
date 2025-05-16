@@ -6,7 +6,7 @@
 #include "Timer.h"
 #include "StateContextComponent.h"
 #include "DiggerMobileDyingState.h"
-#include "DestructibleEnviromentComponent.h"
+#include "TerrainComponent.h"
 #include "GameObject.h"
 #include "TransformComponent.h"
 #include "SpriteSheetComponent.h"
@@ -33,7 +33,7 @@ void DiggerMobileDiggingState::Enter()
 Rinigin::State* DiggerMobileDiggingState::Update()
 {
 	// DIG DIG DIG
-	DestructibleEnvironmentComponent* map{ m_DiggerMobile->Map() };
+	TerrainComponent* map{ m_DiggerMobile->Map() };
 	if (map) {
 		glm::vec3 diggerMobilePosition{ m_DiggerMobile->GetCharacterObject()->GetTransform()->GetTransformLocalPosition() };
 		float xPos{ diggerMobilePosition.x + (m_DiggerMobile->GetSpriteSheetComponent()->GetTileWidth() / 2) };

@@ -167,7 +167,7 @@
     <ClCompile Include="..\Minigin\RotatorComponent.cpp" />
     <ClCompile Include="..\Minigin\ScoreComponent.cpp" />
     <ClCompile Include="..\Minigin\ScoreDisplayComponent.cpp" />
-    <ClCompile Include="DestructibleEnviromentComponent.cpp" />
+    <ClCompile Include="TerrainComponent.cpp" />
     <ClCompile Include="DiggerMobile.cpp" />
     <ClCompile Include="DiggerMobileDeadState.cpp" />
     <ClCompile Include="DiggerMobileDyingState.cpp" />
@@ -190,7 +190,7 @@
     <ClInclude Include="..\Minigin\RotatorComponent.h" />
     <ClInclude Include="..\Minigin\ScoreComponent.h" />
     <ClInclude Include="..\Minigin\ScoreDisplayComponent.h" />
-    <ClInclude Include="DestructibleEnviromentComponent.h" />
+    <ClInclude Include="TerrainComponent.h" />
     <ClInclude Include="DiggerMobile.h" />
     <ClInclude Include="DiggerMobileDeadState.h" />
     <ClInclude Include="DiggerMobileDyingState.h" />

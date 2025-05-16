@@ -1,7 +1,9 @@
 #include "PhysicsManager.h"
 #include "GameObject.h"
+
 #include "ColliderComponent.h"
 #include "RigidbodyComponent.h"
+#include "ICollisionMask.h"
 
 #include "Renderer.h"
 #include <glm.hpp>
@@ -35,7 +37,7 @@ void Rinigin::Physics::FixedUpdate()
 	if (m_Colliders.empty()) return;
 
 	DetectCollisions(); // Trigger enter/Exit events on colliders
-	SolveCollisions(); // Solve rigidbodies
+	SolveCollisions(); // Solve rigid bodies
 }
 
 void Rinigin::Physics::AddCollider(ColliderComponent* collider)
@@ -46,19 +48,36 @@ void Rinigin::Physics::AddCollider(ColliderComponent* collider)
 void Rinigin::Physics::RemoveCollider(ColliderComponent* collider)
 {
 	if (m_Colliders.empty()) return;
-	m_Colliders.erase(std::remove(m_Colliders.begin(), m_Colliders.end(), collider), m_Colliders.end());
+	//m_Colliders.erase(std::remove(m_Colliders.begin(), m_Colliders.end(), collider), m_Colliders.end());
+	std::erase(m_Colliders, collider);
 }
 
 void Rinigin::Physics::AddRigidbody(RigidbodyComponent* rigidbody)
 {
 	m_Rigidbodies.emplace_back(rigidbody);
+
 }
 
 void Rinigin::Physics::RemoveRigidbody(RigidbodyComponent* rigidbody)
 {
 	if (m_Rigidbodies.empty()) return;
-	m_Rigidbodies.erase(std::remove(m_Rigidbodies.begin(), m_Rigidbodies.end(), rigidbody), m_Rigidbodies.end());
+	//m_Rigidbodies.erase(std::remove(m_Rigidbodies.begin(), m_Rigidbodies.end(), rigidbody), m_Rigidbodies.end());
+	std::erase(m_Rigidbodies, rigidbody);
 }
+
+
+void Rinigin::Physics::AddCollisionMask(ICollisionMask* mask)
+{
+	m_CollisionMasks.emplace_back(mask);
+}
+
+void Rinigin::Physics::RemoveCollisionMask(ICollisionMask* mask)
+{
+	if (m_CollisionMasks.empty()) return;
+
+	std::erase(m_CollisionMasks, mask);
+}
+
 
 bool Rinigin::Physics::AreCollidersOverlapping(ColliderComponent* collider_A, ColliderComponent* collider_B)
 {
@@ -75,11 +94,12 @@ bool Rinigin::Physics::AreCollidersOverlapping(ColliderComponent* collider_A, Co
 		positionA.y + boundsA.y > boundsB.y;
 }
 
+
 void Rinigin::Physics::DetectCollisions()
 {
 	for (auto* collider : m_Colliders) {
 		GameObject* colliderOwner{ collider->GetOwner() };
-		if (!colliderOwner->IsActive()) continue;
+		if (!colliderOwner or !colliderOwner->IsActive()) continue;
 		if (!collider->IsTrigger()) continue;
 
 		for (auto* other : m_Colliders) { 
@@ -87,9 +107,8 @@ void Rinigin::Physics::DetectCollisions()
 			if (collider->IsLayerExcluded(other->GetCollisionLayer())) continue;
 
 			GameObject* otherOwner{ other->GetOwner() };
-			if (!otherOwner->IsActive()) continue;
+			if (!otherOwner or !otherOwner->IsActive()) continue;
 			if (!other->IsTrigger()) continue;
-
 
 			const bool wasColliding = collider->IsTouching(other);
 			const bool currentlyColliding = AreCollidersOverlapping(collider, other);
@@ -114,14 +133,14 @@ void Rinigin::Physics::SolveCollisions()
 {
 	for (auto* rigidbodyA : m_Rigidbodies) {
 		GameObject* ownerA{ rigidbodyA->GetOwner() };
-		if (!ownerA->IsActive()) continue;
+		if (!ownerA or !ownerA->IsActive()) continue;
 
-		for (auto* rigidbodyB : m_Rigidbodies) {
+		for (auto* rigidbodyB : m_Rigidbodies) { 
 			if (rigidbodyA == rigidbodyB) continue;
 
 			GameObject* ownerB{ rigidbodyB->GetOwner() };
-			if (!ownerB->IsActive()) continue;
-
+			if (!ownerB or !ownerB->IsActive()) continue;
+			
 			ColliderComponent* colliderA{ rigidbodyA->GetCollider() };
 			ColliderComponent* colliderB{ rigidbodyB->GetCollider() };
 
@@ -157,14 +176,43 @@ void Rinigin::Physics::SolveCollisions()
 			if (massA > 0.f)
 			{
 				glm::vec3 moveA = correction * (massB / totalMass);
-				ownerA->SetPosition(ownerA->GetWorldPosition() + moveA);
+				glm::vec3 posA = (ownerA->GetWorldPosition() + moveA);
+				if (!IsOverlappingWithMasks(posA, colliderA->Bounds())) ownerA->SetPosition(posA);
 			}
 			if (massB > 0.f)
 			{
 				glm::vec3 moveB = -correction * (massA / totalMass);
-				ownerB->SetPosition(ownerB->GetWorldPosition() + moveB);
+				glm::vec3 posB = (ownerB->GetWorldPosition() + moveB);
+
+				if (!IsOverlappingWithMasks(posB,colliderB->Bounds())) ownerB->SetPosition(posB);
+
 			}
 		}
 	}
+}
+
+bool Rinigin::Physics::IsSolid(int x, int y) const
+{
+	for (auto* mask : m_CollisionMasks) {
+		if (mask->IsSolidAt(x, y)) return true;
+	}
+
+	return false;
+}
+
+bool Rinigin::Physics::IsOverlappingWithMasks(glm::vec3 position, glm::vec3 bounds) const
+{
+	int xStart = static_cast<int>(position.x);
+	int yStart = static_cast<int>(position.y);
+	int xEnd = static_cast<int>(position.x + bounds.x);
+	int yEnd = static_cast<int>(position.y + bounds.y);
+
+	for (int x = xStart; x < xEnd; x++) {
+		for (int y = yStart; y < yEnd; y++) {
+			if (IsSolid(x,y)) return true;
+		}
+	}
+
+	return false;
 }
 

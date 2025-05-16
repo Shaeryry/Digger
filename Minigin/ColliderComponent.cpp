@@ -12,7 +12,9 @@ Rinigin::ColliderComponent::ColliderComponent(GameObject* gameObject, const glm:
 	m_IsTrigger(isTrigger),
 
 	m_Bounds(size),
-	m_Offset(offset)
+	m_Offset(offset),
+
+	m_LayerId(0)
 {
 	Physics::GetInstance().AddCollider(this);
 }
@@ -65,7 +67,7 @@ bool Rinigin::ColliderComponent::IsTouching(ColliderComponent* other)
 
 void Rinigin::ColliderComponent::SetLayer(const char* layerName)
 {
-	SetLayer(Rinigin::Helpers::sdbm_hash(layerName));
+	SetLayer(Rinigin::Helpers::sdbm_hash(layerName)); 
 }
 
 void Rinigin::ColliderComponent::AddExcludedLayer(const char* layerName)

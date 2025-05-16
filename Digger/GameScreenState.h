@@ -8,7 +8,7 @@ namespace Rinigin { class Scene; class Gamepad; class GameObject; }
 class Character;
 class DiggerGame;
 class DiggerMobile;
-class DestructibleEnvironmentComponent;
+class TerrainComponent;
 
 enum class GameMode {
 	SOLO,
@@ -38,7 +38,7 @@ private:
 	GameMode m_GameMode;
 
 	Rinigin::GameObject* m_BackgroundGameObject;
-	DestructibleEnvironmentComponent* m_MapComponent;
+	TerrainComponent* m_MapComponent;
 
 
 	DiggerMobile* m_DiggerOne;

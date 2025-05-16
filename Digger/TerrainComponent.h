@@ -1,15 +1,16 @@
 #pragma once
 #include "Component.h"
+#include "ICollisionMask.h"
 #include <glm.hpp>
 
 namespace Rinigin { class GameObject; }
 
 struct SDL_Texture;
-class DestructibleEnvironmentComponent : public Rinigin::Component
+class TerrainComponent : public Rinigin::Component,public Rinigin::ICollisionMask
 {
 public:
-	explicit DestructibleEnvironmentComponent(Rinigin::GameObject* gameObject,const glm::vec2& screenSize, const glm::vec2& mapSize,int tileSize);
-	~DestructibleEnvironmentComponent();
+	explicit TerrainComponent(Rinigin::GameObject* gameObject,const glm::vec2& screenSize, const glm::vec2& mapSize,int tileSize);
+	~TerrainComponent();
 
 	void ChangeBackgroundTexture(const char* filePath);
 
@@ -17,6 +18,7 @@ public:
 	void Update() override; 
 	void Render() const override;
 
+	virtual bool IsSolidAt(int x, int y) const override;
 	void ResetPixels();
 private: 
 	void UnlockMask();
