@@ -12,13 +12,15 @@
 #include "GameObject.h"
 #include "EventTypes.h"
 
-Emerald::Emerald() :
-	Item("Emerald.png"),
-	m_CollectEvent(std::make_unique<Rinigin::Event>())
+#include "Level.h"
+
+Emerald::Emerald(Level* level) :
+	Item(level,"Emerald.png"),
+	m_CollectEvent(std::make_unique<Rinigin::Event>()),
+	m_Trigger(nullptr)
 {
-	Rinigin::ColliderComponent* collider = GetTrigger();
-	collider->SetBounds(glm::vec3{ 32,20,0 });
-	collider->ColliderEnterEvent()->AddObserver(this);
+	m_Trigger = GetItemObject()->AddComponent<Rinigin::ColliderComponent>(glm::vec3{32,20,0}, glm::vec3{0,0,0}, true);
+	m_Trigger->ColliderEnterEvent()->AddObserver(this);
 }
 
 void Emerald::Notify(Rinigin::EventArguments& eventArguments)
@@ -40,4 +42,11 @@ void Emerald::Notify(Rinigin::EventArguments& eventArguments)
 	default:
 		break;
 	}
+}
+
+Item* Emerald::Clone()
+{
+	Emerald* newEmerald = new Emerald(m_Level);
+	newEmerald->GetItemObject()->SetActive(true);
+	return newEmerald;
 }

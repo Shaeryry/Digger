@@ -45,6 +45,8 @@ namespace Rinigin
 				return foundState;
 			}
 		}
+
+		return nullptr;
 	}
 
 }

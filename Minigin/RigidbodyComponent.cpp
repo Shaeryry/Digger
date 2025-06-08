@@ -1,4 +1,5 @@
 #include "RigidbodyComponent.h"
+#include "RigidbodyComponent.h"
 #include "GameObject.h"
 #include "PhysicsManager.h"
 #include "Timer.h"
@@ -13,9 +14,15 @@ Rinigin::RigidbodyComponent::RigidbodyComponent(GameObject* gameObject, Collider
 	m_Force(0, 0, 0),
 	m_Mass(mass),
 	m_IsKinematic(isKinematic),
-	m_UseGravity(true)
+	m_UseGravity(true),
+	m_CanCollide(true)
 {
 	Rinigin::Physics::GetInstance().AddRigidbody(this);
+}
+
+Rinigin::RigidbodyComponent::~RigidbodyComponent()
+{
+	Rinigin::Physics::GetInstance().RemoveRigidbody(this);
 }
 
 void Rinigin::RigidbodyComponent::FixedUpdate()
@@ -37,12 +44,15 @@ void Rinigin::RigidbodyComponent::FixedUpdate()
 	glm::vec3 nextPosition = (position + velocity);
 
 	// Prevent movement if you're colliding with a collision mask
-	bool nextPositionSolid{ physics.IsOverlappingWithMasks(nextPosition,m_Collider->Bounds()) };
-	if (nextPositionSolid) { 
-		m_Force = glm::vec3{ 0,0,0 }; // Reset force
-		SetVelocity( glm::vec3{ 0,0,0 } );
-		nextPosition = position;
-	};
+	if (m_CanCollide) {
+		bool nextPositionSolid{ physics.IsOverlappingWithMasks(nextPosition,m_Collider->Bounds()) };
+		if (nextPositionSolid) {
+			m_Force = glm::vec3{ 0,0,0 }; // Reset force
+			SetVelocity(glm::vec3{ 0,0,0 });
+			nextPosition = position;
+		};
+	}
+	
 
 	GetOwner()->SetPosition(nextPosition);
 	m_Force = glm::vec3{0,0,0}; // Reset force

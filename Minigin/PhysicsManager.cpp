@@ -20,7 +20,7 @@ void Rinigin::Physics::Render() const
 		const glm::vec3 position{ collider->GetPosition() };
 		const glm::vec3 bounds{ collider->Bounds() };
 
-		SDL_Rect rect{ 
+		const SDL_Rect rect{ 
 			static_cast<int>(position.x),
 			static_cast<int>(position.y),
 			static_cast<int>(bounds.x),
@@ -61,11 +61,12 @@ void Rinigin::Physics::RemoveCollider(ColliderComponent* collider)
 	if (m_Colliders.empty()) return;
 
 	// Remove it from the others
-	for (auto* other : m_Colliders) {
+	for (ColliderComponent* other : m_Colliders) {
 		if (other == collider) continue;
 		other->RemoveCollidingCollider(collider);
 	}
 
+	std::cout << "deleted collider" << std::endl;
 	std::erase(m_Colliders, collider);
 }
 
@@ -79,6 +80,7 @@ void Rinigin::Physics::RemoveRigidbody(RigidbodyComponent* rigidbody)
 {
 	if (m_Rigidbodies.empty()) return;
 
+	std::cout << "deleted rigidbody" << std::endl;
 	std::erase(m_Rigidbodies, rigidbody);
 }
 
@@ -118,8 +120,10 @@ void Rinigin::Physics::DetectCollisions()
 		GameObject* colliderOwner{ collider->GetOwner() };
 		if (!colliderOwner or !colliderOwner->IsActive()) continue;
 		if (!collider->IsTrigger()) continue;
+		if (!collider->IsEnabled()) continue;
 
 		for (auto* other : m_Colliders) { 
+			if (!other->IsEnabled()) continue;
 			if (other == collider) continue;
 			if (collider->IsLayerExcluded(other->GetCollisionLayer())) continue;
 
@@ -149,17 +153,22 @@ void Rinigin::Physics::SolveCollisions()
 {
 	for (auto* rigidbodyA : m_Rigidbodies) {
 		GameObject* ownerA{ rigidbodyA->GetOwner() };
+		if (ownerA == nullptr) return;
 		if (!ownerA or !ownerA->IsActive()) continue;
+		if (!rigidbodyA->CanCollide()) continue;
 
 		for (auto* rigidbodyB : m_Rigidbodies) { 
 			if (rigidbodyA == rigidbodyB) continue;
+			if (!rigidbodyB->CanCollide()) continue;
 
 			GameObject* ownerB{ rigidbodyB->GetOwner() };
+			if (ownerB == nullptr) return;
 			if (!ownerB or !ownerB->IsActive()) continue;
 			
 			ColliderComponent* colliderA{ rigidbodyA->GetCollider() };
 			ColliderComponent* colliderB{ rigidbodyB->GetCollider() };
 
+			if (!colliderA->IsEnabled() or !colliderB->IsEnabled()) continue;
 			if (colliderA->IsTrigger() or colliderB->IsTrigger()) continue;
 			if (colliderA->IsLayerExcluded(colliderB->GetCollisionLayer())) continue;
 

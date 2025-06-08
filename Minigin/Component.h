@@ -15,7 +15,9 @@ namespace Rinigin
 		Component& operator=(Component&& other) = delete;
 
 		void Destroy() { m_Destroyed = true; };
+		void SetEnabled(bool state) { m_Enabled = state; };
 		bool IsDestroyed() const { return m_Destroyed; };
+		bool IsEnabled() const { return m_Enabled; }
 
 		GameObject* GetOwner() const { return m_Owner; };
 
@@ -28,5 +30,6 @@ namespace Rinigin
 	private:
 		GameObject* m_Owner; // A pointer to the parented gameObject
 		bool m_Destroyed;
+		bool m_Enabled;
 	};
 }

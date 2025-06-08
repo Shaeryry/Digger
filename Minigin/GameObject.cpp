@@ -72,7 +72,7 @@ void Rinigin::GameObject::FixedUpdate()
 {
 	if (IsActive()) {
 		for (auto& component : m_Components) {
-			component->FixedUpdate();
+			if (component->IsEnabled()) component->FixedUpdate();
 		}
 	}
 }
@@ -81,7 +81,7 @@ void Rinigin::GameObject::Update()
 {
 	if (IsActive()) {
 		for (auto& component : m_Components) {
-			component->Update();
+			if (component->IsEnabled()) component->Update();
 		}
 	}
 }
@@ -90,7 +90,7 @@ void Rinigin::GameObject::LateUpdate()
 {
 	if (IsActive()) {
 		for (auto& component : m_Components) {
-			component->LateUpdate();
+			if (component->IsEnabled()) component->LateUpdate();
 		}
 	}
 
@@ -101,7 +101,7 @@ void Rinigin::GameObject::Render() const
 {
 	if (IsActive()) {
 		for (auto& component : m_Components) {
-			component->Render();
+			if (component->IsEnabled()) component->Render();
 		}
 	}
 }

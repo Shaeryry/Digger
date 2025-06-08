@@ -4,9 +4,10 @@
 
 namespace Rinigin {
 	class ColliderComponent;
-	class RigidbodyComponent : public Component {
+	class RigidbodyComponent final : public Component {
 	public:
 		explicit RigidbodyComponent(GameObject* gameObject, ColliderComponent* collider , float mass = 1.0f, bool isKinematic = false);
+		~RigidbodyComponent();
 		virtual void FixedUpdate() override;
 		
 		void SetKinematic(bool kinematic) { m_IsKinematic = kinematic; };
@@ -15,20 +16,24 @@ namespace Rinigin {
 		void GravityEnabled(bool state) { m_UseGravity = state; }
 
 		void AddForce(const glm::vec3& force);
+	
 		glm::vec3 Velocity() const { return m_Velocity; }
 
 		float Mass() const { return m_Mass; }
 		bool IsKinematic() const { return m_IsKinematic; }
+		bool CanCollide() const { return m_CanCollide; }
+		void SetCanCollide(bool state) { m_CanCollide = state; }
 		 
 		ColliderComponent* GetCollider() const { return m_Collider; }
 	private:
 		ColliderComponent* m_Collider;
-
+			
 		glm::vec3 m_Velocity;
 		glm::vec3 m_Force;
 
 		float m_Mass;
 		bool m_IsKinematic;
 		bool m_UseGravity;
+		bool m_CanCollide;
 	};
 }

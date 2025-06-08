@@ -8,13 +8,16 @@
 #include "TextureRendererComponent.h"
 #include "TextureComponent.h"
 
-Item::Item(const std::string& fileName) :
-	m_ItemObject(Rinigin::SceneManager::GetInstance().GetActiveScene()->CreateObject()),
-	m_Trigger(nullptr)
+#include "Level.h"
+
+Item::Item(Level* level,const std::string& fileName) :
+	m_Level(level),
+	m_ItemObject(nullptr)
 {
-	m_Trigger = m_ItemObject->AddComponent<Rinigin::ColliderComponent>(glm::vec3{ 0,0,0 }, glm::vec3{ 0,0,0 }, true);
+	m_ItemObject = level->GetScene()->CreateObject();
+	m_ItemObject->SetActive(false);
+
 	m_Renderer = m_ItemObject->AddComponent<Rinigin::TextureRendererComponent>();
 	m_TextureComponent = m_ItemObject->AddComponent<Rinigin::TextureComponent>(m_Renderer);
 	m_TextureComponent->SetTexture(fileName);
-	m_Trigger->SetLayer("Item");
 }

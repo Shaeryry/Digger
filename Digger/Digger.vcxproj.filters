@@ -28,14 +28,8 @@
     <Filter Include="Source Files\GameStates">
       <UniqueIdentifier>{ff4b81d9-1a27-470c-804e-03cc91ac5488}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\GameStates">
-      <UniqueIdentifier>{e4d000a7-a67b-47a3-88e8-6aa2cee963e8}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\Characters">
       <UniqueIdentifier>{2cd35ef2-54bb-484b-ad55-130974789852}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\DiggerMobileStates">
-      <UniqueIdentifier>{5dfe24ba-2815-4267-8bba-6f02b4bd1340}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\DiggerMobileStates">
       <UniqueIdentifier>{18373e2a-47bb-4fa5-9c03-7058cf7398ca}</UniqueIdentifier>
@@ -45,6 +39,30 @@
     </Filter>
     <Filter Include="Source Files\Items">
       <UniqueIdentifier>{57779761-c837-4a29-9832-992f6f72c3f7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\States">
+      <UniqueIdentifier>{105b64b5-d772-463a-ad03-4bd63eb180fc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\States\GameStates">
+      <UniqueIdentifier>{e4d000a7-a67b-47a3-88e8-6aa2cee963e8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\States\DiggerMobileStates">
+      <UniqueIdentifier>{5dfe24ba-2815-4267-8bba-6f02b4bd1340}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\States\MoneyBagStates">
+      <UniqueIdentifier>{53025bbf-e265-4b6b-9347-f6e23f4cf68e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\States">
+      <UniqueIdentifier>{2fc78cc8-73b7-417f-bf38-e9910cecb227}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\States\MoneyBagStates">
+      <UniqueIdentifier>{3002a0f7-45b0-4c4e-8796-6da7ceee3ecc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Prototype">
+      <UniqueIdentifier>{5b49f776-f5b0-49bc-8078-e435714d3c34}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\PrototypePattern">
+      <UniqueIdentifier>{dec10711-4c91-47b6-be73-ac57a4981e5b}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -120,6 +138,21 @@
     <ClCompile Include="MoneyBag.cpp">
       <Filter>Source Files\Items</Filter>
     </ClCompile>
+    <ClCompile Include="MoneyBagIdle.cpp">
+      <Filter>Source Files\States\MoneyBagStates</Filter>
+    </ClCompile>
+    <ClCompile Include="MoneyBagPrefall.cpp">
+      <Filter>Source Files\States\MoneyBagStates</Filter>
+    </ClCompile>
+    <ClCompile Include="MoneyBagFalling.cpp">
+      <Filter>Source Files\States\MoneyBagStates</Filter>
+    </ClCompile>
+    <ClCompile Include="Level.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Gold.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Minigin\FPSComponent.h">
@@ -156,13 +189,13 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="StartScreenState.h">
-      <Filter>Header Files\GameStates</Filter>
+      <Filter>Header Files\States\GameStates</Filter>
     </ClInclude>
     <ClInclude Include="StartScreenMenuCommand.h">
       <Filter>Header Files\Commands</Filter>
     </ClInclude>
     <ClInclude Include="GameScreenState.h">
-      <Filter>Header Files\GameStates</Filter>
+      <Filter>Header Files\States\GameStates</Filter>
     </ClInclude>
     <ClInclude Include="DiggerMobile.h">
       <Filter>Header Files\Characters</Filter>
@@ -171,13 +204,13 @@
       <Filter>Header Files\Characters</Filter>
     </ClInclude>
     <ClInclude Include="DiggerMobileDiggingState.h">
-      <Filter>Header Files\DiggerMobileStates</Filter>
+      <Filter>Header Files\States\DiggerMobileStates</Filter>
     </ClInclude>
     <ClInclude Include="DiggerMobileDyingState.h">
-      <Filter>Header Files\DiggerMobileStates</Filter>
+      <Filter>Header Files\States\DiggerMobileStates</Filter>
     </ClInclude>
     <ClInclude Include="DiggerMobileDeadState.h">
-      <Filter>Header Files\DiggerMobileStates</Filter>
+      <Filter>Header Files\States\DiggerMobileStates</Filter>
     </ClInclude>
     <ClInclude Include="TerrainComponent.h">
       <Filter>Header Files\Components</Filter>
@@ -189,6 +222,30 @@
       <Filter>Header Files\Items</Filter>
     </ClInclude>
     <ClInclude Include="MoneyBag.h">
+      <Filter>Header Files\Items</Filter>
+    </ClInclude>
+    <ClInclude Include="MoneyBagIdle.h">
+      <Filter>Header Files\States\MoneyBagStates</Filter>
+    </ClInclude>
+    <ClInclude Include="MoneyBagPrefall.h">
+      <Filter>Header Files\States\MoneyBagStates</Filter>
+    </ClInclude>
+    <ClInclude Include="MoneyBagFalling.h">
+      <Filter>Header Files\States\MoneyBagStates</Filter>
+    </ClInclude>
+    <ClInclude Include="DiggerConstants.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Level.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Prototype.h">
+      <Filter>Header Files\PrototypePattern</Filter>
+    </ClInclude>
+    <ClInclude Include="PrototypeSpawner.h">
+      <Filter>Header Files\PrototypePattern</Filter>
+    </ClInclude>
+    <ClInclude Include="Gold.h">
       <Filter>Header Files\Items</Filter>
     </ClInclude>
   </ItemGroup>

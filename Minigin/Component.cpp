@@ -2,8 +2,9 @@
 #include "GameObject.h"
 
 Rinigin::Component::Component(GameObject* gameObject) :
-	m_Destroyed{ false },
-	m_Owner{ gameObject }
+	m_Destroyed(false),
+	m_Enabled(true),
+	m_Owner(gameObject)
 {
 }
 

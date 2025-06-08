@@ -257,17 +257,17 @@
     <ClCompile Include="SpriteAnimatorComponent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ColliderComponent.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="PhysicsManager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="RigidbodyComponent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ICollisionMask.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ColliderComponent.cpp">
+      <Filter>Source Files\BaseComponents</Filter>
+    </ClCompile>
+    <ClCompile Include="RigidbodyComponent.cpp">
+      <Filter>Source Files\BaseComponents</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -12,6 +12,7 @@
 #include "SDLMixerSoundSystem.h"
 
 #include "ResourceManager.h"
+#include "DiggerConstants.h"
 
 //
 //#include "InputManager.h"
@@ -137,7 +138,7 @@
 
 int main(int, char* []) {
 	//Rinigin::Minigin engine("../Data/");
-	DiggerGame digger(640,480);
+	DiggerGame digger(DIGGER::SCREEN_WIDTH, DIGGER::SCREEN_HEIGHT);
 	
 	//engine.Run(load);
 	return 0;
