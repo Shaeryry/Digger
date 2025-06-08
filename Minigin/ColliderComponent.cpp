@@ -7,8 +7,8 @@
 Rinigin::ColliderComponent::ColliderComponent(GameObject* gameObject, const glm::vec3& size, const glm::vec3& offset, bool isTrigger) :
 	Component(gameObject),
 
-	m_ColliderEnterEvent( std::make_unique<Event>( Rinigin::CollisionEventArguments("CollisionEnter",this) ) ),
-	m_ColliderExitEvent( std::make_unique<Event>(Rinigin::CollisionEventArguments("CollisionExit", this) ) ),
+	m_ColliderEnterEvent( std::make_unique<Event>() ),
+	m_ColliderExitEvent( std::make_unique<Event>() ),
 	m_IsTrigger(isTrigger),
 
 	m_Bounds(size),
@@ -46,17 +46,18 @@ void Rinigin::ColliderComponent::AddCollidingCollider(ColliderComponent* other)
 {
 	if ( IsTouching(other) ) return;
 	m_CollidingColliders.emplace_back(other);
-	std::cout << "did collision" << std::endl;
-	m_ColliderEnterEvent->NotifyObservers();
+
+	Rinigin::CollisionEventArguments arguments{"CollisionEnter",this,other};
+	m_ColliderEnterEvent->NotifyObservers(arguments);
 }
 
 void Rinigin::ColliderComponent::RemoveCollidingCollider(ColliderComponent* other)
 {	
 	if (m_CollidingColliders.empty()) return;
 	m_CollidingColliders.erase(std::remove(m_CollidingColliders.begin(), m_CollidingColliders.end(), other), m_CollidingColliders.end());
-	std::cout << "lost collision" << std::endl;
 
-	m_ColliderExitEvent->NotifyObservers();
+	Rinigin::CollisionEventArguments arguments{ "CollisionExit",this,other };
+	m_ColliderExitEvent->NotifyObservers(arguments);
 }
 
 bool Rinigin::ColliderComponent::IsTouching(ColliderComponent* other)

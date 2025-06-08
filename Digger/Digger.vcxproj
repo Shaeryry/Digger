@@ -87,7 +87,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Minigin;$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Minigin;$(ProjectDir);$(SolutionDir)3rdParty;$(SolutionDir)3rdParty\nlohmann\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <TreatWarningAsError>true</TreatWarningAsError>
     </ClCompile>
@@ -106,7 +106,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Minigin;$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Minigin;$(ProjectDir);$(SolutionDir)3rdParty;$(SolutionDir)3rdParty\nlohmann\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <TreatWarningAsError>true</TreatWarningAsError>
     </ClCompile>
@@ -125,7 +125,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Minigin;$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Minigin;$(ProjectDir);$(SolutionDir)3rdParty;$(SolutionDir)3rdParty\nlohmann\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <TreatWarningAsError>true</TreatWarningAsError>
     </ClCompile>
@@ -144,7 +144,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Minigin;$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Minigin;$(ProjectDir);$(SolutionDir)3rdParty;$(SolutionDir)3rdParty\nlohmann\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <TreatWarningAsError>true</TreatWarningAsError>
     </ClCompile>
@@ -167,6 +167,9 @@
     <ClCompile Include="..\Minigin\RotatorComponent.cpp" />
     <ClCompile Include="..\Minigin\ScoreComponent.cpp" />
     <ClCompile Include="..\Minigin\ScoreDisplayComponent.cpp" />
+    <ClCompile Include="Emerald.cpp" />
+    <ClCompile Include="Item.cpp" />
+    <ClCompile Include="MoneyBag.cpp" />
     <ClCompile Include="TerrainComponent.cpp" />
     <ClCompile Include="DiggerMobile.cpp" />
     <ClCompile Include="DiggerMobileDeadState.cpp" />
@@ -190,6 +193,9 @@
     <ClInclude Include="..\Minigin\RotatorComponent.h" />
     <ClInclude Include="..\Minigin\ScoreComponent.h" />
     <ClInclude Include="..\Minigin\ScoreDisplayComponent.h" />
+    <ClInclude Include="Emerald.h" />
+    <ClInclude Include="Item.h" />
+    <ClInclude Include="MoneyBag.h" />
     <ClInclude Include="TerrainComponent.h" />
     <ClInclude Include="DiggerMobile.h" />
     <ClInclude Include="DiggerMobileDeadState.h" />

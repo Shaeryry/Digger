@@ -5,12 +5,14 @@
 #include "SceneManager.h"
 #include "Scene.h"
 #include "GameObject.h"
+#include "PhysicsManager.h"
 
 #include "StateContextComponent.h" 
 #include "StartScreenState.h"
 #include "GameScreenState.h"
 
 #include "Minigin.h"
+
 
 DiggerGame::DiggerGame(float screenWidth, float screenHeight) :
 	m_ScreenWidth(static_cast<int>(screenWidth)),
@@ -43,6 +45,8 @@ void DiggerGame::InitializeGame()
 
 	gameContext->SetState(startScreenState); // Set the first state to the start screen
 
-	gameState->SetGameMode(GameMode::COOP);
+	gameState->SetGameMode(GameMode::SOLO);
 	gameContext->SetState(gameState);
+
+	Rinigin::Physics::GetInstance().SetGravity(100.f);
 }

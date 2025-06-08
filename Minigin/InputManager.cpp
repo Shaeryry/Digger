@@ -11,7 +11,7 @@ void Rinigin::InputManager::Initialize(int amountGamepads)
 	}
 }
 
-bool Rinigin::InputManager::ProcessInput() 
+bool Rinigin::InputManager::ProcessInput()	
 {
 	SDL_Event e{};
 	const Uint8* state = SDL_GetKeyboardState(NULL);

@@ -12,19 +12,14 @@ HealthDisplayComponent::HealthDisplayComponent(Rinigin::GameObject* gameObject, 
 	UpdateText(3);
 }
 
-void HealthDisplayComponent::Notify(Rinigin::EventArguments* eventArgs)
+void HealthDisplayComponent::Notify(Rinigin::EventArguments & eventArguments)
 {
-	switch (eventArgs->GetID())
+	switch (eventArguments.GetID())
 	{
-		case Rinigin::Helpers::sdbm_hash("HealthChanged") : {
-			auto arguments = GetArgumentsOfType<GameObjectEventArguments>(eventArgs);
-			auto* healthComponent{ arguments->GetGameObject()->GetComponent<HealthComponent>() };
-			if (healthComponent) {
-				UpdateText(healthComponent->GetHealth());
-			}
+		case 1:
 			break;
-		}
-			
+		default:
+			break;
 	}
 
 }

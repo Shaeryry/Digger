@@ -11,7 +11,7 @@ public:
 	virtual Rinigin::State* Update() override;
 	virtual void Exit() override;
 
-	void Notify(Rinigin::EventArguments* arguments) override;
+	void Notify(Rinigin::EventArguments & eventArguments) override;
 private:
 	void UpdateAnimation();
 

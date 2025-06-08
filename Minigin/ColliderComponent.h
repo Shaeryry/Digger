@@ -37,8 +37,11 @@ namespace Rinigin {
 		void AddExcludedLayer(unsigned int layerId);
 		void RemoveExcludedLayer(unsigned int layerId);
 		bool IsLayerExcluded(unsigned int layerId);
+
+		size_t GetCollisions() const { return m_CollidingColliders.size(); };
 	private:
 		friend void Physics::DetectCollisions();
+		friend void Physics::RemoveCollider(ColliderComponent* collider);
 
 		void AddCollidingCollider(ColliderComponent* other);
 		void RemoveCollidingCollider(ColliderComponent* other);

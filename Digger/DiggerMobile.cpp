@@ -6,13 +6,13 @@
 #include "GameObject.h"
 #include "HealthComponent.h"
 #include "TerrainComponent.h"
-#include "TerrainColliderComponent.h"
 
 #include "DiggerMobileDiggingState.h"
 #include "DiggerMobileDyingState.h"
 #include "DiggerMobileDeadState.h"
 #include "Helpers.h"
 #include "ColliderComponent.h"
+#include "ScoreComponent.h"
 
 DiggerMobile::DiggerMobile(int index,TerrainComponent* map) :
 	Character("DiggerMobile.png"),
@@ -24,14 +24,14 @@ DiggerMobile::DiggerMobile(int index,TerrainComponent* map) :
 	m_Map(map)
 {
 	// Setup components
-	/*auto terrainCollider = GetCharacterObject()->AddComponent<TerrainColliderComponent>( GetRigidbody(),map );
-	terrainCollider->SetWidth(40);
-	terrainCollider->SetHeight(40);*/
-
 	GetCollider()->SetLayer("Player");
+	GetTrigger()->SetLayer("Player");
 	//GetCollider()->AddExcludedLayer("Player");
 
-	GetCollider()->SetBounds(glm::vec3{40,40,0});
+	GetCollider()->SetBounds(glm::vec3{30,30,0});
+	GetCollider()->SetOffset(glm::vec3{5,5,0});
+
+	GetTrigger()->SetBounds(glm::vec3{ 40,40,0 });
 	GetHealthComponent()->GetDiedEvent()->AddObserver(this);
 	GetHealthComponent()->SetMaxHealth(1);
 
@@ -63,11 +63,13 @@ DiggerMobile::DiggerMobile(int index,TerrainComponent* map) :
 	m_DeadState = m_DiggerMobileStateContext->CreateState<DiggerMobileDeadState>(this);
 
 	m_DiggerMobileStateContext->SetState(m_DiggingState);
+	// Score
+	m_ScoreComponent = GetCharacterObject()->AddComponent<ScoreComponent>();
 }
 
-void DiggerMobile::Notify(Rinigin::EventArguments* eventArguments)
+void DiggerMobile::Notify(Rinigin::EventArguments& eventArguments)
 {
-	switch (eventArguments->GetID())
+	switch (eventArguments.GetID())
 	{
 	case Rinigin::Helpers::sdbm_hash("Died"): 
 		m_DiggerMobileStateContext->SetState(m_DyingState);

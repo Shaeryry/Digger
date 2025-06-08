@@ -7,7 +7,7 @@ class ScoreDisplayComponent : public Rinigin::Component, public Rinigin::Observe
 {
 public:
 	explicit ScoreDisplayComponent(Rinigin::GameObject* gameObject,Rinigin::TextComponent* textComponent);
-	virtual void Notify(Rinigin::EventArguments* eventType) override;
+	virtual void Notify(Rinigin::EventArguments & eventArguments) override;
 private:
 	void UpdateScore(int score);
 	Rinigin::TextComponent* m_TextComponent;

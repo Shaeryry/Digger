@@ -17,7 +17,6 @@ namespace Rinigin
 		GameObject* CreateObject(GameObject* object = nullptr);
 		GameObject* AddObject(std::unique_ptr<GameObject>& object);
 		std::vector<GameObject*> GetObjects() const;
-		void Destroy(std::unique_ptr<GameObject>& object); 
 		void RemoveAll();
 
 		void FixedUpdate(); 
@@ -29,6 +28,9 @@ namespace Rinigin
 		const unsigned int GetID() const { return m_SceneId; };
 		// Events
 	private: 		 
+		void Destroy(std::unique_ptr<GameObject>& object);
+		void Destroy(GameObject* object);
+
 		std::string m_Name;
 		unsigned int m_SceneId;
 		std::vector < std::unique_ptr<GameObject> > m_Objects{};

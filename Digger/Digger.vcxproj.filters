@@ -40,6 +40,12 @@
     <Filter Include="Source Files\DiggerMobileStates">
       <UniqueIdentifier>{18373e2a-47bb-4fa5-9c03-7058cf7398ca}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Items">
+      <UniqueIdentifier>{c148e072-2b9d-4a3b-b75a-2b0abbc614c3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Items">
+      <UniqueIdentifier>{57779761-c837-4a29-9832-992f6f72c3f7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -105,6 +111,15 @@
     <ClCompile Include="DiggerMobileDeadState.cpp">
       <Filter>Source Files\DiggerMobileStates</Filter>
     </ClCompile>
+    <ClCompile Include="Emerald.cpp">
+      <Filter>Source Files\Items</Filter>
+    </ClCompile>
+    <ClCompile Include="Item.cpp">
+      <Filter>Source Files\Items</Filter>
+    </ClCompile>
+    <ClCompile Include="MoneyBag.cpp">
+      <Filter>Source Files\Items</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Minigin\FPSComponent.h">
@@ -166,6 +181,15 @@
     </ClInclude>
     <ClInclude Include="TerrainComponent.h">
       <Filter>Header Files\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Item.h">
+      <Filter>Header Files\Items</Filter>
+    </ClInclude>
+    <ClInclude Include="Emerald.h">
+      <Filter>Header Files\Items</Filter>
+    </ClInclude>
+    <ClInclude Include="MoneyBag.h">
+      <Filter>Header Files\Items</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -14,7 +14,8 @@ public:
 
 	void ChangeBackgroundTexture(const char* filePath);
 
-	void DigAt(float cx, float cy, int radius);
+	void DigAt(float cx, float cy, int radius, bool square = false);
+	void DigAt(int cx, int cy, int radius, bool square = false);
 	void Update() override; 
 	void Render() const override;
 

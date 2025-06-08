@@ -2,7 +2,7 @@
 #include "Command.h"
 #include "InputManager.h"
 
-#include "Windows.h"
+#include <windows.h>
 #include "Xinput.h"
 
 // Pimpl
@@ -101,13 +101,13 @@ void Rinigin::Gamepad::ExecuteCommands(const ExecutionCommandInfo& commandInfo)
 		if (useGamepadLogic) {
 			switch (binding->connectionType)
 			{
-			case Rinigin::BindingConnection::OnTrigger:
+			case Rinigin::BindingConnection::Down:
 				canExecute = IsButtonTriggered(button);
 				break;
-			case Rinigin::BindingConnection::OnRelease:
+			case Rinigin::BindingConnection::Release:
 				canExecute = IsButtonReleased(button);
 				break;
-			case Rinigin::BindingConnection::OnHeld:
+			case Rinigin::BindingConnection::Held:
 				canExecute = IsDown(button);
 				break;
 			}
@@ -125,13 +125,13 @@ void Rinigin::Gamepad::ExecuteCommands(const ExecutionCommandInfo& commandInfo)
 
 			switch (binding->connectionType)
 			{
-			case Rinigin::BindingConnection::OnTrigger:
+			case Rinigin::BindingConnection::Down:
 				canExecute = typeEvent == SDL_KEYDOWN and validPress; //IsButtonTriggered(button);
 				break;
-			case Rinigin::BindingConnection::OnRelease:
+			case Rinigin::BindingConnection::Release:
 				canExecute = typeEvent == SDL_KEYUP and validPress;//IsButtonReleased(button);
 				break;
-			case Rinigin::BindingConnection::OnHeld:
+			case Rinigin::BindingConnection::Held:
 				canExecute = not commandInfo.polling and commandInfo.keyboardState[button];
 				break;
 			}

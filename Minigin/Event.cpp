@@ -15,10 +15,10 @@ void Rinigin::Event::RemoveObserver(Observer* observer)
 	}
 }
 
-void Rinigin::Event::NotifyObservers()
+void Rinigin::Event::NotifyObservers(EventArguments& args)
 {
-	for (auto& observer : m_Observers) {
-		observer->Notify( m_EventData.get() );
+	for (auto* observer : m_Observers) {
+		observer->Notify(args);
 	}
 }
 

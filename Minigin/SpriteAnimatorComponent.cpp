@@ -15,9 +15,9 @@ Rinigin::SpriteAnimatorComponent::SpriteAnimatorComponent(GameObject* gameObject
 	m_CurrentAnimation(),
 	m_CurrentAnimationClock(0),
 
-	m_StartedEvent( std::make_unique<Rinigin::Event>( Rinigin::NullEventArguments("AnimationStart") ) ),
-	m_EndedEvent( std::make_unique<Rinigin::Event>( Rinigin::NullEventArguments("AnimationEnded") ) ),
-	m_CompletedEvent( std::make_unique<Rinigin::Event>( Rinigin::NullEventArguments("AnimationCompleted") ) )
+	m_StartedEvent( std::make_unique<Rinigin::Event>() ),
+	m_EndedEvent( std::make_unique<Rinigin::Event>() ),
+	m_CompletedEvent( std::make_unique<Rinigin::Event>() )
 
 {
 }
@@ -39,7 +39,8 @@ void Rinigin::SpriteAnimatorComponent::PlayAnimation(const char* animationName)
 	m_CurrentAnimation = data; // Set the current animation
 	m_Ended = false; // Make the animation uncomplete
 
-	m_StartedEvent->NotifyObservers();
+	Rinigin::NullEventArguments arguments{ "AnimationStart" };
+	m_StartedEvent->NotifyObservers(arguments);
 }
 
 void Rinigin::SpriteAnimatorComponent::AddAnimation(const char* animationName, const SpriteAnimationData& data)
@@ -96,7 +97,8 @@ void Rinigin::SpriteAnimatorComponent::Update()
 
 					if (calculatedFrame >= frames) {
 						// TODO : Fire completed event
-						m_CompletedEvent->NotifyObservers();
+						Rinigin::NullEventArguments argumentsCompleted{ "AnimationCompleted" };
+						m_CompletedEvent->NotifyObservers(argumentsCompleted);
 
 						// Looping
 						if (isLooping) {
@@ -105,7 +107,9 @@ void Rinigin::SpriteAnimatorComponent::Update()
 						else { 
 							// TODO : Fire ended event
 							m_Ended = true; // Animation ended
-							m_EndedEvent->NotifyObservers();
+
+							Rinigin::NullEventArguments argumentsEnded{ "AnimationEnded" };
+							m_EndedEvent->NotifyObservers(argumentsEnded);
 						}
 					}
 

@@ -41,12 +41,16 @@ public:
 	ChangeDirectionCommand* LeftDirectionCommand() const { return m_LeftDirectionCommand; }
 
 	Rinigin::ColliderComponent* GetCollider() const { return m_Collider; };
+	Rinigin::ColliderComponent* GetTrigger() const { return m_Trigger; };
+
 	Rinigin::RigidbodyComponent* GetRigidbody() const { return m_Rigidbody; }
 	void SetSpeed(float speed);
 private:
 	Rinigin::GameObject* m_CharacterObject;
 	
 	Rinigin::ColliderComponent* m_Collider;
+	Rinigin::ColliderComponent* m_Trigger;
+
 	Rinigin::RigidbodyComponent* m_Rigidbody;
 	Rinigin::TextureRendererComponent* m_Renderer;
 	Rinigin::TextureComponent* m_TextureComponent;

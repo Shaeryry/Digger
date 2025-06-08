@@ -3,9 +3,9 @@
 
 Rinigin::SceneManager::SceneManager() :
 	m_ActiveScene(nullptr),
-	m_ActiveSceneChangedEvent{ std::make_unique<Event>( NullEventArguments("SceneChanged") )},
-	m_SceneCreatedEvent{ std::make_unique<Event>( NullEventArguments("SceneCreated") ) },
-	m_SceneRemovedEvent{ std::make_unique<Event>( NullEventArguments("SceneRemoved") ) }
+	m_ActiveSceneChangedEvent{ std::make_unique<Event>() },
+	m_SceneCreatedEvent{ std::make_unique<Event>() },
+	m_SceneRemovedEvent{ std::make_unique<Event>() }
 {
 }
 
@@ -49,7 +49,8 @@ Rinigin::Scene* Rinigin::SceneManager::CreateScene(const std::string& name)
 	Scene* newScene = scene.get();  
 	m_Scenes.emplace_back(scene);
 
-	m_SceneCreatedEvent->NotifyObservers();
+	NullEventArguments arguments{ "SceneCreated" };
+	m_SceneCreatedEvent->NotifyObservers(arguments);
 	return newScene;
 }
 
@@ -68,12 +69,16 @@ void Rinigin::SceneManager::RemoveScene(Scene* scene)
 				}
 			), m_Scenes.end());
 
-		m_SceneRemovedEvent->NotifyObservers();
+
+		NullEventArguments arguments{ "SceneRemoved" };
+		m_SceneRemovedEvent->NotifyObservers(arguments);
 	}
 } 
 
 void Rinigin::SceneManager::SetActiveScene(Scene* sceneToLoad)
 {
 	m_ActiveScene = sceneToLoad;
-	m_ActiveSceneChangedEvent->NotifyObservers();
+
+	NullEventArguments arguments{ "SceneChanged" };
+	m_ActiveSceneChangedEvent->NotifyObservers(arguments);
 }

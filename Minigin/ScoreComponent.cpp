@@ -1,11 +1,12 @@
 #include "ScoreComponent.h"
 #include "EventTypes.h"
 #include "Helpers.h"
+#include <iostream>
 
 ScoreComponent::ScoreComponent(Rinigin::GameObject* gameObject) :
 	Component(gameObject),
 	m_Score{ 0 },
-	m_ScoreChangedEvent{ std::make_unique<Rinigin::Event>( GameObjectEventArguments("ScoreChanged",gameObject))}
+	m_ScoreChangedEvent{ std::make_unique<Rinigin::Event>()}
 {
 }
 
@@ -16,16 +17,27 @@ void ScoreComponent::AddScore(int amount)
 	m_Score = newScore;
 
 	if (newScore != currentScore) {
-		m_ScoreChangedEvent->NotifyObservers();
+		std::cout << newScore << std::endl;
+		GameObjectEventArguments arguments{ "ScoreChanged",GetOwner() };
+		m_ScoreChangedEvent->NotifyObservers(arguments);
 	}
 }
 
-void ScoreComponent::Notify(Rinigin::EventArguments* eventArgs)
+void ScoreComponent::Notify(Rinigin::EventArguments& eventArguments)
 {
-	switch (eventArgs->GetID())
+	switch (eventArguments.GetID())
 	{
-		case Rinigin::Helpers::sdbm_hash("EnemyDied"):
+	case Rinigin::Helpers::sdbm_hash("EnemyDied"):
+		AddScore(100);
+		break;
+	case Rinigin::Helpers::sdbm_hash("EmeraldCollected"): {
+		//AddScore(100);
+		GameObjectEventArguments& gameObjectArguments{ GetArgumentsOfType<GameObjectEventArguments>(eventArguments) };
+		if (gameObjectArguments.GetGameObject() == GetOwner()) {
 			AddScore(100);
 			break;
+		}
 	}
+	}
+	
 }

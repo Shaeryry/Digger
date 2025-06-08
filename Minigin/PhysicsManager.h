@@ -11,10 +11,14 @@ namespace Rinigin {
 
 	class CollisionEventArguments final : public EventArguments {
 	public:
-		explicit CollisionEventArguments(const char* eventName,ColliderComponent* collider) : EventArguments(eventName),m_Collider(collider) {};
+		explicit CollisionEventArguments(const char* eventName,ColliderComponent* collider,ColliderComponent* other) : 
+			EventArguments(eventName),m_Collider(collider),m_Other(other) {};
 		ColliderComponent* GetCollider() const { return m_Collider; };
+		ColliderComponent* GetOther() const { return m_Other; };
+		void SetOther(ColliderComponent* other) { m_Other = other; }
 	private:
 		ColliderComponent* m_Collider;
+		ColliderComponent* m_Other;
 	};
 
 	class Physics : public Singleton<Physics>

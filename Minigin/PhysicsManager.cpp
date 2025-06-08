@@ -27,7 +27,18 @@ void Rinigin::Physics::Render() const
 			static_cast<int>(bounds.y)
 		};
 
-		SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255); // green
+		if (collider->GetCollisions() > 0) {
+			SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255); // red
+		}
+		else {
+			if (collider->IsTrigger()) {
+				SDL_SetRenderDrawColor(renderer, 255, 0, 255, 255); // green
+			}
+			else {
+				SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255); // green
+			}
+		};
+
 		SDL_RenderDrawRect(renderer, &rect);
 	}
 }
@@ -36,8 +47,8 @@ void Rinigin::Physics::FixedUpdate()
 {
 	if (m_Colliders.empty()) return;
 
-	DetectCollisions(); // Trigger enter/Exit events on colliders
 	SolveCollisions(); // Solve rigid bodies
+	DetectCollisions(); // Trigger enter/Exit events on colliders
 }
 
 void Rinigin::Physics::AddCollider(ColliderComponent* collider)
@@ -48,7 +59,13 @@ void Rinigin::Physics::AddCollider(ColliderComponent* collider)
 void Rinigin::Physics::RemoveCollider(ColliderComponent* collider)
 {
 	if (m_Colliders.empty()) return;
-	//m_Colliders.erase(std::remove(m_Colliders.begin(), m_Colliders.end(), collider), m_Colliders.end());
+
+	// Remove it from the others
+	for (auto* other : m_Colliders) {
+		if (other == collider) continue;
+		other->RemoveCollidingCollider(collider);
+	}
+
 	std::erase(m_Colliders, collider);
 }
 
@@ -61,7 +78,7 @@ void Rinigin::Physics::AddRigidbody(RigidbodyComponent* rigidbody)
 void Rinigin::Physics::RemoveRigidbody(RigidbodyComponent* rigidbody)
 {
 	if (m_Rigidbodies.empty()) return;
-	//m_Rigidbodies.erase(std::remove(m_Rigidbodies.begin(), m_Rigidbodies.end(), rigidbody), m_Rigidbodies.end());
+
 	std::erase(m_Rigidbodies, rigidbody);
 }
 
@@ -88,10 +105,10 @@ bool Rinigin::Physics::AreCollidersOverlapping(ColliderComponent* collider_A, Co
 	const glm::vec3 boundsB{ collider_B->Bounds() };
 
 	return
-		positionA.x < positionB.x + boundsB.x &&
-		positionA.x + boundsA.x > boundsB.x &&
-		positionA.y < positionB.y + boundsB.y &&
-		positionA.y + boundsA.y > boundsB.y;
+		(positionA.x < positionB.x + boundsB.x) &&
+		(positionA.x + boundsA.x > positionB.x) &&
+		(positionA.y < positionB.y + boundsB.y) &&
+		(positionA.y + boundsA.y > positionB.y);
 }
 
 
@@ -124,7 +141,6 @@ void Rinigin::Physics::DetectCollisions()
 					collider->AddCollidingCollider(other);
 				}
 			}
-
 		}
 	}
 }
@@ -177,15 +193,16 @@ void Rinigin::Physics::SolveCollisions()
 			{
 				glm::vec3 moveA = correction * (massB / totalMass);
 				glm::vec3 posA = (ownerA->GetWorldPosition() + moveA);
-				if (!IsOverlappingWithMasks(posA, colliderA->Bounds())) ownerA->SetPosition(posA);
+				//if (!IsOverlappingWithMasks(posA, colliderA->Bounds())) ownerA->SetPosition(posA);
+				ownerA->SetPosition(posA);
 			}
 			if (massB > 0.f)
 			{
 				glm::vec3 moveB = -correction * (massA / totalMass);
 				glm::vec3 posB = (ownerB->GetWorldPosition() + moveB);
 
-				if (!IsOverlappingWithMasks(posB,colliderB->Bounds())) ownerB->SetPosition(posB);
-
+				//if (!IsOverlappingWithMasks(posB,colliderB->Bounds())) ownerB->SetPosition(posB);
+				ownerB->SetPosition(posB);
 			}
 		}
 	}

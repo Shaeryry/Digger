@@ -95,23 +95,27 @@ void TerrainComponent::ChangeBackgroundTexture(const char* filePath)
 	SDL_FreeSurface(textureSurface);
 }
 
-void TerrainComponent::DigAt(float cx, float cy, int radius)
+void TerrainComponent::DigAt(float cx, float cy, int radius, bool square)
+{
+	DigAt(static_cast<int>(cx), static_cast<int>(cy), radius,square);
+}
+
+void TerrainComponent::DigAt(int cx, int cy, int radius, bool square)
 {
 
 	for (int y = -radius; y <= radius; ++y) {
 		for (int x = -radius; x <= radius; ++x) {
-			int dx = static_cast<int>(cx) + x;
-			int dy = static_cast<int>(cy) + y;
+			int dx = cx + x;
+			int dy = cy + y;
 
 			if (dx >= 0 && dx < m_ScreenWidth && dy >= 0 && dy < m_ScreenHeight) {
-				if (x * x + y * y <= radius * radius) {
+				if (x * x + y * y <= radius * radius or square) {
 					int index = dy * m_ScreenWidth + dx;
 					m_MaskPixels[index] = 0x00000000;//0x00FFFFFF; // Set alpha to 0
 				}
 			}
 		}
 	}
-
 }
 
 void TerrainComponent::Update()

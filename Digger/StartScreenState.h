@@ -15,7 +15,7 @@ public:
 	virtual Rinigin::State* Update() override;
 	virtual void Exit() override;
 
-	virtual void Notify(Rinigin::EventArguments* arguments) override;
+	virtual void Notify(Rinigin::EventArguments & eventArguments) override;
 private:
 	Rinigin::Scene* m_Scene;
 	Rinigin::Gamepad* m_MenuController;

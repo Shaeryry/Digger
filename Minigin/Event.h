@@ -7,14 +7,14 @@ namespace Rinigin {
 	class Observer;
 
 	class EventArguments {
-	public:
-		explicit EventArguments(const char* eventName) : EventArguments(Rinigin::Helpers::sdbm_hash(eventName)) {};
-		explicit EventArguments(const unsigned int id) : m_Id(id) {};
+		public:
+			explicit EventArguments(const char* eventName) : EventArguments(Rinigin::Helpers::sdbm_hash(eventName)) {};
+			explicit EventArguments(const unsigned int id) : m_Id(id) {};
 
-		virtual ~EventArguments() = default;
-		unsigned int GetID() const { return m_Id; };
-	private:
-		unsigned int m_Id;
+			virtual ~EventArguments() = default;
+			unsigned int GetID() const { return m_Id; };
+		private:
+			unsigned int m_Id;
 	};
 
 	class NullEventArguments final : public EventArguments {
@@ -26,8 +26,8 @@ namespace Rinigin {
 	class Event final
 	{
 	public:
-		template<typename ArgumentsType> explicit Event(const ArgumentsType& eventData) : m_EventData{ std::make_unique<ArgumentsType>(eventData) } {};
-
+		//template<typename ArgumentsType> explicit Event(const ArgumentsType& eventData) : m_EventData{ std::make_unique<ArgumentsType>(eventData) } {};
+		explicit Event() = default;
 		~Event() = default;
 		Event(const Event& other) = delete;
 		Event(Event&& other) = delete;
@@ -36,11 +36,11 @@ namespace Rinigin {
 
 		void AddObserver(Observer* observer);
 		void RemoveObserver(Observer* observer);
-		void NotifyObservers();
+		void NotifyObservers(EventArguments& args);
 	private:
 		bool IsObserver(Observer* observer);
 		std::vector<Observer*> m_Observers;
-		std::unique_ptr<EventArguments> m_EventData;
+		//std::unique_ptr<EventArguments> m_EventData;
 	};
 }
 

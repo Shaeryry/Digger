@@ -12,9 +12,9 @@ ScoreDisplayComponent::ScoreDisplayComponent(Rinigin::GameObject* gameObject, Ri
 	UpdateScore(0);
 }
 
-void ScoreDisplayComponent::Notify(Rinigin::EventArguments* eventArgs)
+void ScoreDisplayComponent::Notify(Rinigin::EventArguments & /*eventArguments*/ /*eventArguments*/)
 {
-	switch (eventArgs->GetID())
+	/*switch (eventArguments.GetID())
 	{
 		case Rinigin::Helpers::sdbm_hash("ScoreChanged"): {
 			auto arguments = dynamic_cast<GameObjectEventArguments*>(eventArgs);
@@ -24,7 +24,7 @@ void ScoreDisplayComponent::Notify(Rinigin::EventArguments* eventArgs)
 			}
 			break;
 		}
-	}
+	}*/
 }
 
 void ScoreDisplayComponent::UpdateScore(int score)

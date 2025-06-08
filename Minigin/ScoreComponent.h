@@ -7,7 +7,7 @@ class ScoreComponent final : public Rinigin::Component, public Rinigin::Observer
 {
 public: 
 	explicit ScoreComponent(Rinigin::GameObject* gameObject);
-	void virtual Notify(Rinigin::EventArguments* eventType) override;
+	virtual void Notify(Rinigin::EventArguments & eventArguments) override;
 
 	int GetScore() const { return m_Score; };
 	Rinigin::Event* GetScoreChangedEvent() const { return m_ScoreChangedEvent.get(); };

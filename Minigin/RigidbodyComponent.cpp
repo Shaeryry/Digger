@@ -38,7 +38,11 @@ void Rinigin::RigidbodyComponent::FixedUpdate()
 
 	// Prevent movement if you're colliding with a collision mask
 	bool nextPositionSolid{ physics.IsOverlappingWithMasks(nextPosition,m_Collider->Bounds()) };
-	if (nextPositionSolid) nextPosition = position;
+	if (nextPositionSolid) { 
+		m_Force = glm::vec3{ 0,0,0 }; // Reset force
+		SetVelocity( glm::vec3{ 0,0,0 } );
+		nextPosition = position;
+	};
 
 	GetOwner()->SetPosition(nextPosition);
 	m_Force = glm::vec3{0,0,0}; // Reset force

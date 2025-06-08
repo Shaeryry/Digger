@@ -25,9 +25,9 @@ StartScreenState::StartScreenState(Rinigin::StateContextComponent* context,Rinig
 
 void StartScreenState::Enter() 
 {
-    m_SelectUp = m_MenuController->AddBinding(SDL_SCANCODE_UP, Rinigin::BindingConnection::OnTrigger, m_MenuMoveUpCommand);
-	m_SelectDown = m_MenuController->AddBinding(SDL_SCANCODE_DOWN, Rinigin::BindingConnection::OnTrigger, m_MenuMoveDownCommand);
-	m_Confirm = m_MenuController->AddBinding(SDL_SCANCODE_SPACE, Rinigin::BindingConnection::OnTrigger, m_MenuConfirmCommand);
+    m_SelectUp = m_MenuController->AddBinding(SDL_SCANCODE_UP, Rinigin::BindingConnection::Down, m_MenuMoveUpCommand);
+	m_SelectDown = m_MenuController->AddBinding(SDL_SCANCODE_DOWN, Rinigin::BindingConnection::Down, m_MenuMoveDownCommand);
+	m_Confirm = m_MenuController->AddBinding(SDL_SCANCODE_SPACE, Rinigin::BindingConnection::Down, m_MenuConfirmCommand);
 
 	//m_KeyboardUp = ->AddBinding(SDL_SCANCODE_W, dae::BindingConnection::OnHeld, moveUpCommand);
 	std::cout << "entered start screen" << std::endl;
@@ -47,9 +47,9 @@ void StartScreenState::Exit()
 	std::cout << "left start screen" << std::endl;
 }
 
-void StartScreenState::Notify(Rinigin::EventArguments* arguments)
+void StartScreenState::Notify(Rinigin::EventArguments & eventArguments)
 {
-	switch (arguments->GetID())
+	switch (eventArguments.GetID())
 	{
 		case Rinigin::Helpers::sdbm_hash("SelectUp"):
 			std::cout << "Move up !" << std::endl;

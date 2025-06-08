@@ -2,11 +2,13 @@
 
 
 MenuCommand::MenuCommand(const char* menuEventName) :
-	m_InputEvent(std::make_unique<Rinigin::Event>( Rinigin::NullEventArguments(menuEventName)) )
+	m_MenuName(menuEventName),
+	m_InputEvent(std::make_unique<Rinigin::Event>() )
 {
 }
 
 void MenuCommand::Execute() 
 {
-	m_InputEvent->NotifyObservers();
+	Rinigin::NullEventArguments arguments{ m_MenuName };
+	m_InputEvent->NotifyObservers(arguments);
 }

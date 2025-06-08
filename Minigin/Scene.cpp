@@ -3,6 +3,8 @@
 #include "Helpers.h"
 
 #include <algorithm>
+#include <functional>
+
 using namespace Rinigin;
 
 Scene::Scene(const std::string& name) :
@@ -39,6 +41,15 @@ void Scene::Destroy(std::unique_ptr<GameObject>& object)
 	m_Objects.erase(std::remove(m_Objects.begin(), m_Objects.end(), object), m_Objects.end());
 }
 
+void Rinigin::Scene::Destroy(GameObject* object)
+{
+	std::erase_if(m_Objects, [object](std::unique_ptr<GameObject>& gameObject)
+		{
+			return gameObject.get() == object;
+		}
+	);
+}
+
 void Scene::RemoveAll()
 {
 	m_Objects.clear();
@@ -66,6 +77,8 @@ void Rinigin::Scene::LateUpdate()
 	{
 		object->LateUpdate();
 	}
+
+	std::erase_if(m_Objects, std::bind(&GameObject::IsDestroyed, std::placeholders::_1));
 }
 
 void Rinigin::Scene::Render() const

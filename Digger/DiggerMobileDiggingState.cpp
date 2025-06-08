@@ -53,9 +53,9 @@ void DiggerMobileDiggingState::Exit()
 	m_DiggerMobile->LeftDirectionCommand()->GetDirectionChangedEvent()->RemoveObserver(this);
 }
 
-void DiggerMobileDiggingState::Notify(Rinigin::EventArguments* arguments)
+void DiggerMobileDiggingState::Notify(Rinigin::EventArguments & eventArguments)
 {
-	switch (arguments->GetID())
+	switch (eventArguments.GetID())
 	{
 	case Rinigin::Helpers::sdbm_hash("DirectionChanged"):
 

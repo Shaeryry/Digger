@@ -14,7 +14,7 @@ void MovementCommand::Execute()
 }
 
 ChangeDirectionCommand::ChangeDirectionCommand(MovementCommand* movementCommand, const glm::vec3& direction) : 
-	m_DirectionChangedEvent(std::make_unique<Rinigin::Event>(Rinigin::NullEventArguments("DirectionChanged"))),
+	m_DirectionChangedEvent(std::make_unique<Rinigin::Event>()),
 	m_Movement(movementCommand), 
 	m_Direction(direction)
 {
@@ -24,6 +24,7 @@ void ChangeDirectionCommand::Execute()
 {
 	if (m_Movement) {
 		m_Movement->SetDirection(m_Direction);
-		m_DirectionChangedEvent->NotifyObservers();
+		Rinigin::NullEventArguments arguments{ "DirectionChanged" };
+		m_DirectionChangedEvent->NotifyObservers(arguments);
 	}
 }

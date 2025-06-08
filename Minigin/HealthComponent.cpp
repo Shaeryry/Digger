@@ -7,8 +7,8 @@ HealthComponent::HealthComponent(Rinigin::GameObject* gameObject, int maxHealth,
 	m_MinHealth{ minHealth },
 	m_MaxHealth{ maxHealth },
 	m_Health{ maxHealth },
-	m_DiedEvent{ std::make_unique<Rinigin::Event>( GameObjectEventArguments("Died",gameObject) )},
-	m_HealthChangedEvent{ std::make_unique<Rinigin::Event>( GameObjectEventArguments("HealthChanged",gameObject)) }
+	m_DiedEvent{ std::make_unique<Rinigin::Event>() },
+	m_HealthChangedEvent{ std::make_unique<Rinigin::Event>() }
 {
 }
 
@@ -16,7 +16,8 @@ void HealthComponent::TakeDamage(int damage)
 {
 	SetHealth(m_Health - damage);
 	if (m_Health <= 0) { 
-		m_DiedEvent->NotifyObservers();
+		GameObjectEventArguments arguments{ "Died",GetOwner() };
+		m_DiedEvent->NotifyObservers(arguments);
 	}
 }
 
@@ -27,7 +28,8 @@ void HealthComponent::SetHealth(int health)
 
 	m_Health = newHealth;
 	if (currentHealth != newHealth) {
-		m_HealthChangedEvent->NotifyObservers();
+		GameObjectEventArguments arguments{ "HealthChanged",GetOwner() };
+		m_HealthChangedEvent->NotifyObservers(arguments);
 	}
 }
 

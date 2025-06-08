@@ -11,5 +11,6 @@ public:
 
 	Rinigin::Event* GetInputEvent() const { return m_InputEvent.get(); };
 private:
+	const char* m_MenuName;
 	std::unique_ptr<Rinigin::Event> m_InputEvent;
 };

@@ -23,6 +23,7 @@ Character::Character(const std::string& fileName) :
 	m_SpriteSheetComponent(nullptr),
 	m_Animator(nullptr), 
 	m_Collider(nullptr),
+	m_Trigger(nullptr),
 
 	m_MoveCommand(nullptr)
 {
@@ -35,6 +36,8 @@ Character::Character(const std::string& fileName) :
 	m_Animator = m_CharacterObject->AddComponent<Rinigin::SpriteAnimatorComponent>(m_SpriteSheetComponent);
 
 	m_Collider = m_CharacterObject->AddComponent<Rinigin::ColliderComponent>(glm::vec3{0,0,0}, glm::vec3{0,0,0},false);
+	m_Trigger = m_CharacterObject->AddComponent<Rinigin::ColliderComponent>(glm::vec3{ 0,0,0 }, glm::vec3{ 0,0,0 }, true);
+
 	m_Rigidbody = m_CharacterObject->AddComponent<Rinigin::RigidbodyComponent>(m_Collider);
 
 	m_TextureComponent->SetTexture(fileName);

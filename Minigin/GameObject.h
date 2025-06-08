@@ -19,8 +19,9 @@ namespace Rinigin
 
 		GameObject* GetParent() const { return m_Parent; };
 		void SetParent(GameObject* parent, bool keepWorldPosition = false);
-		void SetActive(bool active) { m_IsActive = active; }
+		void SetActive(bool active) { if (not IsDestroyed()) m_IsActive = active; };
 		bool IsActive() const { return m_IsActive; };
+		bool IsDestroyed() const { return m_IsDestroyed; }
 
 		// Transformations
 
@@ -31,6 +32,7 @@ namespace Rinigin
 		void SetPosition(const float x, const float y, const float z);
 		glm::vec3 GetWorldPosition() const;
 
+		void Destroy() { SetActive(false); m_IsDestroyed = true; }
 		void FixedUpdate();
 		void Update();
 		void LateUpdate();
@@ -64,6 +66,7 @@ namespace Rinigin
 		std::vector< std::unique_ptr<Component> > m_Components{}; 
 		std::vector< GameObject* > m_Children{};
 		bool m_IsActive;
+		bool m_IsDestroyed;
 	};
 	 
 	template<typename ComponentType, typename... Arguments>	

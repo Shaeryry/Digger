@@ -7,9 +7,9 @@ namespace Rinigin {
 	class Command;
 
 	enum class BindingConnection {
-		OnTrigger,
-		OnRelease,
-		OnHeld
+		Down,
+		Release,
+		Held
 	};
 
 	enum class GamepadButton : unsigned int {
@@ -33,7 +33,7 @@ namespace Rinigin {
 	struct Binding {
 		unsigned int button;
 		Command* command;
-		BindingConnection connectionType = BindingConnection::OnTrigger;
+		BindingConnection connectionType = BindingConnection::Down;
 	};
 
 	class Gamepad final

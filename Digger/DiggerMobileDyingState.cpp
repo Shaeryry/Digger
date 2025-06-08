@@ -37,7 +37,7 @@ void DiggerMobileDyingState::Exit()
 
 // TEMPORARY TO TRANSITION TO DEAD STATE
 
-void DiggerMobileDyingState::Notify(Rinigin::EventArguments* /*arguments*/)
+void DiggerMobileDyingState::Notify(Rinigin::EventArguments& /*eventArguments*/ /*eventArguments*/ /*arguments*/)
 {
 	/*switch (arguments->GetID())
 	{
