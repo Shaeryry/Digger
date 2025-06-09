@@ -89,6 +89,11 @@ void Rinigin::ColliderComponent::RemoveExcludedLayer(unsigned int layerId)
 	);
 }
 
+void Rinigin::ColliderComponent::RemoveExcludedLayer(const char* layerName)
+{
+	RemoveExcludedLayer(Rinigin::Helpers::sdbm_hash(layerName));
+}
+
 bool Rinigin::ColliderComponent::IsLayerExcluded(unsigned int layerId)
 {
 	auto foundIt = std::find(m_ExcludedLayers.begin(), m_ExcludedLayers.end(), layerId);

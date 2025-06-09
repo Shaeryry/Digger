@@ -7,7 +7,7 @@ class TerrainComponent;
 class Pathfinder final
 {
 public:
-    std::vector<glm::vec2> FindPath(TerrainComponent* terrain, const glm::vec2& startPixel, const glm::vec2& endPixel, int tileSize);
+    std::vector<glm::vec2> FindPath(TerrainComponent* terrain, const glm::vec2& startPixel, const glm::vec2& endPixel, const glm::vec2& tileSize);
 private:
     struct Node
     {

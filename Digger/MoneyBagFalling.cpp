@@ -10,7 +10,7 @@
 #include "StateContextComponent.h"
 #include "Level.h"
 #include "PrototypeSpawner.h"
-
+#include "EventTypes.h"
 #include <iostream>
 
 MoneyBagFalling::MoneyBagFalling(Rinigin::StateContextComponent* context, MoneyBag* moneyBag) :
@@ -23,12 +23,12 @@ MoneyBagFalling::MoneyBagFalling(Rinigin::StateContextComponent* context, MoneyB
 
 void MoneyBagFalling::Enter()
 {  
-	/*const glm::vec3 offset{ m_MoneyBag->GetCollider()->GetHalfExtents() };
-	const glm::vec3 position{ m_MoneyBag->GetItemObject()->GetWorldPosition() + offset };
-	m_MoneyBag->GetTerrain()->DigAt(static_cast<int>(position.x), static_cast<int>(position.y),25);*/
+	m_MoneyBag->GetTrigger()->ColliderEnterEvent()->AddObserver(this);
 	m_Falling = false;
+
 	m_MoneyBag->GetRigidbody()->SetCanCollide(false);
 	m_MoneyBag->GetAnimator()->PlayAnimation("Falling");
+
 	m_FallHeight = m_MoneyBag->GetItemObject()->GetWorldPosition().y;
 }
 
@@ -44,6 +44,7 @@ Rinigin::State* MoneyBagFalling::Update()
 		if (not colliding) {
 			m_Falling = true;
 			m_MoneyBag->GetRigidbody()->SetCanCollide(true);
+			m_MoneyBag->GetCollider()->AddExcludedLayer("Player");
 		}
 
 		return nullptr;
@@ -69,4 +70,24 @@ Rinigin::State* MoneyBagFalling::Update()
 
 void MoneyBagFalling::Exit()
 {
+	m_MoneyBag->GetTrigger()->ColliderEnterEvent()->RemoveObserver(this);
+}
+
+void MoneyBagFalling::Notify(Rinigin::EventArguments& eventArguments)
+{
+	switch (eventArguments.GetID())
+	{
+	case Rinigin::Helpers::sdbm_hash("CollisionEnter"): {
+		Rinigin::CollisionEventArguments& collisionArgument{ GetArgumentsOfType<Rinigin::CollisionEventArguments>(eventArguments) };
+		const unsigned int layerId{ collisionArgument.GetOther()->GetCollisionLayer() };
+		const unsigned int playerLayerId{ Rinigin::Helpers::sdbm_hash("Player") };
+		if (layerId == playerLayerId) {
+			std::cout << "kill player" << std::endl;
+		};
+
+		break;
+	}
+	default:
+		break;
+	}
 }

@@ -10,6 +10,7 @@
 #include "GameObject.h"
 #include "TransformComponent.h"
 #include "SpriteSheetComponent.h"
+#include "DiggerConstants.h"
 
 DiggerMobileDiggingState::DiggerMobileDiggingState(Rinigin::StateContextComponent* context, DiggerMobile* digger) :
 	State(context),
@@ -39,7 +40,7 @@ Rinigin::State* DiggerMobileDiggingState::Update()
 		float xPos{ diggerMobilePosition.x + (m_DiggerMobile->GetSpriteSheetComponent()->GetTileWidth() / 2) };
 		float yPos{ diggerMobilePosition.y + (m_DiggerMobile->GetSpriteSheetComponent()->GetTileHeight() / 2) };
 
-		map->DigAt(xPos, yPos, m_TunnelSize);
+		map->DigAt(xPos, yPos, DIGGER::DIG_TUNNEL_SIZE);
 	}
 
 	return nullptr;
@@ -60,8 +61,8 @@ void DiggerMobileDiggingState::Notify(Rinigin::EventArguments & eventArguments)
 	case Rinigin::Helpers::sdbm_hash("DirectionChanged"):
 
 		glm::vec3 currentDirection = m_DiggerMobile->GetMoveCommand()->GetDirection();
-		if (currentDirection == glm::vec3(0, 1, 0)) m_DirectionName = "Up";
-		if (currentDirection == glm::vec3(0, -1, 0)) m_DirectionName = "Down";
+		if (currentDirection == glm::vec3(0, -1, 0)) m_DirectionName = "Up";
+		if (currentDirection == glm::vec3(0, 1, 0)) m_DirectionName = "Down";
 		if (currentDirection == glm::vec3(1, 0, 0)) m_DirectionName = "Right";
 		if (currentDirection == glm::vec3(-1, 0, 0)) m_DirectionName = "Left";
 		

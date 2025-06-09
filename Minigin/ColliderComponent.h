@@ -36,6 +36,8 @@ namespace Rinigin {
 		void AddExcludedLayer(const char* layerName);
 		void AddExcludedLayer(unsigned int layerId);
 		void RemoveExcludedLayer(unsigned int layerId);
+		void RemoveExcludedLayer(const char* layerName);
+
 		bool IsLayerExcluded(unsigned int layerId);
 
 		size_t GetCollisions() const { return m_CollidingColliders.size(); };

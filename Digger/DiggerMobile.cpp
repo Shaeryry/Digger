@@ -26,7 +26,6 @@ DiggerMobile::DiggerMobile(int index,TerrainComponent* map) :
 	// Setup components
 	GetCollider()->SetLayer("Player");
 	GetTrigger()->SetLayer("Player");
-	//GetCollider()->AddExcludedLayer("Player");
 
 	GetCollider()->SetBounds(glm::vec3{30,30,0});
 	GetCollider()->SetOffset(glm::vec3{5,5,0});

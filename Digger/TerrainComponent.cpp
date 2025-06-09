@@ -3,8 +3,9 @@
 #include <glm.hpp>
 #include <SDL_image.h> 
 
-TerrainComponent::TerrainComponent(Rinigin::GameObject* gameObject, const glm::vec2& screenSize, const glm::vec2& mapSize) :
-	Component(gameObject)
+TerrainComponent::TerrainComponent(Rinigin::GameObject* gameObject,const glm::vec2& origin ,const glm::vec2& screenSize, const glm::vec2& mapSize) :
+	Component(gameObject),
+	m_Origin(origin)
 { 
 	m_ScreenWidth = static_cast<int>(screenSize.x);
 	m_ScreenHeight = static_cast<int>(screenSize.y);
@@ -79,8 +80,11 @@ void TerrainComponent::ChangeBackgroundTexture(const char* filePath)
 	Uint32* tilePixels = static_cast<Uint32*>(textureSurface->pixels);
 	int tilePitch = (textureSurface->pitch / 4);
 
-	for (int y = 0; y < m_Height; y++) {
-		for (int x = 0; x < m_Width; x++) {
+	const int originX = static_cast<int>(m_Origin.x);
+	const int originY = static_cast<int>(m_Origin.y);
+
+	for (int y = originY; y < (m_Height + originY); y++) {
+		for (int x = originX; x < (m_Width + originX); x++) {
 			int tileX = x % size_x;
 			int tileY = y % size_y;
 
@@ -123,8 +127,11 @@ void TerrainComponent::Update()
 
 	LockMask();
 
-	for (int y = 0; y < m_Height; ++y) {
-		for (int x = 0; x < m_Width; ++x) {
+	const int originX = static_cast<int>(m_Origin.x);
+	const int originY = static_cast<int>(m_Origin.y);
+
+	for (int y = originY; y < (m_Height + originY); y++) {
+		for (int x = originX; x < (m_Width + originX); x++) {
 			// Check if the corresponding pixel in the mask texture is transparent
 			Uint32 maskColor = m_MaskPixels[y * m_Width + x];
 			if ((maskColor & 0xFF000000) == 0) {  // If alpha == 0 (transparent)
@@ -146,7 +153,7 @@ void TerrainComponent::Render() const
 
 bool TerrainComponent::IsSolidAt(int x, int y) const 
 {
-	if (x < 0 or x >= m_Width or y < 0 or y >= m_Height) return false;
+	if (x < m_Origin.x or x >= (m_Width + m_Origin.x) or y < m_Origin.y or y >= (m_Height + m_Origin.y)) return false;
 
 	Uint32 maskColor = m_MaskPixels[y * m_Width + x];
 	return (maskColor & 0xFF000000) != 0; // Alpha != 0 means solid

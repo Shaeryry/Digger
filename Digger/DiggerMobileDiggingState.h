@@ -19,6 +19,5 @@ private:
 	DiggerMobile* m_DiggerMobile;
 	
 	float m_Speed = 50.f;
-	int m_TunnelSize = 20;
 };
 

@@ -28,8 +28,11 @@ Level::Level(Rinigin::Scene* scene) :
 	m_Scene(scene)
 {
 	const glm::vec2 SCREEN_SIZE{ DIGGER::SCREEN_WIDTH, DIGGER::SCREEN_HEIGHT };
+	const glm::vec2 MAP_SIZE{ DIGGER::GAME_WIDTH, DIGGER::GAME_HEIGHT };
+	const glm::vec2 ORIGIN{ (SCREEN_SIZE.x - MAP_SIZE.x),(SCREEN_SIZE.y - MAP_SIZE.y) };
+
 	m_LevelGameObject = scene->CreateObject();
-	m_MapComponent = m_LevelGameObject->AddComponent<TerrainComponent>(SCREEN_SIZE, SCREEN_SIZE);
+	m_MapComponent = m_LevelGameObject->AddComponent<TerrainComponent>(ORIGIN,SCREEN_SIZE, MAP_SIZE);
 
 	m_EnemySpawner.RegisterPrototype<Nobbin>("Nobbin",this);
 
@@ -106,8 +109,9 @@ void Level::InitializeLevel()
 {
 	// TODO : Destroy and clean existing stuff
 
-	const int tileWidth = static_cast<int>(DIGGER::SCREEN_WIDTH / m_LevelData.width);
-	const int tileHeight = static_cast<int>(DIGGER::SCREEN_HEIGHT / m_LevelData.height);
+	const int tileWidth = static_cast<int>(DIGGER::GAME_WIDTH / m_LevelData.width);
+	const int tileHeight = static_cast<int>(DIGGER::GAME_HEIGHT / m_LevelData.height);
+	m_LevelTileSize = glm::vec2(static_cast<float>(tileWidth),static_cast<float>(tileHeight));
 
 	const int totalTiles = (m_LevelData.width * m_LevelData.height);
 	std::vector<glm::vec2> tunnelPositions{};
@@ -116,9 +120,10 @@ void Level::InitializeLevel()
 		const unsigned int tileValue = m_LevelData.tiles[tileIndex];
 
 		// Reconstruct 2D position from 1D index
-		const int x = tileIndex % m_LevelData.width;
+		const glm::vec2 position{ m_MapComponent->GetOrigin() };
+		const int x =  (tileIndex % m_LevelData.width);
 		const int y = tileIndex / m_LevelData.width;
-		const glm::vec2 tilePos{ x * tileWidth, y * tileHeight };
+		const glm::vec2 tilePos{ position + glm::vec2(x * tileWidth, y * tileHeight) };
 
 		switch (tileValue)
 		{
@@ -133,7 +138,7 @@ void Level::InitializeLevel()
 		case 2:
 			// Spawn points
 			tunnelPositions.emplace_back(tilePos);
-			m_LevelData.playerSpawns.emplace_back(tilePos);
+			m_LevelData.playerSpawns.emplace_back(tilePos - glm::vec2(DIGGER::TILE_GRID_SIZE/2.f,DIGGER::TILE_GRID_SIZE/2.f));
 			//m_MapComponent->DigAt(tilePos.x, tilePos.y, DIGGER::TILE_SIZE);
 			break;
 		case 3: {
@@ -166,12 +171,6 @@ void Level::InitializeLevel()
 			break;
 		}
 	}
-
-	std::cout << "Raw tile positions from JSON:\n";
-	for (const auto& pos : tunnelPositions)
-		std::cout << pos.x << ", " << pos.y << "\n";
-
-	std::cout << "Total: " << tunnelPositions.size() << "\n";
 
 	tunnelPositions = SortTunnelByBFS(tunnelPositions);
 	for (int tunnelIndex{ 0 }; tunnelIndex < tunnelPositions.size(); tunnelIndex++) {

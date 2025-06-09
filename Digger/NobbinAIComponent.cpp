@@ -116,9 +116,9 @@ void NobbinAIComponent::UpdatePath()
 {
 	Character* closestPlayer = FindClosestPlayer();
 	if (closestPlayer) {
-		glm::vec3 fromPosition = GetOwner()->GetWorldPosition();// + m_Nobbin->GetCollider()->GetHalfExtents();
-		glm::vec3 targetPosition = closestPlayer->GetCharacterObject()->GetWorldPosition(); //+ closestPlayer->GetCollider()->GetHalfExtents();
-		auto foundPath = m_Pathfinder->FindPath(m_Level->Map(), fromPosition, targetPosition, DIGGER::TILE_GRID_SIZE);
+		glm::vec3 fromPosition = GetOwner()->GetWorldPosition() + m_Nobbin->GetCollider()->GetHalfExtents();
+		glm::vec3 targetPosition = closestPlayer->GetCharacterObject()->GetWorldPosition() + closestPlayer->GetCollider()->GetHalfExtents();
+		auto foundPath = m_Pathfinder->FindPath(m_Level->Map(), fromPosition, targetPosition, glm::vec2(DIGGER::TILE_GRID_SIZE,DIGGER::TILE_GRID_SIZE));
 
 		if (not foundPath.empty()) {
 			m_Path = foundPath;

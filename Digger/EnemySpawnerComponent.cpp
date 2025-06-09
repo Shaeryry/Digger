@@ -12,7 +12,7 @@ EnemySpawnerComponent::EnemySpawnerComponent(Rinigin::GameObject* gameObject, Le
 	m_Level(level),
 
 	m_SpawnClock(300000),
-	m_MaxEnemies(3),
+	m_MaxEnemies(0),
 	m_SpawnRate(20.f)
 {
 }

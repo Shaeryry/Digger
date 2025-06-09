@@ -21,6 +21,8 @@ MoneyBag::MoneyBag(Level* level) :
 	m_StateMachineComponent(nullptr)
 {
 	m_ColliderComponent = GetItemObject()->AddComponent<Rinigin::ColliderComponent>(glm::vec3{ 30,30,0 }, glm::vec3{ 0,0,0 },false);
+	m_TriggerComponent = GetItemObject()->AddComponent<Rinigin::ColliderComponent>(glm::vec3{ 30,30,0 }, glm::vec3{ 0,0,0 }, true);
+
 	m_RigidbodyComponent = GetItemObject()->AddComponent<Rinigin::RigidbodyComponent>(m_ColliderComponent,1.f,false);
 
 	m_SpriteSheetComponent = GetItemObject()->AddComponent<Rinigin::SpriteSheetComponent>(GetRenderer(), GetTextureComponent());

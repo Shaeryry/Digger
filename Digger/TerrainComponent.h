@@ -9,7 +9,7 @@ struct SDL_Texture;
 class TerrainComponent : public Rinigin::Component,public Rinigin::ICollisionMask
 {
 public:
-	explicit TerrainComponent(Rinigin::GameObject* gameObject,const glm::vec2& screenSize, const glm::vec2& mapSize);
+	explicit TerrainComponent(Rinigin::GameObject* gameObject,const glm::vec2& origin,const glm::vec2& screenSize, const glm::vec2& mapSize);
 	~TerrainComponent();
 
 	void ChangeBackgroundTexture(const char* filePath);
@@ -24,10 +24,13 @@ public:
 
 	int GetMapWidth() const { return m_Width; }
 	int GetMapHeight() const { return m_Height; }
+	const glm::vec2& GetOrigin() { return m_Origin; };
 private: 
 	void UnlockMask();
 	void LockMask();
 	
+	glm::vec2 m_Origin;
+
 	SDL_Texture* m_MaskTexture;
 	uint32_t* m_MaskPixels;
 
@@ -38,8 +41,10 @@ private:
 
 	int m_ScreenWidth;
 	int m_ScreenHeight;
+
 	int m_Width;
 	int m_Height;
+
 	int m_TileSize;
 };
 

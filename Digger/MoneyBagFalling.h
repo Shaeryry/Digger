@@ -1,14 +1,17 @@
 #pragma once
 #include <State.h>
+#include "Observer.h"
 
 class MoneyBag;
-class MoneyBagFalling final : public Rinigin::State
+class MoneyBagFalling final : public Rinigin::State,public Rinigin::Observer
 {
 public:
 	explicit MoneyBagFalling(Rinigin::StateContextComponent* context, MoneyBag* moneyBag);
 	virtual void Enter();
 	virtual Rinigin::State* Update();
 	virtual void Exit();
+
+	virtual void Notify(Rinigin::EventArguments& eventArguments) override;
 private:
 	MoneyBag* m_MoneyBag;
 	bool m_Falling;

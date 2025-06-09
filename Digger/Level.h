@@ -33,6 +33,8 @@ public:
 
 	PrototypeSpawner<Item>& GetItemSpawner() { return m_ItemSpawner; };
 	PrototypeSpawner<Nobbin>& GetEnemySpawner() { return m_EnemySpawner; };
+
+	const glm::vec2& LevelTileSize() { return m_LevelTileSize; };
  private:
 	void LoadLevelFile(const char* filePath);
 	void InitializeLevel();
@@ -64,7 +66,8 @@ public:
 
 	Rinigin::GameObject* m_LevelGameObject;
 	Rinigin::Scene* m_Scene;
-	
+
+	glm::vec2 m_LevelTileSize;
 	// Players
 	std::vector<Character*> m_Players;
 	
