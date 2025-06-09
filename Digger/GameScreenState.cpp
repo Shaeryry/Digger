@@ -25,13 +25,15 @@
 #include "MoneyBag.h"
 
 #include "Level.h"
+#include "PrototypeSpawner.h"
+#include "Prototype.h"
+#include "Nobbin.h"
 
 GameScreenState::GameScreenState(Rinigin::StateContextComponent* context) :
 	Rinigin::State(context),
 	m_GameMode(GameMode::SOLO),
 	m_Level(std::make_unique<Level>(Rinigin::SceneManager::GetInstance().GetActiveScene()))
 {
-
 	Rinigin::Gamepad* playerOneGamepad{ Rinigin::InputManager::GetInstance().GetGamepad(0) }; // Keyboard
 	//Rinigin::Gamepad* playerTwoGamepad{ Rinigin::InputManager::GetInstance().GetGamepad(1) };
 
@@ -52,10 +54,9 @@ GameScreenState::GameScreenState(Rinigin::StateContextComponent* context) :
 	// TEMPORARY WAY OF DAMAGING YOUR OWN CHARACTER
 	playerOneGamepad->AddBinding(SDL_SCANCODE_F, Rinigin::BindingConnection::Down, m_DiggerOne->GetDamageCommand());
 
-	m_DiggerTwo = std::make_unique<DiggerMobile>(0, m_Level->Map());
-	//m_DiggerTwo->GetCharacterObject()->SetPosition(screenSize.x / 2, screenSize.y / 2, 0);
+	m_DiggerTwo = std::make_unique<DiggerMobile>(1, m_Level->Map());
 
-	// TEMPORARY DISPLAY
+	m_Nobbin = m_Level->GetEnemySpawner().Spawn("Nobbin");
 } 
 
 
@@ -97,12 +98,15 @@ void GameScreenState::Reset()
 {
 	m_DiggerOne->GetCharacterObject()->SetActive(false); 
 	m_DiggerTwo->GetCharacterObject()->SetActive(false);
+	m_Nobbin->GetCharacterObject()->SetActive(false);
 }
 
 void GameScreenState::StartSolo()
 {
 	m_DiggerOne->GetCharacterObject()->SetActive(true);
 	m_DiggerOne->GetCharacterObject()->SetPosition( m_Level->GetPlayerSpawnIndex(0) );
+	m_Level->AddPlayer(m_DiggerOne.get());
+
 	std::cout << "Solo game!" << std::endl;
 }
 

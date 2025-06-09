@@ -45,8 +45,8 @@ Character::Character(const std::string& fileName) :
 	m_DamageCommand = Rinigin::InputManager::GetInstance().AddCommand<DamageCommand>(m_CharacterObject);
 	m_MoveCommand = Rinigin::InputManager::GetInstance().AddCommand<MovementCommand>(m_CharacterObject,glm::vec3(0, 0, 0),m_Speed);
 
-	m_UpDirectionCommand = Rinigin::InputManager::GetInstance().AddCommand<ChangeDirectionCommand>(m_MoveCommand, glm::vec3(0, 1, 0));
-	m_DownDirectionCommand = Rinigin::InputManager::GetInstance().AddCommand<ChangeDirectionCommand>(m_MoveCommand, glm::vec3(0, -1, 0));
+	m_UpDirectionCommand = Rinigin::InputManager::GetInstance().AddCommand<ChangeDirectionCommand>(m_MoveCommand, glm::vec3(0,-1, 0));
+	m_DownDirectionCommand = Rinigin::InputManager::GetInstance().AddCommand<ChangeDirectionCommand>(m_MoveCommand, glm::vec3(0, 1, 0));
 	m_RightDirectionCommand = Rinigin::InputManager::GetInstance().AddCommand<ChangeDirectionCommand>(m_MoveCommand, glm::vec3(1, 0, 0));
 	m_LeftDirectionCommand = Rinigin::InputManager::GetInstance().AddCommand<ChangeDirectionCommand>(m_MoveCommand, glm::vec3(-1, 0, 0));
 }

@@ -16,7 +16,6 @@ public:
 	template<typename PT = T,typename... Args>
 	void RegisterPrototype(const char* id, Args&&... args)
 	{
-		//m_Prototypes.insert(Rinigin::Helpers::sdbm_hash(id), std::make_unique<PT>(std::forward<Args>(args)...));
 		m_Prototypes[Rinigin::Helpers::sdbm_hash(id)] = std::make_unique<PT>(std::forward<Args>(args)...);
 	}
 
@@ -37,6 +36,8 @@ public:
 	{
 		m_Instances.clear();
 	}
+
+	const std::vector< std::unique_ptr<T>>& GetInstances() { return m_Instances; }
 private:
 	std::unordered_map<unsigned int, std::unique_ptr<T>> m_Prototypes;
 	std::vector<std::unique_ptr<T>> m_Instances;

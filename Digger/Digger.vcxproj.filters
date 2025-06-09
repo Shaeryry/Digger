@@ -58,11 +58,11 @@
     <Filter Include="Source Files\States\MoneyBagStates">
       <UniqueIdentifier>{3002a0f7-45b0-4c4e-8796-6da7ceee3ecc}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Prototype">
-      <UniqueIdentifier>{5b49f776-f5b0-49bc-8078-e435714d3c34}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\PrototypePattern">
       <UniqueIdentifier>{dec10711-4c91-47b6-be73-ac57a4981e5b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Characters">
+      <UniqueIdentifier>{6850fd12-81d6-42a8-a399-f580265713bc}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -97,15 +97,6 @@
       <Filter>Source Files\Commands</Filter>
     </ClCompile>
     <ClCompile Include="EventTypes.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="DiggerGame.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="DiggerMobile.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Character.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="StartScreenMenuCommand.cpp">
@@ -152,6 +143,27 @@
     </ClCompile>
     <ClCompile Include="Gold.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Character.cpp">
+      <Filter>Source Files\Characters</Filter>
+    </ClCompile>
+    <ClCompile Include="Nobbin.cpp">
+      <Filter>Source Files\Characters</Filter>
+    </ClCompile>
+    <ClCompile Include="DiggerGame.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DiggerMobile.cpp">
+      <Filter>Source Files\Characters</Filter>
+    </ClCompile>
+    <ClCompile Include="EnemySpawnerComponent.cpp">
+      <Filter>Source Files\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Pathfinder.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="NobbinAIComponent.cpp">
+      <Filter>Source Files\Components</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -247,6 +259,18 @@
     </ClInclude>
     <ClInclude Include="Gold.h">
       <Filter>Header Files\Items</Filter>
+    </ClInclude>
+    <ClInclude Include="Nobbin.h">
+      <Filter>Header Files\Characters</Filter>
+    </ClInclude>
+    <ClInclude Include="EnemySpawnerComponent.h">
+      <Filter>Header Files\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Pathfinder.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="NobbinAIComponent.h">
+      <Filter>Header Files\Components</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

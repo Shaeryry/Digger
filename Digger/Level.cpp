@@ -15,13 +15,23 @@ using json = nlohmann::json;
 #include "MoneyBag.h"
 #include "Gold.h"
 
+#include "Nobbin.h"
+#include "EnemySpawnerComponent.h"
+
+#include "ColliderComponent.h"
+#include "DiggerConstants.h"
+
+#include <queue>
+#include <unordered_set>
+
 Level::Level(Rinigin::Scene* scene) :
 	m_Scene(scene)
 {
 	const glm::vec2 SCREEN_SIZE{ DIGGER::SCREEN_WIDTH, DIGGER::SCREEN_HEIGHT };
 	m_LevelGameObject = scene->CreateObject();
-	m_MapComponent = m_LevelGameObject->AddComponent<TerrainComponent>(SCREEN_SIZE, SCREEN_SIZE, 40);
+	m_MapComponent = m_LevelGameObject->AddComponent<TerrainComponent>(SCREEN_SIZE, SCREEN_SIZE);
 
+	m_EnemySpawner.RegisterPrototype<Nobbin>("Nobbin",this);
 
 	m_ItemSpawner.RegisterPrototype<Emerald>("Emerald",this);
 	m_ItemSpawner.RegisterPrototype<MoneyBag>("MoneyBag", this);
@@ -31,6 +41,16 @@ Level::Level(Rinigin::Scene* scene) :
 const glm::vec2& Level::GetPlayerSpawnIndex(int playerIndex)
 {
 	return m_LevelData.playerSpawns[playerIndex % m_LevelData.playerSpawns.size()];
+}
+
+const glm::vec2 Level::GetEnemySpawnLocation()
+{
+	// TODO: insert return statement here
+	if (not m_LevelData.enemySpawns.empty()) {
+		return m_LevelData.enemySpawns[rand() % m_LevelData.enemySpawns.size()];
+	}
+
+	return glm::vec2();
 }
 
 void Level::LoadLevel(int levelIndex)
@@ -45,6 +65,11 @@ void Level::LoadLevel(int levelIndex)
 	m_MapComponent->ChangeBackgroundTexture(levelTexturePath.c_str());
 	LoadLevelFile(levelDataPath.c_str());
 	InitializeLevel();
+}
+
+void Level::AddPlayer(Character* playerCharacter)
+{
+	m_Players.emplace_back(playerCharacter);
 }
 
 void Level::LoadLevelFile(const char* filePath)
@@ -79,8 +104,11 @@ void Level::LoadLevelFile(const char* filePath)
 
 void Level::InitializeLevel()
 {
+	// TODO : Destroy and clean existing stuff
+
 	const int tileWidth = static_cast<int>(DIGGER::SCREEN_WIDTH / m_LevelData.width);
 	const int tileHeight = static_cast<int>(DIGGER::SCREEN_HEIGHT / m_LevelData.height);
+
 	const int totalTiles = (m_LevelData.width * m_LevelData.height);
 	std::vector<glm::vec2> tunnelPositions{};
 
@@ -110,27 +138,28 @@ void Level::InitializeLevel()
 			break;
 		case 3: {
 			// Emeralds
-			
 			Emerald* emerald = static_cast<Emerald*>(m_ItemSpawner.Spawn("Emerald"));
-			emerald->GetItemObject()->SetPosition(glm::vec2(tilePos.x, tilePos.y));
-			// TODO : Add score
-
-			// TODO : Spawn emeralds
-			/*Emerald* emerald = CreateItem<Emerald>(glm::vec2(tilePos.x, tilePos.y));
-			emerald->GetCollectedEvent()->AddObserver(m_DiggerOne->GetScoreComponent());
-			emerald->GetCollectedEvent()->AddObserver(m_DiggerTwo->GetScoreComponent());*/
+			emerald->GetItemObject()->SetPosition(glm::vec3(tilePos.x, tilePos.y, 0));
 			break;
 		}
-		case 4:
+		case 4: {
 			// Enemy spawn
+			m_MapComponent->DigAt(tilePos.x, tilePos.y, static_cast<int>(DIGGER::TILE_SIZE * 1.25f));
+
+			Rinigin::GameObject* spawner = m_Scene->CreateObject();
+			spawner->AddComponent<EnemySpawnerComponent>(this);
+			m_EnemySpawnerObjects.emplace_back(spawner);
+
 			tunnelPositions.emplace_back(tilePos);
+			m_LevelData.enemySpawns.emplace_back(tilePos);
 			break;
+		}
+			
 		case 5: {
 			// Money bag
 
 			MoneyBag* moneyBag = static_cast<MoneyBag*>(m_ItemSpawner.Spawn("MoneyBag"));
-			moneyBag->GetItemObject()->SetPosition(glm::vec2(tilePos.x, tilePos.y));
-			//CreateItem<MoneyBag>(glm::vec2(tilePos.x, tilePos.y), m_MapComponent);
+			moneyBag->GetItemObject()->SetPosition(glm::vec3(tilePos.x, tilePos.y,0) - moneyBag->GetCollider()->GetHalfExtents());
 			break;
 		}
 		default:
@@ -138,14 +167,13 @@ void Level::InitializeLevel()
 		}
 	}
 
-	// Complete the tunnels
-	//std::sort(tunnelPositions.begin(), tunnelPositions.end(), [](const glm::vec2& a, const glm::vec2& b) {
-	//		if (a.x == b.x) return a.y < b.y; // Top to bottom
-	//		return a.x < b.x;     // Left to right
-	//	}
-	//);
+	std::cout << "Raw tile positions from JSON:\n";
+	for (const auto& pos : tunnelPositions)
+		std::cout << pos.x << ", " << pos.y << "\n";
 
-	tunnelPositions = SortTunnelByChasingClosest(tunnelPositions);
+	std::cout << "Total: " << tunnelPositions.size() << "\n";
+
+	tunnelPositions = SortTunnelByBFS(tunnelPositions);
 	for (int tunnelIndex{ 0 }; tunnelIndex < tunnelPositions.size(); tunnelIndex++) {
 		if (tunnelIndex <= 0) continue;
 
@@ -162,18 +190,20 @@ void Level::InitializeLevel()
 			
 			m_MapComponent->DigAt(interpolatedTilePos.x, interpolatedTilePos.y, DIGGER::TILE_SIZE);
 		}
-
 	}
+
+
 }
 
-std::vector<glm::vec2> Level::SortTunnelByChasingClosest(std::vector<glm::vec2> positions)
+std::vector<glm::vec2> Level::SortTunnelByBFS(const std::vector<glm::vec2>& cpositions)
 {
+	std::vector<glm::vec2> positions = cpositions;
 	std::vector<glm::vec2> ordered;
 	if (positions.empty()) return ordered;
 
-	// Start with any point
-	glm::vec2 current = positions.back();
-	positions.pop_back();
+	// Use the first tile as the starting point (editor drawing order)
+	glm::vec2 current = positions.front();
+	positions.erase(positions.begin());
 	ordered.push_back(current);
 
 	while (!positions.empty()) {
@@ -195,69 +225,3 @@ std::vector<glm::vec2> Level::SortTunnelByChasingClosest(std::vector<glm::vec2> 
 
 	return ordered;
 }
-
-//void Level::InitializeLevel()
-//{
-//	int tileWidth{ static_cast<int>(DIGGER::SCREEN_WIDTH / m_LevelData.width) };
-//	int tileHeight{ static_cast<int>(DIGGER::SCREEN_HEIGHT / m_LevelData.height) };
-//
-//	glm::vec2 previousDugPosition{};
-//
-//	for (int x{ 0 }; x < m_LevelData.width; x++) {
-//		for (int y{ 0 }; y < m_LevelData.height; y++) {
-//
-//			const int tileIndex{ y * m_LevelData.width + x };
-//			const unsigned int tileValue{ m_LevelData.tiles[tileIndex] };
-//			const glm::vec2 tilePos{ x * tileWidth, y * tileHeight };
-//
-//			switch (tileValue)
-//			{
-//			case 0:
-//				// Default nothing
-//				break;
-//			case 1:
-//				// Dug out
-//				m_MapComponent->DigAt(tilePos.x, tilePos.y, DIGGER::TILE_SIZE);
-//				
-//				/*if (tileIndex > 0) {
-//					for (int sampleIndex{ 0 }; sampleIndex < 20; sampleIndex++) {
-//						const float t{ static_cast<float>(sampleIndex) / static_cast<float>(20) };
-//
-//						const glm::vec2 interpolatedTilePos{  
-//							previousDugPosition.x + (tilePos.x - previousDugPosition.x) * t,
-//							previousDugPosition.y + (tilePos.y - previousDugPosition.y) * t,
-//						};
-//
-//						m_MapComponent->DigAt(interpolatedTilePos.x, interpolatedTilePos.y, DIGGER::TILE_SIZE);
-//					}
-//				}*/
-//
-//				previousDugPosition = tilePos;
-//				break;
-//			case 2:
-//				// Spawn points
-//				m_LevelData.playerSpawns.emplace_back(tilePos);
-//				m_MapComponent->DigAt(tilePos.x, tilePos.y, DIGGER::TILE_SIZE);
-//				break;
-//			case 3: {
-//				// Emeralds
-//				// TODO : Spawn emeralds
-//				/*Emerald* emerald = CreateItem<Emerald>(glm::vec2(tilePos.x, tilePos.y));
-//				emerald->GetCollectedEvent()->AddObserver(m_DiggerOne->GetScoreComponent());
-//				emerald->GetCollectedEvent()->AddObserver(m_DiggerTwo->GetScoreComponent());*/
-//				break;
-//			}
-//			case 4:
-//				// Enemy spawn
-//			case 5:
-//				// Money bag
-//				// Spawn money bags
-//				//CreateItem<MoneyBag>(glm::vec2(tilePos.x, tilePos.y), m_MapComponent);
-//				break;
-//			default:
-//				break;
-//			}
-//
-//		}
-//	}
-//}

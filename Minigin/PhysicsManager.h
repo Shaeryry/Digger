@@ -30,6 +30,8 @@ namespace Rinigin {
 		void DetectCollisions();
 		void SolveCollisions();
 		bool IsOverlappingWithMasks(glm::vec3 position,glm::vec3 bounds) const;
+		float GetMaskCoverage(glm::vec3 position, glm::vec3 bounds) const;
+
 
 		void AddCollisionMask(ICollisionMask* mask);
 		void RemoveCollisionMask(ICollisionMask* mask);

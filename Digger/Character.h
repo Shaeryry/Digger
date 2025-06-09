@@ -1,5 +1,6 @@
 #pragma once
 #include <string>
+#include "Prototype.h"
 
 namespace Rinigin { 
 	class GameObject;
@@ -16,7 +17,7 @@ class HealthComponent;
 class DamageCommand;
 class MovementCommand;
 class ChangeDirectionCommand;
-// TODO : Add ability to move this character with commands, maybe another interface !
+
 class Character
 { 
 public:

@@ -126,6 +126,7 @@ void Rinigin::Physics::DetectCollisions()
 			if (!other->IsEnabled()) continue;
 			if (other == collider) continue;
 			if (collider->IsLayerExcluded(other->GetCollisionLayer())) continue;
+			if (other->IsLayerExcluded(collider->GetCollisionLayer())) continue;
 
 			GameObject* otherOwner{ other->GetOwner() };
 			if (!otherOwner or !otherOwner->IsActive()) continue;
@@ -171,6 +172,7 @@ void Rinigin::Physics::SolveCollisions()
 			if (!colliderA->IsEnabled() or !colliderB->IsEnabled()) continue;
 			if (colliderA->IsTrigger() or colliderB->IsTrigger()) continue;
 			if (colliderA->IsLayerExcluded(colliderB->GetCollisionLayer())) continue;
+			if (colliderB->IsLayerExcluded(colliderA->GetCollisionLayer())) continue;
 
 
 			if (!colliderA || !colliderB) continue;
@@ -233,12 +235,36 @@ bool Rinigin::Physics::IsOverlappingWithMasks(glm::vec3 position, glm::vec3 boun
 	int xEnd = static_cast<int>(position.x + bounds.x);
 	int yEnd = static_cast<int>(position.y + bounds.y);
 
+	bool colliding = false;
+
 	for (int x = xStart; x < xEnd; x++) {
 		for (int y = yStart; y < yEnd; y++) {
-			if (IsSolid(x,y)) return true;
+			if (IsSolid(x, y)) { colliding = true; };
 		}
 	}
 
-	return false;
+	return colliding;
 }
+
+float Rinigin::Physics::GetMaskCoverage(glm::vec3 position, glm::vec3 bounds) const
+{
+	int xStart = static_cast<int>(position.x);
+	int yStart = static_cast<int>(position.y);
+	int xEnd = static_cast<int>(position.x + bounds.x);
+	int yEnd = static_cast<int>(position.y + bounds.y);
+
+	int solidCount = 0;
+	int total = 0;
+
+	for (int x = xStart; x < xEnd; ++x) {
+		for (int y = yStart; y < yEnd; ++y) {
+			total++;
+			if (IsSolid(x, y)) solidCount++;
+		}
+	}
+
+	if (total == 0) return 0.0f; // avoid division by zero
+	return static_cast<float>(solidCount) / static_cast<float>(total);
+}
+
 

@@ -78,4 +78,3 @@ void DiggerMobile::Notify(Rinigin::EventArguments& eventArguments)
 		break;
 	}
 }
- 

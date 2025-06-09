@@ -8,7 +8,8 @@ void MovementCommand::Execute()
 	const glm::vec3 invertedDirection{ m_Direction.x,-m_Direction.y,m_Direction.z };
 
 	const float movementSpeed{ m_Speed * Rinigin::Timer::GetInstance().deltaTime };
-	const glm::vec3 displacement{ invertedDirection * movementSpeed };
+	//const glm::vec3 displacement{ invertedDirection * movementSpeed };
+	const glm::vec3 displacement{ m_Direction * movementSpeed };
 
 	m_GameObject->SetPosition(currentPosition + displacement);
 }

@@ -3,9 +3,8 @@
 #include <glm.hpp>
 #include <SDL_image.h> 
 
-TerrainComponent::TerrainComponent(Rinigin::GameObject* gameObject, const glm::vec2& screenSize, const glm::vec2& mapSize,int tileSize) :
-	Component(gameObject),
-	m_TileSize(tileSize)
+TerrainComponent::TerrainComponent(Rinigin::GameObject* gameObject, const glm::vec2& screenSize, const glm::vec2& mapSize) :
+	Component(gameObject)
 { 
 	m_ScreenWidth = static_cast<int>(screenSize.x);
 	m_ScreenHeight = static_cast<int>(screenSize.y);
