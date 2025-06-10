@@ -38,7 +38,6 @@ Level::Level(Rinigin::Scene* scene) :
 	m_MapComponent = m_LevelGameObject->AddComponent<TerrainComponent>(ORIGIN,SCREEN_SIZE, MAP_SIZE);
 
 	m_EnemySpawner.RegisterPrototype<Nobbin>("Nobbin",this);
-
 	m_ItemSpawner.RegisterPrototype<Emerald>("Emerald",this);
 	m_ItemSpawner.RegisterPrototype<MoneyBag>("MoneyBag", this);
 	m_ItemSpawner.RegisterPrototype<Gold>("Gold", this);

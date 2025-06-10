@@ -20,12 +20,12 @@ void Rinigin::TextureRendererComponent::SetTexture(const std::string& filename)
 
 void Rinigin::TextureRendererComponent::SetTexture(Texture2D* texture)
 {
-	m_Texture = texture;
-	
 	// Set the image sizes
-	glm::vec2 imageSize = m_Texture->GetSize();
+	glm::vec2 imageSize = texture->GetSize();
 	SetRectWidth(imageSize.x);
 	SetRectHeight(imageSize.y);
+
+	m_Texture = texture;
 }
 
 void Rinigin::TextureRendererComponent::Render() const

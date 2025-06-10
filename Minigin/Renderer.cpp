@@ -94,4 +94,23 @@ void Rinigin::Renderer::RenderTexture(const Texture2D& texture,const SDL_Rect& r
 	SDL_RenderCopy(GetSDLRenderer(), texture.GetSDLTexture(), &srcRect,&rect);
 }
 
+void Rinigin::Renderer::RenderTexture(const Texture2D& texture, float x, float y, const SDL_Color& color) const
+{
+	SDL_Rect dst{};
+	dst.x = static_cast<int>(x);
+	dst.y = static_cast<int>(y);
+	SDL_QueryTexture(texture.GetSDLTexture(), nullptr, nullptr, &dst.w, &dst.h);
+
+	// Apply color modulation
+	SDL_SetTextureColorMod(texture.GetSDLTexture(), color.r, color.g, color.b);
+	SDL_SetTextureAlphaMod(texture.GetSDLTexture(), color.a); // optional alpha mod
+
+	SDL_RenderCopy(GetSDLRenderer(), texture.GetSDLTexture(), nullptr, &dst);
+
+	// Reset color mod to white (no tint)
+	SDL_SetTextureColorMod(texture.GetSDLTexture(), 255, 255, 255);
+	SDL_SetTextureAlphaMod(texture.GetSDLTexture(), 255);
+}
+
+
 SDL_Renderer* Rinigin::Renderer::GetSDLRenderer() const { return m_Renderer; }

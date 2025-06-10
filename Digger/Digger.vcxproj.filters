@@ -168,6 +168,9 @@
     <ClCompile Include="LivesComponent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="LetterTextComponent.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Minigin\FPSComponent.h">
@@ -277,6 +280,9 @@
     </ClInclude>
     <ClInclude Include="LivesComponent.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="LetterTextComponent.h">
+      <Filter>Header Files\Components</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

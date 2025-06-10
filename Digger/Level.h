@@ -34,6 +34,7 @@ public:
 	TerrainComponent* Map() const { return m_MapComponent; };
 	Rinigin::Scene* GetScene() const { return m_Scene; };
 
+	Rinigin::GameObject* GetLevelObject() const { return m_LevelGameObject; }
 	PrototypeSpawner<Item>& GetItemSpawner() { return m_ItemSpawner; };
 	PrototypeSpawner<Nobbin>& GetEnemySpawner() { return m_EnemySpawner; };
 

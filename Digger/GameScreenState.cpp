@@ -37,6 +37,7 @@ GameScreenState::GameScreenState(Rinigin::StateContextComponent* context) :
 	Rinigin::Gamepad* playerOneGamepad{ Rinigin::InputManager::GetInstance().GetGamepad(0) }; // Keyboard
 	//Rinigin::Gamepad* playerTwoGamepad{ Rinigin::InputManager::GetInstance().GetGamepad(1) };
 
+	m_Level->GetLevelObject()->SetActive(false);
 	// TODO : Create characters
 	m_DiggerOne = std::make_unique<DiggerMobile>(0,m_Level.get());	
 	m_DiggerOne->GetRigidbody()->GravityEnabled(false);
@@ -63,6 +64,7 @@ GameScreenState::GameScreenState(Rinigin::StateContextComponent* context) :
 
 void GameScreenState::Enter()
 {
+	m_Level->GetLevelObject()->SetActive(true);
 	m_Level->LoadLevel(1);
 	StartGame();
 }
@@ -74,6 +76,7 @@ Rinigin::State* GameScreenState::Update()
 
 void GameScreenState::Exit()
 {
+	m_Level->GetLevelObject()->SetActive(false);
 	Reset();
 	// TODO : Remove bindings
 	std::cout << "Game ended !" << std::endl;

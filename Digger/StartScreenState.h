@@ -3,6 +3,7 @@
 #include "State.h"
 #include "InputManager.h"
 
+namespace Rinigin { class TextureComponent; class TextureRendererComponent; }
 class MenuCommand;
 namespace Rinigin { class Scene; class Gamepad; class Command; }
 
@@ -19,6 +20,10 @@ public:
 private:
 	Rinigin::Scene* m_Scene;
 	Rinigin::Gamepad* m_MenuController;
+	
+	Rinigin::GameObject* m_ScreenGameObject;
+	Rinigin::TextureRendererComponent* m_ScreenRenderer;
+	Rinigin::TextureComponent* m_BackgroundTextureComponent;
 	
 	// Commands
 	MenuCommand* m_MenuMoveUpCommand;

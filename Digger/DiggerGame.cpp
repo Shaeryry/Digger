@@ -29,6 +29,8 @@ DiggerGame::DiggerGame(float screenWidth, float screenHeight) :
 
 void DiggerGame::InitializeGame()
 {
+	Rinigin::Physics::GetInstance().SetGravity(100.f);
+
 	m_GameScene = Rinigin::SceneManager::GetInstance().CreateScene("Digger");
 	m_PlayerOne = Rinigin::InputManager::GetInstance().GetGamepad(0); // Set player 1 to the keyboard
 	m_PlayerTwo = Rinigin::InputManager::GetInstance().GetGamepad(1); // First controller that is found
@@ -41,12 +43,10 @@ void DiggerGame::InitializeGame()
 	// Create a state context component
 	Rinigin::StateContextComponent* gameContext = menuStateObject->AddComponent<Rinigin::StateContextComponent>();
 	StartScreenState* startScreenState = gameContext->CreateState<StartScreenState>(m_PlayerOne); // Make it so player one controls the menu !
-	GameScreenState* gameState = gameContext->CreateState<GameScreenState>();
+	gameContext->CreateState<GameScreenState>();
 
 	gameContext->SetState(startScreenState); // Set the first state to the start screen
+	/*gameState->SetGameMode(GameMode::COOP);
+	gameContext->SetState(gameState);*/
 
-	gameState->SetGameMode(GameMode::COOP);
-	gameContext->SetState(gameState);
-
-	Rinigin::Physics::GetInstance().SetGravity(100.f);
 }
