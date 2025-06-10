@@ -10,6 +10,7 @@ public:
 	virtual Rinigin::State* Update() override;
 	virtual void Exit() override;
 private:
+	float m_DeadClock;
 	DiggerMobile* m_DiggerMobile;
 };
 

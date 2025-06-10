@@ -12,6 +12,7 @@
 #include "PrototypeSpawner.h"
 #include "EventTypes.h"
 #include <iostream>
+#include "HealthComponent.h"
 
 MoneyBagFalling::MoneyBagFalling(Rinigin::StateContextComponent* context, MoneyBag* moneyBag) :
 	State(context),
@@ -23,9 +24,9 @@ MoneyBagFalling::MoneyBagFalling(Rinigin::StateContextComponent* context, MoneyB
 
 void MoneyBagFalling::Enter()
 {  
-	m_MoneyBag->GetTrigger()->ColliderEnterEvent()->AddObserver(this);
 	m_Falling = false;
 
+	m_MoneyBag->GetTrigger()->ColliderEnterEvent()->AddObserver(this);
 	m_MoneyBag->GetRigidbody()->SetCanCollide(false);
 	m_MoneyBag->GetAnimator()->PlayAnimation("Falling");
 
@@ -81,8 +82,13 @@ void MoneyBagFalling::Notify(Rinigin::EventArguments& eventArguments)
 		Rinigin::CollisionEventArguments& collisionArgument{ GetArgumentsOfType<Rinigin::CollisionEventArguments>(eventArguments) };
 		const unsigned int layerId{ collisionArgument.GetOther()->GetCollisionLayer() };
 		const unsigned int playerLayerId{ Rinigin::Helpers::sdbm_hash("Player") };
+
 		if (layerId == playerLayerId) {
-			std::cout << "kill player" << std::endl;
+			HealthComponent* healthComponent = collisionArgument.GetOther()->GetOwner()->GetComponent<HealthComponent>();
+			// Check if the bag fell on your head
+			if (healthComponent) {
+				healthComponent->TakeDamage(1);
+			}
 		};
 
 		break;
@@ -91,3 +97,4 @@ void MoneyBagFalling::Notify(Rinigin::EventArguments& eventArguments)
 		break;
 	}
 }
+

@@ -31,6 +31,7 @@ public:
 	void SetGameMode(GameMode gameMode) { m_GameMode = gameMode; };
 	
 private:
+	void StartGame();
 	void Reset();
 	void StartSolo();
 	void StartCoop();

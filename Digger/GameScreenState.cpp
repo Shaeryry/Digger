@@ -38,8 +38,9 @@ GameScreenState::GameScreenState(Rinigin::StateContextComponent* context) :
 	//Rinigin::Gamepad* playerTwoGamepad{ Rinigin::InputManager::GetInstance().GetGamepad(1) };
 
 	// TODO : Create characters
-	m_DiggerOne = std::make_unique<DiggerMobile>(0,m_Level->Map());
+	m_DiggerOne = std::make_unique<DiggerMobile>(0,m_Level.get());	
 	m_DiggerOne->GetRigidbody()->GravityEnabled(false);
+	m_Level->AddPlayer(m_DiggerOne.get());
 
 	playerOneGamepad->AddBinding(SDL_SCANCODE_UP, Rinigin::BindingConnection::Down, m_DiggerOne->UpDirectionCommand());
 	playerOneGamepad->AddBinding(SDL_SCANCODE_DOWN, Rinigin::BindingConnection::Down, m_DiggerOne->DownDirectionCommand());
@@ -54,32 +55,16 @@ GameScreenState::GameScreenState(Rinigin::StateContextComponent* context) :
 	// TEMPORARY WAY OF DAMAGING YOUR OWN CHARACTER
 	playerOneGamepad->AddBinding(SDL_SCANCODE_F, Rinigin::BindingConnection::Down, m_DiggerOne->GetDamageCommand());
 
-	m_DiggerTwo = std::make_unique<DiggerMobile>(1, m_Level->Map());
+	m_DiggerTwo = std::make_unique<DiggerMobile>(1, m_Level.get());
+	m_Level->AddPlayer(m_DiggerTwo.get());
 
 	m_Nobbin = m_Level->GetEnemySpawner().Spawn("Nobbin");
 } 
 
-
 void GameScreenState::Enter()
 {
-	Reset();
 	m_Level->LoadLevel(1);
-	// TODO : Generate level
-
-	switch (m_GameMode)
-	{
-		case GameMode::SOLO:
-			StartSolo();
-			break;
-		case GameMode::COOP:
-			StartCoop();
-			break;
-		case GameMode::PVP:
-			// TODO : Spawn 1 player digger and 1 player enemy
-			break;
-	default:
-		break;
-	}
+	StartGame();
 }
 
 Rinigin::State* GameScreenState::Update()
@@ -94,6 +79,25 @@ void GameScreenState::Exit()
 	std::cout << "Game ended !" << std::endl;
 }
 
+void GameScreenState::StartGame()
+{
+	Reset();
+	switch (m_GameMode)
+	{
+	case GameMode::SOLO:
+		StartSolo();
+		break;
+	case GameMode::COOP:
+		StartCoop();
+		break;
+	case GameMode::PVP:
+		// TODO : Spawn 1 player digger and 1 player enemy
+		break;
+	default:
+		break;
+	}
+}
+
 void GameScreenState::Reset()
 {
 	m_DiggerOne->GetCharacterObject()->SetActive(false); 
@@ -103,19 +107,15 @@ void GameScreenState::Reset()
 
 void GameScreenState::StartSolo()
 {
-	m_DiggerOne->GetCharacterObject()->SetActive(true);
-	m_DiggerOne->GetCharacterObject()->SetPosition( m_Level->GetPlayerSpawnIndex(0) );
-	m_Level->AddPlayer(m_DiggerOne.get());
-
+	m_Level->RespawnPlayer(0,false);
 	std::cout << "Solo game!" << std::endl;
 }
 
 void GameScreenState::StartCoop()
 {
-	m_DiggerOne->GetCharacterObject()->SetActive(true);
-	m_DiggerOne->GetCharacterObject()->SetPosition(m_Level->GetPlayerSpawnIndex(0));
+	m_Level->RespawnPlayer(0,false);
+	m_Level->RespawnPlayer(1,false);
 
-	m_DiggerTwo->GetCharacterObject()->SetActive(true);
 	m_DiggerTwo->GetCharacterObject()->SetPosition(m_Level->GetPlayerSpawnIndex(1));
 
 }

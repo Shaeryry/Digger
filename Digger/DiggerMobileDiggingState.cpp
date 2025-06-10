@@ -12,6 +12,13 @@
 #include "SpriteSheetComponent.h"
 #include "DiggerConstants.h"
 
+#include "ColliderComponent.h"
+#include "RigidbodyComponent.h"
+#include "Level.h"
+#include "PhysicsManager.h"
+#include "DiggerMobile.h"
+#include "HealthComponent.h"
+
 DiggerMobileDiggingState::DiggerMobileDiggingState(Rinigin::StateContextComponent* context, DiggerMobile* digger) :
 	State(context),
 	m_DirectionName("Right"),
@@ -22,19 +29,23 @@ DiggerMobileDiggingState::DiggerMobileDiggingState(Rinigin::StateContextComponen
 
 void DiggerMobileDiggingState::Enter()
 {
+	m_DiggerMobile->GetRigidbody()->SetCanCollide(true);
+
 	m_DiggerMobile->UpDirectionCommand()->GetDirectionChangedEvent()->AddObserver(this);
 	m_DiggerMobile->DownDirectionCommand()->GetDirectionChangedEvent()->AddObserver(this);
 	m_DiggerMobile->RightDirectionCommand()->GetDirectionChangedEvent()->AddObserver(this);
 	m_DiggerMobile->LeftDirectionCommand()->GetDirectionChangedEvent()->AddObserver(this);
 
 	m_DiggerMobile->SetSpeed(m_Speed);
+	m_DiggerMobile->GetTrigger()->ColliderEnterEvent()->AddObserver(this);
+
 	UpdateAnimation();
 }
 
 Rinigin::State* DiggerMobileDiggingState::Update()
 {
 	// DIG DIG DIG
-	TerrainComponent* map{ m_DiggerMobile->Map() };
+	TerrainComponent* map{ m_DiggerMobile->GetLevel()->Map() };
 	if (map) {
 		glm::vec3 diggerMobilePosition{ m_DiggerMobile->GetCharacterObject()->GetTransform()->GetTransformLocalPosition() };
 		float xPos{ diggerMobilePosition.x + (m_DiggerMobile->GetSpriteSheetComponent()->GetTileWidth() / 2) };
@@ -48,6 +59,8 @@ Rinigin::State* DiggerMobileDiggingState::Update()
 
 void DiggerMobileDiggingState::Exit()
 {
+	m_DiggerMobile->GetTrigger()->ColliderEnterEvent()->RemoveObserver(this);
+
 	m_DiggerMobile->UpDirectionCommand()->GetDirectionChangedEvent()->RemoveObserver(this);
 	m_DiggerMobile->DownDirectionCommand()->GetDirectionChangedEvent()->RemoveObserver(this);
 	m_DiggerMobile->RightDirectionCommand()->GetDirectionChangedEvent()->RemoveObserver(this);

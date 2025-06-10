@@ -172,6 +172,7 @@
     <ClCompile Include="Gold.cpp" />
     <ClCompile Include="Item.cpp" />
     <ClCompile Include="Level.cpp" />
+    <ClCompile Include="LivesComponent.cpp" />
     <ClCompile Include="MoneyBag.cpp" />
     <ClCompile Include="MoneyBagFalling.cpp" />
     <ClCompile Include="MoneyBagIdle.cpp" />
@@ -208,6 +209,7 @@
     <ClInclude Include="Gold.h" />
     <ClInclude Include="Item.h" />
     <ClInclude Include="Level.h" />
+    <ClInclude Include="LivesComponent.h" />
     <ClInclude Include="MoneyBag.h" />
     <ClInclude Include="MoneyBagFalling.h" />
     <ClInclude Include="MoneyBagPrefall.h" />

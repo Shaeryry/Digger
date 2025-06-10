@@ -45,7 +45,7 @@ void DiggerGame::InitializeGame()
 
 	gameContext->SetState(startScreenState); // Set the first state to the start screen
 
-	gameState->SetGameMode(GameMode::SOLO);
+	gameState->SetGameMode(GameMode::COOP);
 	gameContext->SetState(gameState);
 
 	Rinigin::Physics::GetInstance().SetGravity(100.f);

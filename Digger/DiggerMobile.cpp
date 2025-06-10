@@ -13,15 +13,18 @@
 #include "Helpers.h"
 #include "ColliderComponent.h"
 #include "ScoreComponent.h"
+#include "LivesComponent.h"
 
-DiggerMobile::DiggerMobile(int index,TerrainComponent* map) :
+DiggerMobile::DiggerMobile(int index, Level* level) :
 	Character("DiggerMobile.png"),
+	m_ScoreComponent(nullptr),
+	m_LivesComponent(nullptr),
 	m_DiggerMobileStateContext(nullptr),
 	m_DyingState(nullptr), 
 	m_DeadState(nullptr),
 	m_DiggingState(nullptr),
 	m_DiggerIndex(index),
-	m_Map(map)
+	m_Level(level)
 {
 	// Setup components
 	GetCollider()->SetLayer("Player");
@@ -64,12 +67,24 @@ DiggerMobile::DiggerMobile(int index,TerrainComponent* map) :
 	m_DiggerMobileStateContext->SetState(m_DiggingState);
 	// Score
 	m_ScoreComponent = GetCharacterObject()->AddComponent<ScoreComponent>();
+	// Live
+	m_LivesComponent = GetCharacterObject()->AddComponent<LivesComponent>(3);
 }
 
 void DiggerMobile::Notify(Rinigin::EventArguments& eventArguments)
 {
 	switch (eventArguments.GetID())
 	{
+	/*case Rinigin::Helpers::sdbm_hash("CollisionEnter"): {
+		Rinigin::CollisionEventArguments& collisionArgument{ GetArgumentsOfType<Rinigin::CollisionEventArguments>(eventArguments) };
+		const unsigned int layerId{ collisionArgument.GetOther()->GetCollisionLayer() };
+		const unsigned int moneyBagLayerId{ Rinigin::Helpers::sdbm_hash("MoneyBag") };
+		if (layerId == moneyBagLayerId) {
+			GetHealthComponent()->TakeDamage(1);
+		};
+
+		break;
+	}*/
 	case Rinigin::Helpers::sdbm_hash("Died"): 
 		m_DiggerMobileStateContext->SetState(m_DyingState);
 		break;

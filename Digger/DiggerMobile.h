@@ -4,8 +4,9 @@
 
 namespace Rinigin { class StateContextComponent; }
 
+class Level;
+class LivesComponent;
 class ScoreComponent;
-class TerrainComponent;
 class DiggerMobileDiggingState;
 class DiggerMobileDyingState;
 class DiggerMobileDeadState;
@@ -13,24 +14,28 @@ class DiggerMobileDeadState;
 class DiggerMobile final : public Character,public Rinigin::Observer
 {
 public:
-	explicit DiggerMobile(int index,TerrainComponent* map);
+	explicit DiggerMobile(int index, Level* level);
 
 	DiggerMobileDiggingState* GetDiggingState() const { return m_DiggingState; }
 	DiggerMobileDyingState* GetDyingState() const { return m_DyingState; }
 	DiggerMobileDeadState* GetDeadState() const { return m_DeadState; }
 	ScoreComponent* GetScoreComponent() const { return m_ScoreComponent; }
+	LivesComponent* GetLivesComponent() const { return m_LivesComponent; }
+	int GetDiggerIndex() const { return m_DiggerIndex; }
 
-	TerrainComponent* Map() const { return m_Map; }
+	Level* GetLevel() const { return m_Level; }
 	void Notify(Rinigin::EventArguments & eventArguments) override;
 private:
 	int m_DiggerIndex;
 
+	LivesComponent* m_LivesComponent;
 	ScoreComponent* m_ScoreComponent;
+
 	Rinigin::StateContextComponent* m_DiggerMobileStateContext;
 	DiggerMobileDiggingState* m_DiggingState;
 	DiggerMobileDyingState* m_DyingState;
 	DiggerMobileDeadState* m_DeadState;
 
-	TerrainComponent* m_Map;
+	Level* m_Level;
 };
 

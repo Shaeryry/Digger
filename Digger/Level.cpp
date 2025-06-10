@@ -3,6 +3,7 @@
 #include "Scene.h"
 #include "GameObject.h"
 #include "TerrainComponent.h"
+#include "EventTypes.h"
 
 #include <iostream>
 #include <fstream>
@@ -20,12 +21,14 @@ using json = nlohmann::json;
 
 #include "ColliderComponent.h"
 #include "DiggerConstants.h"
+#include "HealthComponent.h"
 
 #include <queue>
 #include <unordered_set>
 
 Level::Level(Rinigin::Scene* scene) :
-	m_Scene(scene)
+	m_Scene(scene),
+	m_LevelTileSize()
 {
 	const glm::vec2 SCREEN_SIZE{ DIGGER::SCREEN_WIDTH, DIGGER::SCREEN_HEIGHT };
 	const glm::vec2 MAP_SIZE{ DIGGER::GAME_WIDTH, DIGGER::GAME_HEIGHT };
@@ -41,6 +44,24 @@ Level::Level(Rinigin::Scene* scene) :
 	m_ItemSpawner.RegisterPrototype<Gold>("Gold", this);
 }
 
+void Level::RespawnPlayer(int playerIndex,bool isEnemy)
+{
+	Character* character = GetPlayer(playerIndex);
+	if (character) {
+		character->GetCharacterObject()->SetActive(true);
+
+		if (not isEnemy) {
+			character->GetHealthComponent()->GetDiedEvent()->AddObserver(this);
+			character->GetCharacterObject()->SetPosition(GetPlayerSpawnIndex(playerIndex));
+		}
+		else {
+
+		}
+
+		RemoveDeadPlayer(character);
+	}
+}
+
 const glm::vec2& Level::GetPlayerSpawnIndex(int playerIndex)
 {
 	return m_LevelData.playerSpawns[playerIndex % m_LevelData.playerSpawns.size()];
@@ -48,7 +69,6 @@ const glm::vec2& Level::GetPlayerSpawnIndex(int playerIndex)
 
 const glm::vec2 Level::GetEnemySpawnLocation()
 {
-	// TODO: insert return statement here
 	if (not m_LevelData.enemySpawns.empty()) {
 		return m_LevelData.enemySpawns[rand() % m_LevelData.enemySpawns.size()];
 	}
@@ -73,6 +93,41 @@ void Level::LoadLevel(int levelIndex)
 void Level::AddPlayer(Character* playerCharacter)
 {
 	m_Players.emplace_back(playerCharacter);
+}
+
+void Level::AddDeadPlayer(Character* player)
+{
+	auto foundIt = std::find(m_AlivePlayers.begin(), m_AlivePlayers.end(), player);
+	if (foundIt != m_AlivePlayers.end()) return;
+
+	m_AlivePlayers.emplace_back(player);
+}
+
+void Level::RemoveDeadPlayer(Character* player)
+{
+	std::erase(m_AlivePlayers, player);
+}
+
+void Level::Notify(Rinigin::EventArguments& /*arguments*/)
+{
+	/*switch (arguments.GetID())
+	{
+	case Rinigin::Helpers::sdbm_hash("Died"): {
+		GameObjectEventArguments& gameObjectArgument{ GetArgumentsOfType<GameObjectEventArguments>(arguments) };
+		auto playerFoundIt = std::find_if(m_Players.begin(), m_Players.end(), [&gameObjectArgument](Character* character)
+			{
+				return character->GetCharacterObject() == gameObjectArgument.GetGameObject();
+			} 
+		);
+
+		if (playerFoundIt != m_Players.end()) {
+			m_PlayersAlive--;
+		}
+		break;
+	}
+	default:
+		break;
+	}*/
 }
 
 void Level::LoadLevelFile(const char* filePath)
@@ -138,7 +193,7 @@ void Level::InitializeLevel()
 		case 2:
 			// Spawn points
 			tunnelPositions.emplace_back(tilePos);
-			m_LevelData.playerSpawns.emplace_back(tilePos - glm::vec2(DIGGER::TILE_GRID_SIZE/2.f,DIGGER::TILE_GRID_SIZE/2.f));
+			m_LevelData.playerSpawns.emplace_back(tilePos - glm::vec2(tileWidth/2.f, tileHeight /2.f));
 			//m_MapComponent->DigAt(tilePos.x, tilePos.y, DIGGER::TILE_SIZE);
 			break;
 		case 3: {
@@ -172,15 +227,15 @@ void Level::InitializeLevel()
 		}
 	}
 
-	tunnelPositions = SortTunnelByBFS(tunnelPositions);
+	tunnelPositions = SortTunnel(tunnelPositions);
 	for (int tunnelIndex{ 0 }; tunnelIndex < tunnelPositions.size(); tunnelIndex++) {
 		if (tunnelIndex <= 0) continue;
 
 		const glm::vec2& prevPosition{ tunnelPositions[tunnelIndex - 1] };
 		const glm::vec2& tunnelPos{ tunnelPositions[tunnelIndex] };
 
-		for (int sampleIndex{ 0 }; sampleIndex < 20; sampleIndex++) {
-			const float t{ static_cast<float>(sampleIndex) / static_cast<float>(20) };
+		for (int sampleIndex{ 0 }; sampleIndex < DIGGER::TUNNEL_SAMPLES; sampleIndex++) {
+			const float t{ static_cast<float>(sampleIndex) / static_cast<float>(DIGGER::TUNNEL_SAMPLES) };
 			
 			const glm::vec2 interpolatedTilePos{  
 				prevPosition.x + (tunnelPos.x - prevPosition.x) * t,
@@ -190,11 +245,9 @@ void Level::InitializeLevel()
 			m_MapComponent->DigAt(interpolatedTilePos.x, interpolatedTilePos.y, DIGGER::TILE_SIZE);
 		}
 	}
-
-
 }
 
-std::vector<glm::vec2> Level::SortTunnelByBFS(const std::vector<glm::vec2>& cpositions)
+std::vector<glm::vec2> Level::SortTunnel(const std::vector<glm::vec2>& cpositions)
 {
 	std::vector<glm::vec2> positions = cpositions;
 	std::vector<glm::vec2> ordered;

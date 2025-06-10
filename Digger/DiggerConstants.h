@@ -10,4 +10,7 @@ namespace DIGGER {
 	constexpr int TILE_SIZE{ 20 };
 	constexpr int TILE_GRID_SIZE{ 40 };
 	constexpr int DIG_TUNNEL_SIZE{ 18 };
+
+	constexpr int TUNNEL_SAMPLES{ 20 };
+	constexpr int RESPAWN_TIME{ 5 };
 };

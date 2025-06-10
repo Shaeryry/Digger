@@ -11,7 +11,7 @@ public:
 	virtual Rinigin::State* Update();
 	virtual void Exit();
 
-	virtual void Notify(Rinigin::EventArguments& eventArguments) override;
+	void Notify(Rinigin::EventArguments& eventArguments) override;
 private:
 	MoneyBag* m_MoneyBag;
 	bool m_Falling;

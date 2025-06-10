@@ -10,6 +10,8 @@
 #include "Timer.h"
 #include "RigidbodyComponent.h"
 
+#include <iostream>
+
 MoneyBagPrefall::MoneyBagPrefall(Rinigin::StateContextComponent* context, MoneyBag* moneyBag) : 
 	State(context),
 	m_Duration(0),
@@ -25,6 +27,7 @@ void MoneyBagPrefall::Enter()
 
 Rinigin::State* MoneyBagPrefall::Update()
 {
+
 	float velocity = glm::length(m_MoneyBag->GetRigidbody()->Velocity());
 	m_Duration += Rinigin::Timer::GetInstance().deltaTime;
 
