@@ -5,7 +5,7 @@ namespace DIGGER {
 	constexpr float SCREEN_HEIGHT{ 480 };
 
 	constexpr float GAME_WIDTH{ 640 };
-	constexpr float GAME_HEIGHT{ 400 };
+	constexpr float GAME_HEIGHT{ 440 };
 
 	constexpr int TILE_SIZE{ 20 };
 	constexpr int TILE_GRID_SIZE{ 40 };

@@ -24,13 +24,13 @@ void DiggerMobileDeadState::Enter()
 	m_DiggerMobile->SetSpeed(0);
 
 	m_DiggerMobile->GetLevel()->AddDeadPlayer(m_DiggerMobile);
-	m_DiggerMobile->GetLivesComponent()->RemoveLives(1);
+	m_DiggerMobile->GetLevel()->Lives()->RemoveLives(1);
 }
 
 
 Rinigin::State* DiggerMobileDeadState::Update()
 {
-	if (m_DiggerMobile->GetLivesComponent()->GetLives() > 0) {
+	if (m_DiggerMobile->GetLevel()->Lives()->GetLives() > 0) {
 		if (m_DeadClock > DIGGER::RESPAWN_TIME) {
 			m_DiggerMobile->GetLevel()->RespawnPlayer(m_DiggerMobile->GetDiggerIndex(), false);
 			return m_DiggerMobile->GetDiggingState();

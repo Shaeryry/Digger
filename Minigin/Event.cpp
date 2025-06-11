@@ -4,6 +4,7 @@
 void Rinigin::Event::AddObserver(Observer* observer)
 {
 	if (!IsObserver(observer)) {
+		observer->TrackEvent(this);
 		m_Observers.emplace_back(observer);
 	}
 }
@@ -11,6 +12,7 @@ void Rinigin::Event::AddObserver(Observer* observer)
 void Rinigin::Event::RemoveObserver(Observer* observer)
 {
 	if (IsObserver(observer)) {
+		observer->UntrackEvent(this);
 		std::erase(m_Observers, observer);
 	}
 }

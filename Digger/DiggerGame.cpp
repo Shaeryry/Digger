@@ -42,8 +42,8 @@ void DiggerGame::InitializeGame()
 
 	// Create a state context component
 	Rinigin::StateContextComponent* gameContext = menuStateObject->AddComponent<Rinigin::StateContextComponent>();
-	StartScreenState* startScreenState = gameContext->CreateState<StartScreenState>(m_PlayerOne); // Make it so player one controls the menu !
 	gameContext->CreateState<GameScreenState>();
+	StartScreenState* startScreenState = gameContext->CreateState<StartScreenState>(m_PlayerOne); // Make it so player one controls the menu !
 
 	gameContext->SetState(startScreenState); // Set the first state to the start screen
 	/*gameState->SetGameMode(GameMode::COOP);

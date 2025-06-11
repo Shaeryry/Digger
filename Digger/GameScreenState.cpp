@@ -29,6 +29,8 @@
 #include "Prototype.h"
 #include "Nobbin.h"
 
+#include "LivesComponent.h"
+
 GameScreenState::GameScreenState(Rinigin::StateContextComponent* context) :
 	Rinigin::State(context),
 	m_GameMode(GameMode::SOLO),
@@ -71,6 +73,19 @@ void GameScreenState::Enter()
 
 Rinigin::State* GameScreenState::Update()
 {
+	// GAME OVER CONDITION
+	if (m_Level->Lives()->GetLives() <= 0) {
+		if (m_Level->GetDeadPlayers().size() >= m_Level->GetPlayerCount()) {
+		}
+	}
+
+	// NEXT LEVEL CONDITION
+	const bool emeraldsCleared{ m_Level->GetEmeraldSpawner().GetInstances().size() <= 0 };
+	if (emeraldsCleared) {
+		// Move on to next level
+		std::cout << "You win" << std::endl;
+	}
+
 	return nullptr;
 }
 
@@ -110,12 +125,14 @@ void GameScreenState::Reset()
 
 void GameScreenState::StartSolo()
 {
+	m_Level->SetPlayerCount(1);
 	m_Level->RespawnPlayer(0,false);
 	std::cout << "Solo game!" << std::endl;
 }
 
 void GameScreenState::StartCoop()
 {
+	m_Level->SetPlayerCount(2);
 	m_Level->RespawnPlayer(0,false);
 	m_Level->RespawnPlayer(1,false);
 

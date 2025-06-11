@@ -23,12 +23,17 @@ using json = nlohmann::json;
 #include "DiggerConstants.h"
 #include "HealthComponent.h"
 
+#include "ScoreComponent.h"
+#include "LetterTextComponent.h"
+#include "LivesComponent.h"
+
 #include <queue>
 #include <unordered_set>
 
 Level::Level(Rinigin::Scene* scene) :
 	m_Scene(scene),
-	m_LevelTileSize()
+	m_LevelTileSize(),
+	m_TotalScore(0)
 {
 	const glm::vec2 SCREEN_SIZE{ DIGGER::SCREEN_WIDTH, DIGGER::SCREEN_HEIGHT };
 	const glm::vec2 MAP_SIZE{ DIGGER::GAME_WIDTH, DIGGER::GAME_HEIGHT };
@@ -37,10 +42,19 @@ Level::Level(Rinigin::Scene* scene) :
 	m_LevelGameObject = scene->CreateObject();
 	m_MapComponent = m_LevelGameObject->AddComponent<TerrainComponent>(ORIGIN,SCREEN_SIZE, MAP_SIZE);
 
+	// Score display
+	m_ScoreDisplayTextComponent = m_LevelGameObject->AddComponent<LetterTextComponent>("None");
+	m_ScoreDisplayTextComponent->GetOwner()->SetPosition(10.f, 5.f, 0);
+
+	// Spawners
 	m_EnemySpawner.RegisterPrototype<Nobbin>("Nobbin",this);
-	m_ItemSpawner.RegisterPrototype<Emerald>("Emerald",this);
+	m_EmeraldSpawner.RegisterPrototype<Emerald>("Emerald",this);
+
 	m_ItemSpawner.RegisterPrototype<MoneyBag>("MoneyBag", this);
 	m_ItemSpawner.RegisterPrototype<Gold>("Gold", this);
+
+	m_LivesComponent = m_LevelGameObject->AddComponent<LivesComponent>(1);
+	UpdateScoreDisplay();
 }
 
 void Level::RespawnPlayer(int playerIndex,bool isEnemy)
@@ -91,42 +105,38 @@ void Level::LoadLevel(int levelIndex)
 
 void Level::AddPlayer(Character* playerCharacter)
 {
+	ScoreComponent* scoreComponent{ playerCharacter->GetCharacterObject()->GetComponent<ScoreComponent>() };
+	if (scoreComponent) scoreComponent->GetScoreAddedEvent()->AddObserver(this);
 	m_Players.emplace_back(playerCharacter);
 }
 
 void Level::AddDeadPlayer(Character* player)
 {
-	auto foundIt = std::find(m_AlivePlayers.begin(), m_AlivePlayers.end(), player);
-	if (foundIt != m_AlivePlayers.end()) return;
+	auto foundIt = std::find(m_DeadPlayers.begin(), m_DeadPlayers.end(), player);
+	if (foundIt != m_DeadPlayers.end()) return;
 
-	m_AlivePlayers.emplace_back(player);
+	m_DeadPlayers.emplace_back(player);
 }
 
 void Level::RemoveDeadPlayer(Character* player)
 {
-	std::erase(m_AlivePlayers, player);
+	std::erase(m_DeadPlayers, player);
 }
 
-void Level::Notify(Rinigin::EventArguments& /*arguments*/)
+void Level::Notify(Rinigin::EventArguments& arguments)
 {
-	/*switch (arguments.GetID())
+	switch (arguments.GetID())
 	{
-	case Rinigin::Helpers::sdbm_hash("Died"): {
-		GameObjectEventArguments& gameObjectArgument{ GetArgumentsOfType<GameObjectEventArguments>(arguments) };
-		auto playerFoundIt = std::find_if(m_Players.begin(), m_Players.end(), [&gameObjectArgument](Character* character)
-			{
-				return character->GetCharacterObject() == gameObjectArgument.GetGameObject();
-			} 
-		);
+	case Rinigin::Helpers::sdbm_hash("ScoreAdded"): {
+		ScoreArguments& scoreAddedArguments{ GetArgumentsOfType<ScoreArguments>(arguments) };
+		m_TotalScore += scoreAddedArguments.GetScore();
 
-		if (playerFoundIt != m_Players.end()) {
-			m_PlayersAlive--;
-		}
+		UpdateScoreDisplay();
 		break;
 	}
 	default:
 		break;
-	}*/
+	}
 }
 
 void Level::LoadLevelFile(const char* filePath)
@@ -197,7 +207,7 @@ void Level::InitializeLevel()
 			break;
 		case 3: {
 			// Emeralds
-			Emerald* emerald = static_cast<Emerald*>(m_ItemSpawner.Spawn("Emerald"));
+			Emerald* emerald = m_EmeraldSpawner.Spawn("Emerald");
 			emerald->GetItemObject()->SetPosition(glm::vec3(tilePos.x, tilePos.y, 0));
 			break;
 		}
@@ -244,6 +254,15 @@ void Level::InitializeLevel()
 			m_MapComponent->DigAt(interpolatedTilePos.x, interpolatedTilePos.y, DIGGER::TILE_SIZE);
 		}
 	}
+}
+
+void Level::UpdateScoreDisplay()
+{
+	std::ostringstream oss;
+	oss << std::setfill('0') << std::setw(5) << m_TotalScore;
+	std::string scoreStr = oss.str();
+
+	m_ScoreDisplayTextComponent->SetText(scoreStr.c_str());
 }
 
 std::vector<glm::vec2> Level::SortTunnel(const std::vector<glm::vec2>& cpositions)

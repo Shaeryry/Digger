@@ -7,6 +7,11 @@
 
 #include "EventTypes.h"
 
+#include "Level.h"
+#include "ScoreComponent.h"
+#include "Character.h"
+#include "PrototypeSpawner.h"
+
 Gold::Gold(Level* level) : 
 	Item(level, "Gold.png"),
 	m_CollectEvent(std::make_unique<Rinigin::Event>()),
@@ -40,6 +45,7 @@ void Gold::Notify(Rinigin::EventArguments& eventArguments)
 			GameObjectEventArguments arguments{ "GoldCollected",collisionArgument.GetOther()->GetOwner() };
 			m_CollectEvent->NotifyObservers(arguments);
 			GetItemObject()->Destroy();
+			m_Level->GetItemSpawner().RemoveTracked(this);
 		};
 
 		break;
@@ -53,5 +59,13 @@ Item* Gold::Clone()
 {
 	Gold* newGold = new Gold(m_Level);
 	newGold->GetItemObject()->SetActive(true);
+
+	for (Character* character : m_Level->GetPlayers()) {
+		ScoreComponent* scoreComponent = character->GetCharacterObject()->GetComponent<ScoreComponent>();
+		if (scoreComponent) {
+			newGold->GetCollectedEvent()->AddObserver(scoreComponent);
+		}
+	}
+
 	return newGold;
 }

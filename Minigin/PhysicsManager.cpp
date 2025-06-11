@@ -66,7 +66,6 @@ void Rinigin::Physics::RemoveCollider(ColliderComponent* collider)
 		other->RemoveCollidingCollider(collider);
 	}
 
-	std::cout << "deleted collider" << std::endl;
 	std::erase(m_Colliders, collider);
 }
 
@@ -80,7 +79,6 @@ void Rinigin::Physics::RemoveRigidbody(RigidbodyComponent* rigidbody)
 {
 	if (m_Rigidbodies.empty()) return;
 
-	std::cout << "deleted rigidbody" << std::endl;
 	std::erase(m_Rigidbodies, rigidbody);
 }
 

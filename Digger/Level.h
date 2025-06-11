@@ -9,6 +9,9 @@ class TerrainComponent;
 class Item;
 class Nobbin;
 class Character;
+class LetterTextComponent;
+class LivesComponent;
+class Emerald;
 
 class Level final : public Rinigin::Observer
 {
@@ -24,18 +27,26 @@ public:
 	void AddPlayer(Character* playerCharacter);
 	void AddDeadPlayer(Character* player);
 	void RemoveDeadPlayer(Character* player);
+
+	int GetPlayerCount() const { return m_PlayerCount; }
+	void SetPlayerCount(int count) { m_PlayerCount = count; }
+
 	Character* GetPlayer(int index) const { return m_Players[index]; };
+
 	std::vector<Character*>& GetPlayers() { return m_Players; };
+	std::vector<Character*>& GetDeadPlayers() { return m_DeadPlayers; };
 
 	void RespawnPlayer(int playerIndex,bool isEnemy);
 	const glm::vec2& GetPlayerSpawnIndex(int playerIndex);
 	const glm::vec2 GetEnemySpawnLocation();
 
 	TerrainComponent* Map() const { return m_MapComponent; };
+	LivesComponent* Lives() const { return m_LivesComponent; }
 	Rinigin::Scene* GetScene() const { return m_Scene; };
 
 	Rinigin::GameObject* GetLevelObject() const { return m_LevelGameObject; }
 	PrototypeSpawner<Item>& GetItemSpawner() { return m_ItemSpawner; };
+	PrototypeSpawner<Emerald>& GetEmeraldSpawner() { return m_EmeraldSpawner; };
 	PrototypeSpawner<Nobbin>& GetEnemySpawner() { return m_EnemySpawner; };
 
 	const glm::vec2& LevelTileSize() { return m_LevelTileSize; };
@@ -43,6 +54,8 @@ public:
  private:
 	void LoadLevelFile(const char* filePath);
 	void InitializeLevel();
+	void UpdateScoreDisplay();
+
 	std::vector<glm::vec2> SortTunnel(const std::vector<glm::vec2>& positions);
 
 	struct LevelData {
@@ -69,12 +82,19 @@ public:
 	glm::vec2 m_LevelTileSize;
 
 	// Players
+	int m_PlayerCount;
+	LivesComponent* m_LivesComponent;
 	std::vector<Character*> m_Players;
-	std::vector<Character*> m_AlivePlayers;
+	std::vector<Character*> m_DeadPlayers;
 	
 	// Spawners
 	PrototypeSpawner<Item> m_ItemSpawner;
+	PrototypeSpawner<Emerald> m_EmeraldSpawner;
 	PrototypeSpawner<Nobbin> m_EnemySpawner;
 	std::vector<Rinigin::GameObject*> m_EnemySpawnerObjects;
+
+	//Score
+	LetterTextComponent* m_ScoreDisplayTextComponent;
+	int m_TotalScore;
 };
 

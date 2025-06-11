@@ -41,3 +41,4 @@ Nobbin* Nobbin::Clone()
 {
 	return new Nobbin(m_Level);
 }
+

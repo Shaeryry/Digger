@@ -26,7 +26,6 @@ namespace Rinigin {
 	class Event final
 	{
 	public:
-		//template<typename ArgumentsType> explicit Event(const ArgumentsType& eventData) : m_EventData{ std::make_unique<ArgumentsType>(eventData) } {};
 		explicit Event() = default;
 		~Event() = default;
 		Event(const Event& other) = delete;

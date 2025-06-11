@@ -1,9 +1,9 @@
-#pragma once
+﻿#pragma once
 #include <unordered_map>
 #include <vector>
 #include <string>
 #include <memory>
-#include <utility> // for std::forward
+#include <utility>
 
 #include "Helpers.h"
 
@@ -30,6 +30,14 @@ public:
 			return m_Instances.back().get();
 		}
 		return nullptr;
+	}
+
+	void RemoveTracked(T* trackedInstance) {
+		//std::erase(m_Instances, trackedInstance);
+		std::erase_if(m_Instances, [trackedInstance](const std::unique_ptr<T>& pointer) {
+				return pointer.get() == trackedInstance;
+			}	
+		);
 	}
 
 	void ClearTracked()

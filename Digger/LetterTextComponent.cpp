@@ -12,7 +12,7 @@ LetterTextComponent::LetterTextComponent(Rinigin::GameObject* gameObject, const 
 	Component(gameObject),
     m_CharSpacing(0)
 {
-    SetColor({ 0,0,0,0 });
+    SetColor({ 255,255,255,255 });
 	SetText(text);
 }
 
@@ -34,7 +34,7 @@ void LetterTextComponent::Render() const
 
     for (size_t characterIndex{ 0 }; characterIndex < m_Text.size(); characterIndex++) {
         Rinigin::Texture2D* letterTexture{ GetGlyph(characterIndex) };
-        Rinigin::Renderer::GetInstance().RenderTexture(*letterTexture, cursorX, position.y);
+        Rinigin::Renderer::GetInstance().RenderTexture(*letterTexture, cursorX, position.y,m_Color);
 
         cursorX += letterTexture->GetSize().x + m_CharSpacing;
     }
@@ -49,5 +49,5 @@ Rinigin::Texture2D* LetterTextComponent::GetGlyph(size_t characterIndex) const
 
     const std::string filePath{ std::string("Letters/") + character + std::string(".BMP") };
     Rinigin::Texture2D* letterTexture{ Rinigin::ResourceManager::GetInstance().LoadTexture(filePath) };
-    return nullptr;
+    return letterTexture;
 }

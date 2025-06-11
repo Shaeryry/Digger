@@ -20,7 +20,6 @@ public:
 	DiggerMobileDyingState* GetDyingState() const { return m_DyingState; }
 	DiggerMobileDeadState* GetDeadState() const { return m_DeadState; }
 	ScoreComponent* GetScoreComponent() const { return m_ScoreComponent; }
-	LivesComponent* GetLivesComponent() const { return m_LivesComponent; }
 	int GetDiggerIndex() const { return m_DiggerIndex; }
 
 	Level* GetLevel() const { return m_Level; }
@@ -28,7 +27,6 @@ public:
 private:
 	int m_DiggerIndex;
 
-	LivesComponent* m_LivesComponent;
 	ScoreComponent* m_ScoreComponent;
 
 	Rinigin::StateContextComponent* m_DiggerMobileStateContext;

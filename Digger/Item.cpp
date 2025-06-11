@@ -21,3 +21,10 @@ Item::Item(Level* level,const std::string& fileName) :
 	m_TextureComponent = m_ItemObject->AddComponent<Rinigin::TextureComponent>(m_Renderer);
 	m_TextureComponent->SetTexture(fileName);
 }
+
+Item::~Item()
+{
+	if (m_ItemObject) {
+		m_ItemObject->Destroy();
+	}
+}

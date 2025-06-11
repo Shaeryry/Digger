@@ -17,7 +17,8 @@ class Nobbin;
 enum class GameMode { 
 	SOLO,
 	COOP,
-	PVP
+	PVP,
+	END
 };
 
 class GameScreenState : public Rinigin::State
@@ -28,15 +29,14 @@ public:
 	virtual Rinigin::State* Update() override;
 	virtual void Exit() override;
 
+	GameMode GetGameMode() const { return m_GameMode; }
 	void SetGameMode(GameMode gameMode) { m_GameMode = gameMode; };
-	
 private:
 	void StartGame();
 	void Reset();
 	void StartSolo();
 	void StartCoop();
 
-	Rinigin::Scene* m_Scene;
 	GameMode m_GameMode;
 
 	std::unique_ptr<DiggerMobile> m_DiggerOne;

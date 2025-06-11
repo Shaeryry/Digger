@@ -59,7 +59,7 @@ void Rinigin::Scene::FixedUpdate()
 {
 	for (auto& object : m_Objects)
 	{
-		object->FixedUpdate();
+		if (not object->GetParent() or object->GetParent()->IsActive()) object->FixedUpdate();
 	}
 }
 
@@ -67,7 +67,7 @@ void Rinigin::Scene::Update()
 {
 	for(auto& object : m_Objects)
 	{
-		object->Update();
+		if (not object->GetParent() or object->GetParent()->IsActive()) object->Update();
 	}
 }
 
@@ -75,7 +75,7 @@ void Rinigin::Scene::LateUpdate()
 {
 	for (auto& object : m_Objects)
 	{
-		object->LateUpdate();
+		if (not object->GetParent() or object->GetParent()->IsActive()) object->LateUpdate();
 	}
 
 	std::erase_if(m_Objects, std::bind(&GameObject::IsDestroyed, std::placeholders::_1));
@@ -85,7 +85,7 @@ void Rinigin::Scene::Render() const
 {
 	for (const auto& object : m_Objects)
 	{
-		object->Render();
+		if (not object->GetParent() or object->GetParent()->IsActive()) object->Render();
 	}
 }
 

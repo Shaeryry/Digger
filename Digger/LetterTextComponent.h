@@ -1,8 +1,8 @@
 #pragma once
 #include <Component.h>
 #include <string>
+#include <SDL.h>
 
-struct SDL_Color;
 namespace Rinigin { class Texture2D; }
 class LetterTextComponent : public Rinigin::Component
 {

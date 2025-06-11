@@ -8,3 +8,10 @@ GameObjectEventArguments::GameObjectEventArguments(const char* eventName, Rinigi
 	m_GameObject{ gameObject }
 {
 }
+
+ScoreArguments::ScoreArguments(const char* eventName, int addedValue) :
+	EventArguments(eventName),
+	m_AddedValue(addedValue)
+{
+
+}

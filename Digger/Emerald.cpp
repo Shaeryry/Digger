@@ -13,6 +13,8 @@
 #include "EventTypes.h"
 
 #include "Level.h"
+#include "ScoreComponent.h"
+#include "Character.h"
 
 Emerald::Emerald(Level* level) :
 	Item(level,"Emerald.png"),
@@ -35,6 +37,7 @@ void Emerald::Notify(Rinigin::EventArguments& eventArguments)
 			GameObjectEventArguments arguments{ "EmeraldCollected",collisionArgument.GetOther()->GetOwner() };
 			m_CollectEvent->NotifyObservers(arguments);
 			GetItemObject()->Destroy(); // Remove the emerald !
+			m_Level->GetEmeraldSpawner().RemoveTracked(this);
 		};
 
 		break;
@@ -44,9 +47,16 @@ void Emerald::Notify(Rinigin::EventArguments& eventArguments)
 	}
 }
 
-Item* Emerald::Clone()
+Emerald* Emerald::Clone()
 {
 	Emerald* newEmerald = new Emerald(m_Level);
 	newEmerald->GetItemObject()->SetActive(true);
+
+	for (Character* character : m_Level->GetPlayers()) {
+		ScoreComponent* scoreComponent = character->GetCharacterObject()->GetComponent<ScoreComponent>();
+		if (scoreComponent) {
+			newEmerald->GetCollectedEvent()->AddObserver(scoreComponent);
+		}
+	}
 	return newEmerald;
 }

@@ -14,7 +14,7 @@ class Item : public Prototype<Item>
 {
 public:
 	explicit Item(Level* level,const std::string& fileName);
-	virtual ~Item() = default;
+	virtual ~Item();
 	Item(const Item& other) = delete;
 	Item(Item&& other) = delete;
 	Item& operator=(const Item& other) = delete;
