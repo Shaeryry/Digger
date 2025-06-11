@@ -11,6 +11,7 @@ class Nobbin;
 class Character;
 class LetterTextComponent;
 class LivesComponent;
+class LivesDisplayComponent;
 class Emerald;
 
 class Level final : public Rinigin::Observer
@@ -88,6 +89,10 @@ public:
 	// Players
 	int m_PlayerCount;
 	LivesComponent* m_LivesComponent;
+
+	Rinigin::GameObject* m_LiveDisplayGameObject;
+	LivesDisplayComponent* m_LivesDisplayComponent;
+
 	std::vector<Character*> m_Players;
 	std::vector<Character*> m_DeadPlayers;
 	

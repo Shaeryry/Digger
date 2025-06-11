@@ -15,9 +15,5 @@ void LivesComponent::AddLives(int lives)
 void LivesComponent::RemoveLives(int lives)
 {
 	int newLives = (m_Lives - lives);
-	if (newLives <= 0) {
-
-	}
-
 	m_Lives = newLives;
 }

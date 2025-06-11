@@ -31,6 +31,7 @@ using json = nlohmann::json;
 #include "DiggerMobileDiggingState.h"
 
 #include "StateContextComponent.h"
+#include "LivesDisplayComponent.h"
 
 #include <queue>
 #include <unordered_set>
@@ -48,7 +49,7 @@ Level::Level(Rinigin::Scene* scene) :
 	m_MapComponent = m_LevelGameObject->AddComponent<TerrainComponent>(ORIGIN,SCREEN_SIZE, MAP_SIZE);
 
 	// Score display
-	m_ScoreDisplayTextComponent = m_LevelGameObject->AddComponent<LetterTextComponent>("None");
+	m_ScoreDisplayTextComponent = m_LevelGameObject->AddComponent<LetterTextComponent>(Rinigin::Helpers::GetFormattedScore(0).c_str());
 	m_ScoreDisplayTextComponent->GetOwner()->SetPosition(10.f, 5.f, 0);
 
 	// Spawners
@@ -59,6 +60,13 @@ Level::Level(Rinigin::Scene* scene) :
 	m_ItemSpawner.RegisterPrototype<Gold>("Gold", this);
 
 	m_LivesComponent = m_LevelGameObject->AddComponent<LivesComponent>(DIGGER::DIGGER_LIVES);
+
+	m_LiveDisplayGameObject = m_Scene->CreateObject();
+	m_LiveDisplayGameObject->SetParent(m_LevelGameObject);
+	m_LiveDisplayGameObject->SetPosition( glm::vec3(m_ScoreDisplayTextComponent->GetLength() + 5,0,0) );
+	m_LivesDisplayComponent = m_LiveDisplayGameObject->AddComponent<LivesDisplayComponent>(m_LivesComponent);
+
+
 	UpdateScoreDisplay();
 }
 

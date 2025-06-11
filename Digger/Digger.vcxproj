@@ -176,6 +176,7 @@
     <ClCompile Include="LetterTextComponent.cpp" />
     <ClCompile Include="Level.cpp" />
     <ClCompile Include="LivesComponent.cpp" />
+    <ClCompile Include="LivesDisplayComponent.cpp" />
     <ClCompile Include="MoneyBag.cpp" />
     <ClCompile Include="MoneyBagFalling.cpp" />
     <ClCompile Include="MoneyBagIdle.cpp" />
@@ -217,6 +218,7 @@
     <ClInclude Include="LetterTextComponent.h" />
     <ClInclude Include="Level.h" />
     <ClInclude Include="LivesComponent.h" />
+    <ClInclude Include="LivesDisplayComponent.h" />
     <ClInclude Include="MoneyBag.h" />
     <ClInclude Include="MoneyBagFalling.h" />
     <ClInclude Include="MoneyBagPrefall.h" />

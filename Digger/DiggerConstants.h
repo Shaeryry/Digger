@@ -14,7 +14,7 @@ namespace DIGGER {
 	constexpr int TUNNEL_SAMPLES{ 20 };
 	constexpr int RESPAWN_TIME{ 5 };
 
-	constexpr int DIGGER_LIVES{ 1 };
+	constexpr int DIGGER_LIVES{ 4 };
 	constexpr int MAX_LEVELS{ 3 };
 	constexpr int MAX_LETTERS{ 3 };
 
