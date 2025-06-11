@@ -42,6 +42,7 @@ public:
 
 	void ClearTracked()
 	{
+		if (m_Instances.empty()) return;
 		m_Instances.clear();
 	}
 

@@ -1,4 +1,4 @@
-#include "StartScreenMenuCommand.h"
+#include "MenuCommand.h"
 
 
 MenuCommand::MenuCommand(const char* menuEventName) :

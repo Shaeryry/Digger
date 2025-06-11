@@ -30,13 +30,25 @@
 #include "Nobbin.h"
 
 #include "LivesComponent.h"
+#include "GameCommands.h"
+#include "DiggerConstants.h"
+
+#include "StateContextComponent.h"
+#include "ScoreRegisterScreenState.h"
 
 GameScreenState::GameScreenState(Rinigin::StateContextComponent* context) :
 	Rinigin::State(context),
 	m_GameMode(GameMode::SOLO),
+	m_CurrentLevelIndex(0),
 	m_Level(std::make_unique<Level>(Rinigin::SceneManager::GetInstance().GetActiveScene()))
 {
+	// Gamepads
 	Rinigin::Gamepad* playerOneGamepad{ Rinigin::InputManager::GetInstance().GetGamepad(0) }; // Keyboard
+
+	// Skip button
+	m_SkipLevelCommand = Rinigin::InputManager::GetInstance().AddCommand<GameCommands::SkipLevelCommand>(this);
+	playerOneGamepad->AddBinding(SDL_SCANCODE_F2, Rinigin::BindingConnection::Down, m_SkipLevelCommand);
+
 	//Rinigin::Gamepad* playerTwoGamepad{ Rinigin::InputManager::GetInstance().GetGamepad(1) };
 
 	m_Level->GetLevelObject()->SetActive(false);
@@ -44,6 +56,7 @@ GameScreenState::GameScreenState(Rinigin::StateContextComponent* context) :
 	m_DiggerOne = std::make_unique<DiggerMobile>(0,m_Level.get());	
 	m_DiggerOne->GetRigidbody()->GravityEnabled(false);
 	m_Level->AddPlayer(m_DiggerOne.get());
+
 
 	playerOneGamepad->AddBinding(SDL_SCANCODE_UP, Rinigin::BindingConnection::Down, m_DiggerOne->UpDirectionCommand());
 	playerOneGamepad->AddBinding(SDL_SCANCODE_DOWN, Rinigin::BindingConnection::Down, m_DiggerOne->DownDirectionCommand());
@@ -66,9 +79,10 @@ GameScreenState::GameScreenState(Rinigin::StateContextComponent* context) :
 
 void GameScreenState::Enter()
 {
+	SetLevel(1);
+	m_Level->SetScore(0);
+	m_Level->Lives()->SetLives(DIGGER::DIGGER_LIVES);
 	m_Level->GetLevelObject()->SetActive(true);
-	m_Level->LoadLevel(1);
-	StartGame();
 }
 
 Rinigin::State* GameScreenState::Update()
@@ -76,14 +90,22 @@ Rinigin::State* GameScreenState::Update()
 	// GAME OVER CONDITION
 	if (m_Level->Lives()->GetLives() <= 0) {
 		if (m_Level->GetDeadPlayers().size() >= m_Level->GetPlayerCount()) {
+			// TO END SCREEN
+			return GetContext()->GetState<ScoreRegisterScreenState>();
 		}
 	}
 
 	// NEXT LEVEL CONDITION
 	const bool emeraldsCleared{ m_Level->GetEmeraldSpawner().GetInstances().size() <= 0 };
-	if (emeraldsCleared) {
+	const bool canMoveLevels{ emeraldsCleared };
+
+	if (canMoveLevels) {
 		// Move on to next level
-		std::cout << "You win" << std::endl;
+		bool success = NextLevel();
+		if (not success) {
+
+			return GetContext()->GetState<ScoreRegisterScreenState>();
+		}
 	}
 
 	return nullptr;
@@ -92,9 +114,28 @@ Rinigin::State* GameScreenState::Update()
 void GameScreenState::Exit()
 {
 	m_Level->GetLevelObject()->SetActive(false);
+	m_Level->CleanUpLevel();
 	Reset();
 	// TODO : Remove bindings
 	std::cout << "Game ended !" << std::endl;
+}
+
+void GameScreenState::SetLevel(int levelIndex)
+{
+	m_CurrentLevelIndex = levelIndex;
+	m_Level->LoadLevel(levelIndex);
+	StartGame();
+}
+
+bool GameScreenState::NextLevel()
+{
+	if (m_CurrentLevelIndex < DIGGER::MAX_LEVELS)
+	{
+		SetLevel(m_CurrentLevelIndex + 1);
+		return true;
+	}
+
+	return false;
 }
 
 void GameScreenState::StartGame()
@@ -120,7 +161,7 @@ void GameScreenState::Reset()
 {
 	m_DiggerOne->GetCharacterObject()->SetActive(false); 
 	m_DiggerTwo->GetCharacterObject()->SetActive(false);
-	m_Nobbin->GetCharacterObject()->SetActive(false);
+	//m_Nobbin->GetCharacterObject()->SetActive(false);
 }
 
 void GameScreenState::StartSolo()
@@ -135,7 +176,4 @@ void GameScreenState::StartCoop()
 	m_Level->SetPlayerCount(2);
 	m_Level->RespawnPlayer(0,false);
 	m_Level->RespawnPlayer(1,false);
-
-	m_DiggerTwo->GetCharacterObject()->SetPosition(m_Level->GetPlayerSpawnIndex(1));
-
 }

@@ -20,6 +20,7 @@ float LetterTextComponent::GetLength() const
 {
     float size{ 0 };
     for (size_t characterIndex{ 0 }; characterIndex < m_Text.size(); characterIndex++) {
+
         Rinigin::Texture2D* letterTexture{ GetGlyph(characterIndex) };
         size += letterTexture->GetSize().x + m_CharSpacing;
     }
@@ -43,6 +44,7 @@ void LetterTextComponent::Render() const
 Rinigin::Texture2D* LetterTextComponent::GetGlyph(size_t characterIndex) const
 {
     std::string character = std::string{ m_Text[characterIndex] };
+    if (character == " ") character = "SPACE";
     if (character == ".") character = "DOT";
     if (character == ":") character = "SEMICOLON";
     if (character == "_") character = "UNDERSCORE";

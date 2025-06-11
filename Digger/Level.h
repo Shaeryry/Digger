@@ -24,6 +24,9 @@ public:
 	Level& operator=(Level&& other) = delete;
 
 	void LoadLevel(int levelIndex);
+	void CleanUpLevel();
+
+
 	void AddPlayer(Character* playerCharacter);
 	void AddDeadPlayer(Character* player);
 	void RemoveDeadPlayer(Character* player);
@@ -32,7 +35,6 @@ public:
 	void SetPlayerCount(int count) { m_PlayerCount = count; }
 
 	Character* GetPlayer(int index) const { return m_Players[index]; };
-
 	std::vector<Character*>& GetPlayers() { return m_Players; };
 	std::vector<Character*>& GetDeadPlayers() { return m_DeadPlayers; };
 
@@ -43,6 +45,8 @@ public:
 	TerrainComponent* Map() const { return m_MapComponent; };
 	LivesComponent* Lives() const { return m_LivesComponent; }
 	Rinigin::Scene* GetScene() const { return m_Scene; };
+	int Score() const { return m_TotalScore; }
+	void SetScore(int score) { m_TotalScore = score; UpdateScoreDisplay(); }
 
 	Rinigin::GameObject* GetLevelObject() const { return m_LevelGameObject; }
 	PrototypeSpawner<Item>& GetItemSpawner() { return m_ItemSpawner; };

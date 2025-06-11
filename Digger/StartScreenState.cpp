@@ -1,7 +1,7 @@
 #include "StartScreenState.h"
 #include <iostream>
 #include "SceneManager.h"
-#include "StartScreenMenuCommand.h"
+#include "MenuCommand.h"
 #include "Gamepad.h"
 #include "Helpers.h"
 #include "Scene.h"
@@ -14,37 +14,27 @@
 
 #include "DiggerConstants.h"
 #include "StateContextComponent.h"
+#include "HighScoreManager.h"
 
 StartScreenState::StartScreenState(Rinigin::StateContextComponent* context, Rinigin::Gamepad* gamepad) :
 	Rinigin::State(context),
 	m_Scene(Rinigin::SceneManager::GetInstance().GetActiveScene()),
-	m_MenuMoveUpCommand(Rinigin::InputManager::GetInstance().AddCommand<MenuCommand>("SelectUp")),
-	m_MenuMoveDownCommand(Rinigin::InputManager::GetInstance().AddCommand<MenuCommand>("SelectDown")),
-	m_MenuConfirmCommand(Rinigin::InputManager::GetInstance().AddCommand<MenuCommand>("Confirm")),
 
-	m_ScreenGameObject(nullptr),
+	m_ScreenGameObject(nullptr), 
 	m_BackgroundTextureComponent(nullptr),
 	m_ScreenRenderer(nullptr),
 
 	m_TitleGameObject(nullptr),
 	m_TitleWordComponent(nullptr),
-
-	m_SelectUp(nullptr),
-	m_SelectDown(nullptr),
-	m_Confirm(nullptr),
-
 	m_MenuController(gamepad)
 {
-	m_MenuMoveUpCommand->GetInputEvent()->AddObserver(this);
-	m_MenuMoveDownCommand->GetInputEvent()->AddObserver(this);
-	m_MenuConfirmCommand->GetInputEvent()->AddObserver(this);
-
 	// Setup game object
 	m_GameScreenState = dynamic_cast<GameScreenState*>(GetContext()->GetState<GameScreenState>());
 
 	// Background
 	m_ScreenGameObject = m_Scene->CreateObject();
 	m_ScreenGameObject->SetPosition(0, 0, 0);
+	m_ScreenGameObject->SetActive(false);
 
 	m_ScreenRenderer = m_ScreenGameObject->AddComponent<Rinigin::TextureRendererComponent>();
 	m_BackgroundTextureComponent = m_ScreenGameObject->AddComponent<Rinigin::TextureComponent>(m_ScreenRenderer,"VTITLE.BMP");
@@ -60,24 +50,63 @@ StartScreenState::StartScreenState(Rinigin::StateContextComponent* context, Rini
 
 	m_TitleGameObject->SetPosition((DIGGER::SCREEN_WIDTH / 2.f) - (m_TitleWordComponent->GetLength() / 2), 5.f, 0);
 
-
 	// Mode select
 	m_ModeSelectionGameObject = m_Scene->CreateObject();
 	m_ModeSelectionGameObject->SetParent(m_ScreenGameObject);
 
 	m_ModeSelectWordComponent = m_ModeSelectionGameObject->AddComponent<LetterTextComponent>("DIGGER");
 	m_ModeSelectWordComponent->SetText("GAMEMODE");
+
+	// HIGHSCORE
+	m_HighscoreGameObject = m_Scene->CreateObject(m_ScreenGameObject);
+	m_HighscoreTextComponent = m_HighscoreGameObject->AddComponent<LetterTextComponent>("HIGH SCORE");
+	m_HighscoreTextComponent->SetColor({ 255,0,0 });
+	m_HighscoreGameObject->SetPosition(15, 50, 0);
+
+	// Game Objects
+	for (int entryIndex{ 0 }; entryIndex < DIGGER::MAX_HIGHSCORE_ENTRIES; entryIndex++) {
+		Rinigin::GameObject* gameObjectInitials = m_Scene->CreateObject(m_ScreenGameObject);
+		Rinigin::GameObject* gameObjectScore = m_Scene->CreateObject(m_ScreenGameObject);
+
+		LetterTextComponent* initialTextComponent = gameObjectInitials->AddComponent<LetterTextComponent>("...");
+		LetterTextComponent* scoreTextComponent = gameObjectScore->AddComponent<LetterTextComponent>("0");
+
+		m_HighscoreInitialTextComponents.emplace_back(initialTextComponent);
+		m_HighscoreScoreTextComponents.emplace_back(scoreTextComponent);
+		m_HighscoreInitialsGameObjects.emplace_back(gameObjectInitials);
+		m_HighscoreScoreGameObjects.emplace_back(gameObjectScore);
+
+	}
 }  
 
 void StartScreenState::Enter() 
 {
-    m_SelectUp = m_MenuController->AddBinding(SDL_SCANCODE_UP, Rinigin::BindingConnection::Down, m_MenuMoveUpCommand);
-	m_SelectDown = m_MenuController->AddBinding(SDL_SCANCODE_DOWN, Rinigin::BindingConnection::Down, m_MenuMoveDownCommand);
-	m_Confirm = m_MenuController->AddBinding(SDL_SCANCODE_SPACE, Rinigin::BindingConnection::Down, m_MenuConfirmCommand);
+	std::vector<HighScoreEntry> scores = HighScoreManager::LoadHighScores("highscore.json");
+	for (int entryIndex{ 0 }; entryIndex < DIGGER::MAX_HIGHSCORE_ENTRIES; entryIndex++) {
+		const HighScoreEntry& entry = scores[entryIndex];
+		
+		Rinigin::GameObject* gameObjectInitials = m_HighscoreInitialsGameObjects[entryIndex];
+		Rinigin::GameObject* gameObjectScore = m_HighscoreScoreGameObjects[entryIndex];
 
-	//m_KeyboardUp = ->AddBinding(SDL_SCANCODE_W, dae::BindingConnection::OnHeld, moveUpCommand);
+		LetterTextComponent* initialTextComponent = m_HighscoreInitialTextComponents[entryIndex];
+		LetterTextComponent* scoreTextComponent = m_HighscoreScoreTextComponents[entryIndex];
+
+		if (entryIndex == 0) {
+			initialTextComponent->SetColor({ 255,0,0 });
+			scoreTextComponent->SetColor({ 255,0,0 });
+		}
+
+		const float y{ 50.f + (DIGGER::SCORE_DISTANCE + 5.f) + (DIGGER::SCORE_DISTANCE * entryIndex) };
+
+		gameObjectInitials->SetPosition((DIGGER::SCREEN_WIDTH / 2.f) - (scoreTextComponent->GetLength() / 2) - 75.f, y, 0);
+		gameObjectScore->SetPosition(15, y, 0);
+
+		initialTextComponent->SetText(entry.initials.c_str());
+		scoreTextComponent->SetText(Rinigin::Helpers::GetFormattedScore(entry.score).c_str());
+	}
+
 	m_ScreenGameObject->SetActive(true);
-	std::cout << "entered start screen" << std::endl;
+	//std::cout << "entered start screen" << std::endl;
 	SetSelection(0);
 }
 
@@ -88,16 +117,13 @@ Rinigin::State* StartScreenState::Update()
 
 void StartScreenState::Exit()
 {
-	m_MenuController->RemoveBinding(m_SelectUp);
-	m_MenuController->RemoveBinding(m_SelectDown);
-	m_MenuController->RemoveBinding(m_Confirm);
-
 	m_ScreenGameObject->SetActive(false);
 	std::cout << "left start screen" << std::endl;
 }
 
 void StartScreenState::Notify(Rinigin::EventArguments & eventArguments)
 {
+	if (GetContext()->GetCurrentState() != this) return;
 	const int currentGameMode = static_cast<int>(m_GameScreenState->GetGameMode());
 
 	switch (eventArguments.GetID())

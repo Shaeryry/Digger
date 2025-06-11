@@ -27,6 +27,11 @@ using json = nlohmann::json;
 #include "LetterTextComponent.h"
 #include "LivesComponent.h"
 
+#include "DiggerMobile.h"
+#include "DiggerMobileDiggingState.h"
+
+#include "StateContextComponent.h"
+
 #include <queue>
 #include <unordered_set>
 
@@ -53,7 +58,7 @@ Level::Level(Rinigin::Scene* scene) :
 	m_ItemSpawner.RegisterPrototype<MoneyBag>("MoneyBag", this);
 	m_ItemSpawner.RegisterPrototype<Gold>("Gold", this);
 
-	m_LivesComponent = m_LevelGameObject->AddComponent<LivesComponent>(1);
+	m_LivesComponent = m_LevelGameObject->AddComponent<LivesComponent>(DIGGER::DIGGER_LIVES);
 	UpdateScoreDisplay();
 }
 
@@ -64,6 +69,8 @@ void Level::RespawnPlayer(int playerIndex,bool isEnemy)
 		character->GetCharacterObject()->SetActive(true);
 
 		if (not isEnemy) {
+			DiggerMobile* diggerMobile = dynamic_cast<DiggerMobile*>(character);
+			diggerMobile->GetStateContext()->SetState(diggerMobile->GetDiggingState());
 			character->GetHealthComponent()->GetDiedEvent()->AddObserver(this);
 			character->GetCharacterObject()->SetPosition(GetPlayerSpawnIndex(playerIndex));
 		}
@@ -129,14 +136,21 @@ void Level::Notify(Rinigin::EventArguments& arguments)
 	{
 	case Rinigin::Helpers::sdbm_hash("ScoreAdded"): {
 		ScoreArguments& scoreAddedArguments{ GetArgumentsOfType<ScoreArguments>(arguments) };
-		m_TotalScore += scoreAddedArguments.GetScore();
-
-		UpdateScoreDisplay();
+		SetScore(m_TotalScore + scoreAddedArguments.GetScore());
 		break;
 	}
 	default:
 		break;
 	}
+}
+
+void Level::CleanUpLevel()
+{
+	m_MapComponent->ResetPixels();
+
+	m_EmeraldSpawner.ClearTracked();
+	m_ItemSpawner.ClearTracked();
+	m_EnemySpawner.ClearTracked();
 }
 
 void Level::LoadLevelFile(const char* filePath)
@@ -161,6 +175,10 @@ void Level::LoadLevelFile(const char* filePath)
 		return;
 	}
 
+	m_LevelData.playerSpawns.clear();
+	m_LevelData.enemySpawns.clear();
+
+	m_LevelData.tiles.clear();
 	m_LevelData.tiles.resize(totalTileCount);
 
 	for (size_t tileIndex{ 0 }; tileIndex < tilesJson.size(); tileIndex++) {
@@ -172,6 +190,7 @@ void Level::LoadLevelFile(const char* filePath)
 void Level::InitializeLevel()
 {
 	// TODO : Destroy and clean existing stuff
+	CleanUpLevel();
 
 	const int tileWidth = static_cast<int>(DIGGER::GAME_WIDTH / m_LevelData.width);
 	const int tileHeight = static_cast<int>(DIGGER::GAME_HEIGHT / m_LevelData.height);
@@ -228,7 +247,7 @@ void Level::InitializeLevel()
 			// Money bag
 
 			MoneyBag* moneyBag = static_cast<MoneyBag*>(m_ItemSpawner.Spawn("MoneyBag"));
-			moneyBag->GetItemObject()->SetPosition(glm::vec3(tilePos.x, tilePos.y,0) - moneyBag->GetCollider()->GetHalfExtents());
+			moneyBag->GetItemObject()->SetPosition(glm::vec3(tilePos.x, tilePos.y, 0) - moneyBag->GetCollider()->GetHalfExtents());
 			break;
 		}
 		default:
@@ -258,11 +277,7 @@ void Level::InitializeLevel()
 
 void Level::UpdateScoreDisplay()
 {
-	std::ostringstream oss;
-	oss << std::setfill('0') << std::setw(5) << m_TotalScore;
-	std::string scoreStr = oss.str();
-
-	m_ScoreDisplayTextComponent->SetText(scoreStr.c_str());
+	m_ScoreDisplayTextComponent->SetText(Rinigin::Helpers::GetFormattedScore(m_TotalScore).c_str());
 }
 
 std::vector<glm::vec2> Level::SortTunnel(const std::vector<glm::vec2>& cpositions)

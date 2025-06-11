@@ -133,7 +133,7 @@ void TerrainComponent::Update()
 	for (int y = originY; y < (m_Height + originY); y++) {
 		for (int x = originX; x < (m_Width + originX); x++) {
 			// Check if the corresponding pixel in the mask texture is transparent
-			Uint32 maskColor = m_MaskPixels[y * m_Width + x];
+			Uint32 maskColor = m_MaskPixels[y * m_ScreenWidth + x];
 			if ((maskColor & 0xFF000000) == 0) {  // If alpha == 0 (transparent)
 				m_BackgroundPixelPtr[y * (m_BackgroundPitch / 4) + x] = 0x00000000;  // Make it transparent in the dirt texture
 			}
@@ -161,5 +161,7 @@ bool TerrainComponent::IsSolidAt(int x, int y) const
 
 void TerrainComponent::ResetPixels()
 {
-	for (int pixelIndex{ 0 }; pixelIndex < (m_ScreenWidth * m_ScreenHeight); pixelIndex++) m_MaskPixels[pixelIndex] = 0xFFFFFFFF;
+	for (int pixelIndex{ 0 }; pixelIndex < (m_ScreenWidth * m_ScreenHeight); pixelIndex++) {
+		m_MaskPixels[pixelIndex] = 0xFFFFFFFF;
+	}
 }

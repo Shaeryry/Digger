@@ -16,6 +16,7 @@ class DiggerMobile final : public Character,public Rinigin::Observer
 public:
 	explicit DiggerMobile(int index, Level* level);
 
+	Rinigin::StateContextComponent* GetStateContext() const { return m_DiggerMobileStateContext; }
 	DiggerMobileDiggingState* GetDiggingState() const { return m_DiggingState; }
 	DiggerMobileDyingState* GetDyingState() const { return m_DyingState; }
 	DiggerMobileDeadState* GetDeadState() const { return m_DeadState; }

@@ -4,7 +4,6 @@
 #include "InputManager.h"
 
 namespace Rinigin { class Scene; class Gamepad; class Command; class TextureComponent; class TextureRendererComponent; }
-class MenuCommand;
 class LetterTextComponent;
 class GameScreenState;
 
@@ -36,18 +35,17 @@ private:
 	Rinigin::GameObject* m_TitleGameObject;
 	LetterTextComponent* m_TitleWordComponent;
 
+	//HIGHSCORE TEXT
+	Rinigin::GameObject* m_HighscoreGameObject;
+	LetterTextComponent* m_HighscoreTextComponent;
+
 	// Mode Display
 	Rinigin::GameObject* m_ModeSelectionGameObject;
 	LetterTextComponent* m_ModeSelectWordComponent;
 
-	// Commands
-	MenuCommand* m_MenuMoveUpCommand;
-	MenuCommand* m_MenuMoveDownCommand;
-	MenuCommand* m_MenuConfirmCommand;
-
-	// Bindings
-	Rinigin::Binding* m_SelectUp;
-	Rinigin::Binding* m_SelectDown;
-	Rinigin::Binding* m_Confirm;
+	std::vector<Rinigin::GameObject*> m_HighscoreScoreGameObjects;
+	std::vector<Rinigin::GameObject*> m_HighscoreInitialsGameObjects;
+	std::vector<LetterTextComponent*> m_HighscoreInitialTextComponents;
+	std::vector<LetterTextComponent*> m_HighscoreScoreTextComponents;
 };
 

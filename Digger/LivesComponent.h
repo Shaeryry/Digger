@@ -8,6 +8,7 @@ public:
 
 	void AddLives(int lives);
 	void RemoveLives(int lives = 1.f);
+	void SetLives(int lives) { m_Lives = lives; }
 
 	int GetLives() const { return m_Lives; }
 private:

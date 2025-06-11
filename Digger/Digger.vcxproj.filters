@@ -64,6 +64,9 @@
     <Filter Include="Source Files\States\DiggerMobileStates">
       <UniqueIdentifier>{18373e2a-47bb-4fa5-9c03-7058cf7398ca}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\HighscoreSystem">
+      <UniqueIdentifier>{a339fb2a-3b60-4e63-b8fb-c3fa219d7fdf}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -99,7 +102,7 @@
     <ClCompile Include="EventTypes.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="StartScreenMenuCommand.cpp">
+    <ClCompile Include="MenuCommand.cpp">
       <Filter>Source Files\Commands</Filter>
     </ClCompile>
     <ClCompile Include="StartScreenState.cpp">
@@ -141,9 +144,6 @@
     <ClCompile Include="Level.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Gold.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Character.cpp">
       <Filter>Source Files\Characters</Filter>
     </ClCompile>
@@ -165,11 +165,23 @@
     <ClCompile Include="NobbinAIComponent.cpp">
       <Filter>Source Files\Components</Filter>
     </ClCompile>
-    <ClCompile Include="LivesComponent.cpp">
+    <ClCompile Include="HighScoreManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="LivesComponent.cpp">
+      <Filter>Source Files\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Gold.cpp">
+      <Filter>Source Files\Items</Filter>
+    </ClCompile>
+    <ClCompile Include="ScoreRegisterScreenState.cpp">
+      <Filter>Source Files\States\GameStates</Filter>
+    </ClCompile>
     <ClCompile Include="LetterTextComponent.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="GameCommands.cpp">
+      <Filter>Source Files\Commands</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -209,7 +221,7 @@
     <ClInclude Include="StartScreenState.h">
       <Filter>Header Files\States\GameStates</Filter>
     </ClInclude>
-    <ClInclude Include="StartScreenMenuCommand.h">
+    <ClInclude Include="MenuCommand.h">
       <Filter>Header Files\Commands</Filter>
     </ClInclude>
     <ClInclude Include="GameScreenState.h">
@@ -283,6 +295,15 @@
     </ClInclude>
     <ClInclude Include="LetterTextComponent.h">
       <Filter>Header Files\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="GameCommands.h">
+      <Filter>Header Files\Commands</Filter>
+    </ClInclude>
+    <ClInclude Include="ScoreRegisterScreenState.h">
+      <Filter>Header Files\States\GameStates</Filter>
+    </ClInclude>
+    <ClInclude Include="HighScoreManager.h">
+      <Filter>Header Files\HighscoreSystem</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
