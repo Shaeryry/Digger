@@ -8,8 +8,16 @@
         "score": 3250
     },
     {
+        "initials": "CAA",
+        "score": 3250
+    },
+    {
         "initials": "ABY",
         "score": 2425
+    },
+    {
+        "initials": "COC",
+        "score": 1925
     },
     {
         "initials": "RTA",
@@ -22,13 +30,5 @@
     {
         "initials": "CAR",
         "score": 100
-    },
-    {
-        "initials": "...",
-        "score": 0
-    },
-    {
-        "initials": "...",
-        "score": 0
     }
 ]

@@ -3,6 +3,8 @@
 #include "SpriteAnimatorComponent.h"
 #include "SpriteSheetComponent.h"
 #include "RigidbodyComponent.h"
+#include "HealthComponent.h"
+#include "GameObject.h"
 
 Nobbin::Nobbin(Level* level) :
 	Character("Nobbin.png"),
@@ -18,6 +20,8 @@ Nobbin::Nobbin(Level* level) :
 	GetCollider()->AddExcludedLayer("Player");
 
 	SetSpeed(m_Speed);
+
+	GetHealthComponent()->SetMaxHealth(1);
 
 	// Spritesheet
 	Rinigin::SpriteSheetComponent* spriteSheet = GetSpriteSheetComponent();
@@ -42,3 +46,14 @@ Nobbin* Nobbin::Clone()
 	return new Nobbin(m_Level);
 }
 
+void Nobbin::Notify(Rinigin::EventArguments& arguments)
+{
+	switch (arguments.GetID())
+	{
+	case Rinigin::Helpers::sdbm_hash("Died"):
+		GetCharacterObject()->Destroy();
+		break;
+	default:
+		break;
+	}
+}
