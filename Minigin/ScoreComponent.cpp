@@ -22,8 +22,6 @@ void ScoreComponent::AddScore(int amount)
 	m_Score = newScore;
 
 	if (newScore != currentScore) {
-		std::cout << newScore << std::endl;
-
 		ScoreArguments scoreAddedArgs{ "ScoreAdded",amount };
 		m_ScoreAddedEvent->NotifyObservers(scoreAddedArgs);
 

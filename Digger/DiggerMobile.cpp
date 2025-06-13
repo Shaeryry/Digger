@@ -14,6 +14,7 @@
 #include "ColliderComponent.h"
 #include "ScoreComponent.h"
 #include "LivesComponent.h"
+#include "DiggerConstants.h"
 
 DiggerMobile::DiggerMobile(int index, Level* level) :
 	Character("DiggerMobile.png"),
@@ -48,11 +49,10 @@ DiggerMobile::DiggerMobile(int index, Level* level) :
 
 	Rinigin::SpriteAnimatorComponent* animator = GetAnimator();
 
-	const float t = 0.2f;
-	animator->AddAnimation("Right", Rinigin::SpriteAnimationData{0,(6 * m_DiggerIndex),6,t,true} );
-	animator->AddAnimation("Up", Rinigin::SpriteAnimationData{ 1,(6 * m_DiggerIndex),6,t,true });
-	animator->AddAnimation("Left", Rinigin::SpriteAnimationData{ 2,(6 * m_DiggerIndex),6,t,true });
-	animator->AddAnimation("Down", Rinigin::SpriteAnimationData{ 3,(6 * m_DiggerIndex),6,t,true });
+	animator->AddAnimation("Right", Rinigin::SpriteAnimationData{0,(6 * m_DiggerIndex),6,DIGGER::DIGGER_ANIMATION_LENGTH,true} );
+	animator->AddAnimation("Up", Rinigin::SpriteAnimationData{ 1,(6 * m_DiggerIndex),6,DIGGER::DIGGER_ANIMATION_LENGTH,true });
+	animator->AddAnimation("Left", Rinigin::SpriteAnimationData{ 2,(6 * m_DiggerIndex),6,DIGGER::DIGGER_ANIMATION_LENGTH,true });
+	animator->AddAnimation("Down", Rinigin::SpriteAnimationData{ 3,(6 * m_DiggerIndex),6,DIGGER::DIGGER_ANIMATION_LENGTH,true });
 
 	animator->AddAnimation("Dying", Rinigin::SpriteAnimationData{ 4,(1 * m_DiggerIndex),1,1,false });
 	animator->AddAnimation("Dead", Rinigin::SpriteAnimationData{ 5,0,5,1.f,false });

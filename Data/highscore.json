@@ -4,6 +4,10 @@
         "score": 3750
     },
     {
+        "initials": "AEZ",
+        "score": 3750
+    },
+    {
         "initials": "BTA",
         "score": 3250
     },
@@ -26,9 +30,5 @@
     {
         "initials": "CAD",
         "score": 1900
-    },
-    {
-        "initials": "RTA",
-        "score": 1525
     }
 ]

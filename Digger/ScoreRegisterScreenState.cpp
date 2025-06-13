@@ -62,12 +62,14 @@ ScoreRegisterScreenState::ScoreRegisterScreenState(Rinigin::StateContextComponen
 	m_InitialsGameObject->SetParent(m_ScoreScreenGameObject);
 	m_InitialsEnterTextComponent = m_InitialsGameObject->AddComponent<LetterTextComponent>("___");
 	m_InitialsEnterTextComponent->SetLetterSpacing(15.f);
+	m_InitialsEnterTextComponent->SetSelectionColor({ 255,0,0,255 });
 	m_InitialsGameObject->SetPosition((DIGGER::SCREEN_WIDTH * .5f) - (m_InitialsEnterTextComponent->GetLength() / 2), (DIGGER::SCREEN_HEIGHT * .55f), 0);
 
 }
 
 void ScoreRegisterScreenState::Enter()
 {
+	ShiftPosition(0);
 	m_Saved = false;
 	m_InitialsEnterTextComponent->SetText("___");
 	m_ScoreTextComponent->SetText( Rinigin::Helpers::GetFormattedScore(m_GameState->GetLevel()->Score()).c_str() );
@@ -94,12 +96,12 @@ void ScoreRegisterScreenState::Notify(Rinigin::EventArguments& arguments)
 	switch (arguments.GetID())
 	{
 	case Rinigin::Helpers::sdbm_hash("SelectUp"):
-		Rinigin::ServiceLocator::GetSoundService().Play({ "MenuSelect.wav", DIGGER::SFX_VOLUME });
+		Rinigin::ServiceLocator::GetSoundService().Play({ "MenuSelect2.wav", DIGGER::SFX_VOLUME });
 
 		ShiftLetter(1);
 		break;
 	case Rinigin::Helpers::sdbm_hash("SelectDown"):
-		Rinigin::ServiceLocator::GetSoundService().Play({ "MenuSelect.wav", DIGGER::SFX_VOLUME });
+		Rinigin::ServiceLocator::GetSoundService().Play({ "MenuSelect2.wav", DIGGER::SFX_VOLUME });
 
 		ShiftLetter(-1);
 		break;
@@ -133,11 +135,17 @@ void ScoreRegisterScreenState::Notify(Rinigin::EventArguments& arguments)
 void ScoreRegisterScreenState::UpdateInitialsField()
 {
 	m_InitialsEnterTextComponent->SetText(m_Abbreviation.c_str());
+	m_InitialsEnterTextComponent->SelectLetter(m_SelectedLetter);
 }
 
 void ScoreRegisterScreenState::ShiftPosition(int index)
 {
+	const int currentLetter = m_SelectedLetter;
 	m_SelectedLetter = std::min(std::max((m_SelectedLetter + index), 0), (DIGGER::MAX_LETTERS - 1));
+
+	m_InitialsEnterTextComponent->UnselectLetter(currentLetter);
+	m_InitialsEnterTextComponent->SelectLetter(m_SelectedLetter);
+
 	std::cout << m_SelectedLetter << std::endl;
 }
 
@@ -159,6 +167,5 @@ void ScoreRegisterScreenState::ShiftLetter(int index)
 	char newChar = static_cast<char>('A' + alphaIndex);
 
 	m_Abbreviation[m_SelectedLetter] = newChar;
-
 	UpdateInitialsField();
 }

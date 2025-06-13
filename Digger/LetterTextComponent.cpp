@@ -13,7 +13,15 @@ LetterTextComponent::LetterTextComponent(Rinigin::GameObject* gameObject, const 
     m_CharSpacing(0)
 {
     SetColor({ 255,255,255,255 });
+    SetSelectionColor(m_Color);
 	SetText(text);
+}
+
+void LetterTextComponent::SetText(const char* text)
+{
+    m_Text = text;
+    m_SelectedLetters.clear();
+    m_SelectedLetters.resize(m_Text.size());
 }
 
 float LetterTextComponent::GetLength() const
@@ -35,7 +43,7 @@ void LetterTextComponent::Render() const
 
     for (size_t characterIndex{ 0 }; characterIndex < m_Text.size(); characterIndex++) {
         Rinigin::Texture2D* letterTexture{ GetGlyph(characterIndex) };
-        Rinigin::Renderer::GetInstance().RenderTexture(*letterTexture, cursorX, position.y,m_Color);
+        Rinigin::Renderer::GetInstance().RenderTexture(*letterTexture, cursorX, position.y,m_SelectedLetters[characterIndex] ? m_SelectionColor : m_Color );
 
         cursorX += letterTexture->GetSize().x + m_CharSpacing;
     }

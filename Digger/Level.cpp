@@ -34,6 +34,7 @@ using json = nlohmann::json;
 #include "LivesDisplayComponent.h"
 #include "ServiceLocator.h"
 
+#include "RigidbodyComponent.h"
 #include <queue>
 #include <unordered_set>
 
@@ -47,11 +48,13 @@ Level::Level(Rinigin::Scene* scene) :
 	const glm::vec2 ORIGIN{ (SCREEN_SIZE.x - MAP_SIZE.x),(SCREEN_SIZE.y - MAP_SIZE.y) };
 
 	m_LevelGameObject = scene->CreateObject();
+	m_LevelGameObject->SetPosition(0, 0, 0);
 	m_MapComponent = m_LevelGameObject->AddComponent<TerrainComponent>(ORIGIN,SCREEN_SIZE, MAP_SIZE);
 
 	// Score display
-	m_ScoreDisplayTextComponent = m_LevelGameObject->AddComponent<LetterTextComponent>(Rinigin::Helpers::GetFormattedScore(0).c_str());
-	m_ScoreDisplayTextComponent->GetOwner()->SetPosition(10.f, 5.f, 0);
+	m_ScoreDisplayGameObject = scene->CreateObject();
+	m_ScoreDisplayGameObject->SetPosition(10.f, 5.f, 0);
+	m_ScoreDisplayTextComponent = m_ScoreDisplayGameObject->AddComponent<LetterTextComponent>(Rinigin::Helpers::GetFormattedScore(0).c_str());
 
 	// Spawners
 	m_EnemySpawner.RegisterPrototype<Nobbin>("Nobbin",this);
@@ -64,11 +67,11 @@ Level::Level(Rinigin::Scene* scene) :
 
 	m_LiveDisplayGameObject = m_Scene->CreateObject();
 	m_LiveDisplayGameObject->SetParent(m_LevelGameObject);
-	m_LiveDisplayGameObject->SetPosition( glm::vec3(m_ScoreDisplayTextComponent->GetLength() + 5,0,0) );
+	m_LiveDisplayGameObject->SetPosition( glm::vec3(10.f, 5.f, 0) + glm::vec3(m_ScoreDisplayTextComponent->GetLength() + 5,0,0) );
 	m_LivesDisplayComponent = m_LiveDisplayGameObject->AddComponent<LivesDisplayComponent>(m_LivesComponent);
 
-
 	UpdateScoreDisplay();
+	CreateBorders(glm::vec3(ORIGIN,0), glm::vec2(SCREEN_SIZE.x,MAP_SIZE.y) );
 }
 
 void Level::RespawnPlayer(int playerIndex,bool isEnemy)
@@ -287,6 +290,55 @@ void Level::InitializeLevel()
 void Level::UpdateScoreDisplay()
 {
 	m_ScoreDisplayTextComponent->SetText(Rinigin::Helpers::GetFormattedScore(m_TotalScore).c_str());
+}
+
+void Level::CreateBorders(const glm::vec3& origin,const glm::vec2& box)
+{
+	const float borderThickness = DIGGER::WORLD_BORDER_THICKNESS;
+
+	// Top Wall
+	{
+		auto wall = m_Scene->CreateObject();
+		wall->SetParent(m_LevelGameObject);
+		wall->SetPosition(origin);
+		auto* collider = wall->AddComponent<Rinigin::ColliderComponent>(glm::vec3{ box.x, borderThickness, 0 }, glm::vec3(), false);
+		collider->SetLayer("Wall");
+		collider->AddExcludedLayer("Wall");
+		wall->AddComponent<Rinigin::RigidbodyComponent>(collider, 0.0f, true); // Static: kinematic = true
+	}
+
+	// Bottom Wall
+	{
+		auto wall = m_Scene->CreateObject();
+		wall->SetParent(m_LevelGameObject);
+		wall->SetPosition(origin + glm::vec3{ 0, box.y - borderThickness, 0 });
+		auto* collider = wall->AddComponent<Rinigin::ColliderComponent>(glm::vec3{ box.x, borderThickness, 0 }, glm::vec3(), false);
+		collider->SetLayer("Wall");
+		collider->AddExcludedLayer("Wall");
+		wall->AddComponent<Rinigin::RigidbodyComponent>(collider, 0.0f, true);
+	}
+
+	// Left Wall
+	{
+		auto wall = m_Scene->CreateObject();
+		wall->SetParent(m_LevelGameObject);
+		wall->SetPosition(origin);
+		auto* collider = wall->AddComponent<Rinigin::ColliderComponent>(glm::vec3{ borderThickness, box.y, 0 }, glm::vec3(), false);
+		collider->SetLayer("Wall");
+		collider->AddExcludedLayer("Wall");
+		wall->AddComponent<Rinigin::RigidbodyComponent>(collider, 0.0f, true);
+	}
+
+	// Right Wall
+	{
+		auto wall = m_Scene->CreateObject();
+		wall->SetParent(m_LevelGameObject);
+		wall->SetPosition(origin + glm::vec3{ box.x - borderThickness, 0, 0 });
+		auto* collider = wall->AddComponent<Rinigin::ColliderComponent>(glm::vec3{ borderThickness, box.y, 0 }, glm::vec3(), false);
+		collider->SetLayer("Wall");
+		collider->AddExcludedLayer("Wall");
+		wall->AddComponent<Rinigin::RigidbodyComponent>(collider, 0.0f, true);
+	}
 }
 
 std::vector<glm::vec2> Level::SortTunnel(const std::vector<glm::vec2>& cpositions)

@@ -6,6 +6,8 @@
 #include "HealthComponent.h"
 #include "GameObject.h"
 
+#include "DiggerConstants.h"
+
 Nobbin::Nobbin(Level* level) :
 	Character("Nobbin.png"),
 	m_Level(level)
@@ -34,9 +36,9 @@ Nobbin::Nobbin(Level* level) :
 	// Animations
 	Rinigin::SpriteAnimatorComponent* animator = GetAnimator();
 
-	animator->AddAnimation("Nobbin", Rinigin::SpriteAnimationData{ 0,0,4,0.5f,true });
-	animator->AddAnimation("HobbinRight", Rinigin::SpriteAnimationData{ 1,0,4,0.5f,true });
-	animator->AddAnimation("HobbinLeft", Rinigin::SpriteAnimationData{ 2,0,4,0.5f,true });
+	animator->AddAnimation("Nobbin", Rinigin::SpriteAnimationData{ 0,0,4,DIGGER::NOBBIN_ANIMATION_LENGTH,true });
+	animator->AddAnimation("HobbinRight", Rinigin::SpriteAnimationData{ 1,0,4,DIGGER::NOBBIN_ANIMATION_LENGTH,true });
+	animator->AddAnimation("HobbinLeft", Rinigin::SpriteAnimationData{ 2,0,4,DIGGER::NOBBIN_ANIMATION_LENGTH,true });
 
 	animator->PlayAnimation("Nobbin");
 }

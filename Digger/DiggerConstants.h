@@ -24,4 +24,8 @@ namespace DIGGER {
 	constexpr static float SCORE_DISTANCE{ 30.f };
 
 	constexpr static float SFX_VOLUME{ .25f };
+	constexpr static float DIGGER_ANIMATION_LENGTH{ .2f };
+	constexpr static float NOBBIN_ANIMATION_LENGTH{ .5f };
+
+	constexpr static float WORLD_BORDER_THICKNESS{ 5 };
 };

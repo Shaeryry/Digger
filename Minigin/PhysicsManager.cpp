@@ -13,35 +13,35 @@
 
 void Rinigin::Physics::Render() const
 {
-	return;
-	//auto* renderer{ Renderer::GetInstance().GetSDLRenderer() };
+	if (not DEBUG_RENDER) return;
+	auto* renderer{ Renderer::GetInstance().GetSDLRenderer() };
 
-	//for (auto* collider : m_Colliders) {
-	//	if (!collider->GetOwner()->IsActive()) continue;
-	//	const glm::vec3 position{ collider->GetPosition() };
-	//	const glm::vec3 bounds{ collider->Bounds() };
+	for (auto* collider : m_Colliders) {
+		if (!collider->GetOwner()->IsActive()) continue;
+		const glm::vec3 position{ collider->GetPosition() };
+		const glm::vec3 bounds{ collider->Bounds() };
 
-	//	const SDL_Rect rect{ 
-	//		static_cast<int>(position.x),
-	//		static_cast<int>(position.y),
-	//		static_cast<int>(bounds.x),
-	//		static_cast<int>(bounds.y)
-	//	};
+		const SDL_Rect rect{ 
+			static_cast<int>(position.x),
+			static_cast<int>(position.y),
+			static_cast<int>(bounds.x),
+			static_cast<int>(bounds.y)
+		};
 
-	//	if (collider->GetCollisions() > 0) {
-	//		SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255); // red
-	//	}
-	//	else {
-	//		if (collider->IsTrigger()) {
-	//			SDL_SetRenderDrawColor(renderer, 255, 0, 255, 255); // green
-	//		}
-	//		else {
-	//			SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255); // green
-	//		}
-	//	};
+		if (collider->GetCollisions() > 0) {
+			SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255); // red
+		}
+		else {
+			if (collider->IsTrigger()) {
+				SDL_SetRenderDrawColor(renderer, 255, 0, 255, 255); // green
+			}
+			else {
+				SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255); // green
+			}
+		};
 
-	//	SDL_RenderDrawRect(renderer, &rect);
-	//}
+		SDL_RenderDrawRect(renderer, &rect);
+	}
 }
 
 void Rinigin::Physics::FixedUpdate()
@@ -199,21 +199,41 @@ void Rinigin::Physics::SolveCollisions()
 			float massB = (rigidbodyB && !rigidbodyB->IsKinematic()) ? rigidbodyB->Mass() : 0.f;
 			float totalMass = (massA + massB);
 
-			if (massA > 0.f)
-			{
-				glm::vec3 moveA = correction * (massB / totalMass);
-				glm::vec3 posA = (ownerA->GetWorldPosition() + moveA);
-				//if (!IsOverlappingWithMasks(posA, colliderA->Bounds())) ownerA->SetPosition(posA);
-				ownerA->SetPosition(posA);
-			}
-			if (massB > 0.f)
-			{
-				glm::vec3 moveB = -correction * (massA / totalMass);
-				glm::vec3 posB = (ownerB->GetWorldPosition() + moveB);
+			//if (massA > 0.f)
+			//{
+			//	glm::vec3 moveA = correction * (massB / totalMass);
+			//	glm::vec3 posA = (ownerA->GetWorldPosition() + moveA);
+			//	//if (!IsOverlappingWithMasks(posA, colliderA->Bounds())) ownerA->SetPosition(posA);
+			//	ownerA->SetPosition(posA);
+			//}
+			//if (massB > 0.f)
+			//{
+			//	glm::vec3 moveB = -correction * (massA / totalMass);
+			//	glm::vec3 posB = (ownerB->GetWorldPosition() + moveB);
 
-				//if (!IsOverlappingWithMasks(posB,colliderB->Bounds())) ownerB->SetPosition(posB);
-				ownerB->SetPosition(posB);
+			//	//if (!IsOverlappingWithMasks(posB,colliderB->Bounds())) ownerB->SetPosition(posB);
+			//	ownerB->SetPosition(posB);
+			//}
+
+			if (massA > 0.f && massB == 0.f)
+			{
+				// A is dynamic, B is static
+				ownerA->SetPosition(ownerA->GetWorldPosition() + correction);
 			}
+			else if (massB > 0.f && massA == 0.f)
+			{
+				// B is dynamic, A is static
+				ownerB->SetPosition(ownerB->GetWorldPosition() - correction);
+			}
+			else if (massA > 0.f && massB > 0.f)
+			{
+				// Both are dynamic – split the correction
+				glm::vec3 moveA = correction * (massB / totalMass);
+				glm::vec3 moveB = -correction * (massA / totalMass);
+				ownerA->SetPosition(ownerA->GetWorldPosition() + moveA);
+				ownerB->SetPosition(ownerB->GetWorldPosition() + moveB);
+			}
+
 		}
 	}
 }

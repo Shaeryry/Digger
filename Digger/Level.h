@@ -60,6 +60,7 @@ public:
 	void LoadLevelFile(const char* filePath);
 	void InitializeLevel();
 	void UpdateScoreDisplay();
+	void CreateBorders(const glm::vec3& origin,const glm::vec2& box);
 
 	std::vector<glm::vec2> SortTunnel(const std::vector<glm::vec2>& positions);
 
@@ -103,6 +104,7 @@ public:
 	std::vector<Rinigin::GameObject*> m_EnemySpawnerObjects;
 
 	//Score
+	Rinigin::GameObject* m_ScoreDisplayGameObject;
 	LetterTextComponent* m_ScoreDisplayTextComponent;
 	int m_TotalScore;
 };

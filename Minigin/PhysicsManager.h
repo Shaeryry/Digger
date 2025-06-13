@@ -52,6 +52,7 @@ namespace Rinigin {
 		std::vector<RigidbodyComponent*> m_Rigidbodies;
 		std::vector<ICollisionMask*> m_CollisionMasks;
 		float m_Gravity = 9.81f;
+		const bool DEBUG_RENDER = true;
 	};
 }
 
