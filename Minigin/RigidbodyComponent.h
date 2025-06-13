@@ -25,11 +25,16 @@ namespace Rinigin {
 		void SetCanCollide(bool state) { m_CanCollide = state; }
 		 
 		ColliderComponent* GetCollider() const { return m_Collider; }
+
+		void SetAxisLock(float x, float y, float z) { m_AxisLock = glm::vec3(x, y, z); };
+		glm::vec3 AxisLock() const { return m_AxisLock; }
 	private:
 		ColliderComponent* m_Collider;
 			
 		glm::vec3 m_Velocity;
 		glm::vec3 m_Force;
+		glm::vec3 m_AxisLock;
+
 
 		float m_Mass;
 		bool m_IsKinematic;

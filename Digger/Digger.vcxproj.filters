@@ -67,6 +67,9 @@
     <Filter Include="Header Files\HighscoreSystem">
       <UniqueIdentifier>{a339fb2a-3b60-4e63-b8fb-c3fa219d7fdf}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\States\Nobbin">
+      <UniqueIdentifier>{fb14b486-dbd3-465d-8e5f-bcb0e2818404}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -184,6 +187,9 @@
       <Filter>Source Files\Commands</Filter>
     </ClCompile>
     <ClCompile Include="LivesDisplayComponent.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="NobbinPursueState.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -310,6 +316,9 @@
     </ClInclude>
     <ClInclude Include="LivesDisplayComponent.h">
       <Filter>Header Files\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="NobbinPursueState.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

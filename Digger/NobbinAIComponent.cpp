@@ -29,9 +29,17 @@ NobbinAIComponent::NobbinAIComponent(Rinigin::GameObject* gameObject, Nobbin* no
 
 void NobbinAIComponent::Update()
 {
-	if (m_CurrentPathIndex >= m_Path.size()) UpdatePath();
-	MoveAlongPath();
+	/*if (m_CurrentPathIndex >= m_Path.size()) UpdatePath();
+	MoveAlongPath();*/
 
+	if (m_PathCooldownTimer > m_PathCooldownDuration) {
+		if (m_CurrentPathIndex >= m_Path.size()) { 
+			UpdatePath();
+			m_PathCooldownTimer = 0;
+		};
+	}
+
+	MoveAlongPath();
 	m_PathCooldownTimer += Rinigin::Timer::GetInstance().deltaTime;
 
 }
@@ -96,16 +104,12 @@ void NobbinAIComponent::MoveAlongPath()
 		glm::vec3 direction = glm::normalize(targetPos - currentPos);
 		float distance = glm::distance(currentPos, targetPos);
 
-		// If close enough to target node, move to next one
 		if (distance < 2.0f) // within 2 units
 		{
 			m_CurrentPathIndex++;
-			//UpdatePath();
 		}
 		else
 		{
-			// Apply movement
-			std::cout << direction.x << ":" << direction.y << std::endl;
 			m_Nobbin->GetMoveCommand()->SetDirection(direction);
 			m_Nobbin->GetMoveCommand()->Execute();
 		}
@@ -123,7 +127,6 @@ void NobbinAIComponent::UpdatePath()
 		if (not foundPath.empty()) {
 			m_Path = foundPath;
 			m_CurrentPathIndex = 0;
-			std::cout << "RESET" << std::endl;
 		};
 
 		m_PathCooldownTimer = 0;

@@ -13,6 +13,5 @@ public:
 	void Notify(Rinigin::EventArguments& arguments) override;
 private:
 	Level* m_Level;
-	float m_Speed = 100.f;
 };
 

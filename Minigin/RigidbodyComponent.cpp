@@ -12,6 +12,7 @@ Rinigin::RigidbodyComponent::RigidbodyComponent(GameObject* gameObject, Collider
 	m_Collider(collider),
 	m_Velocity(0, 0, 0),
 	m_Force(0, 0, 0),
+	m_AxisLock(1, 1, 1),
 	m_Mass(mass),
 	m_IsKinematic(isKinematic),
 	m_UseGravity(true),

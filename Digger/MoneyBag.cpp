@@ -25,6 +25,7 @@ MoneyBag::MoneyBag(Level* level) :
 	m_TriggerComponent->SetLayer("MoneyBag");
 
 	m_RigidbodyComponent = GetItemObject()->AddComponent<Rinigin::RigidbodyComponent>(m_ColliderComponent,1.f,false);
+	m_RigidbodyComponent->SetAxisLock(1, 0, 1);
 
 	m_SpriteSheetComponent = GetItemObject()->AddComponent<Rinigin::SpriteSheetComponent>(GetRenderer(), GetTextureComponent());
 	m_Animator = GetItemObject()->AddComponent<Rinigin::SpriteAnimatorComponent>(m_SpriteSheetComponent);

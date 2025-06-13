@@ -56,8 +56,7 @@ Rinigin::State* MoneyBagFalling::Update()
 	else {
 		if (velocity <= 0) {
 			float fallenDistance = (position.y - m_FallHeight);
-			std::cout << fallenDistance << std::endl;
-			if (fallenDistance > 60.f) {
+			if (fallenDistance > DIGGER::BAG_DESTROY_HEIGHT) {
 				// Destroy and lowkey just die
 				Item* gold = m_MoneyBag->GetLevel()->GetItemSpawner().Spawn("Gold");
 				gold->GetItemObject()->SetPosition(m_MoneyBag->GetItemObject()->GetWorldPosition());

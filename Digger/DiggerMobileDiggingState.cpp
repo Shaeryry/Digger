@@ -36,7 +36,7 @@ void DiggerMobileDiggingState::Enter()
 	m_DiggerMobile->RightDirectionCommand()->GetDirectionChangedEvent()->AddObserver(this);
 	m_DiggerMobile->LeftDirectionCommand()->GetDirectionChangedEvent()->AddObserver(this);
 
-	m_DiggerMobile->SetSpeed(m_Speed);
+	m_DiggerMobile->SetSpeed(DIGGER::DIGGER_SPEED);
 	m_DiggerMobile->GetTrigger()->ColliderEnterEvent()->AddObserver(this);
 
 	UpdateAnimation();

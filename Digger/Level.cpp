@@ -53,6 +53,7 @@ Level::Level(Rinigin::Scene* scene) :
 
 	// Score display
 	m_ScoreDisplayGameObject = scene->CreateObject();
+	m_ScoreDisplayGameObject->SetParent(m_LevelGameObject);
 	m_ScoreDisplayGameObject->SetPosition(10.f, 5.f, 0);
 	m_ScoreDisplayTextComponent = m_ScoreDisplayGameObject->AddComponent<LetterTextComponent>(Rinigin::Helpers::GetFormattedScore(0).c_str());
 

@@ -153,90 +153,65 @@ void Rinigin::Physics::SolveCollisions()
 {
 	for (auto* rigidbodyA : m_Rigidbodies) {
 		GameObject* ownerA{ rigidbodyA->GetOwner() };
-		if (ownerA == nullptr) return;
-		if (!ownerA or !ownerA->IsActive()) continue;
+		if (!ownerA || !ownerA->IsActive()) continue;
 		if (!rigidbodyA->CanCollide()) continue;
 
-		for (auto* rigidbodyB : m_Rigidbodies) { 
-			if (rigidbodyA == rigidbodyB) continue;
-			if (!rigidbodyB->CanCollide()) continue;
+		for (auto* rigidbodyB : m_Rigidbodies) {
+			if (rigidbodyA == rigidbodyB || !rigidbodyB->CanCollide()) continue;
 
 			GameObject* ownerB{ rigidbodyB->GetOwner() };
-			if (ownerB == nullptr) return;
-			if (!ownerB or !ownerB->IsActive()) continue;
-			
-			ColliderComponent* colliderA{ rigidbodyA->GetCollider() };
-			ColliderComponent* colliderB{ rigidbodyB->GetCollider() };
+			if (!ownerB || !ownerB->IsActive()) continue;
 
-			if (!colliderA->IsEnabled() or !colliderB->IsEnabled()) continue;
-			if (colliderA->IsTrigger() or colliderB->IsTrigger()) continue;
+			ColliderComponent* colliderA = rigidbodyA->GetCollider();
+			ColliderComponent* colliderB = rigidbodyB->GetCollider();
+			if (!colliderA || !colliderB || !colliderA->IsEnabled() || !colliderB->IsEnabled()) continue;
+			if (colliderA->IsTrigger() || colliderB->IsTrigger()) continue;
 			if (colliderA->IsLayerExcluded(colliderB->GetCollisionLayer())) continue;
 			if (colliderB->IsLayerExcluded(colliderA->GetCollisionLayer())) continue;
-
-
-			if (!colliderA || !colliderB) continue;
 			if (!AreCollidersOverlapping(colliderA, colliderB)) continue;
 
-			glm::vec3 centerA = colliderA->GetCenter();
-			glm::vec3 centerB = colliderB->GetCenter();
-
-			glm::vec3 delta = centerA - centerB;
+			// Compute overlap
+			glm::vec3 delta = colliderA->GetCenter() - colliderB->GetCenter();
 			glm::vec3 totalHalfSize = colliderA->GetHalfExtents() + colliderB->GetHalfExtents();
 			glm::vec3 overlap = totalHalfSize - glm::abs(delta);
 
-			// Check if truly overlapping
 			if (overlap.x <= 0.f || overlap.y <= 0.f) continue;
 
-			// Find minimum axis of penetration
+			// Resolve along the axis of least penetration
 			glm::vec3 correction{};
 			if (overlap.x < overlap.y)
 				correction.x = (delta.x > 0.f ? 1.f : -1.f) * overlap.x;
 			else
 				correction.y = (delta.y > 0.f ? 1.f : -1.f) * overlap.y;
 
-			// Apply correction based on mass
-			float massA = (rigidbodyA && !rigidbodyA->IsKinematic()) ? rigidbodyA->Mass() : 0.f;
-			float massB = (rigidbodyB && !rigidbodyB->IsKinematic()) ? rigidbodyB->Mass() : 0.f;
-			float totalMass = (massA + massB);
+			// Mass logic
+			float massA = !rigidbodyA->IsKinematic() ? rigidbodyA->Mass() : 0.f;
+			float massB = !rigidbodyB->IsKinematic() ? rigidbodyB->Mass() : 0.f;
+			float totalMass = massA + massB;
 
-			//if (massA > 0.f)
-			//{
-			//	glm::vec3 moveA = correction * (massB / totalMass);
-			//	glm::vec3 posA = (ownerA->GetWorldPosition() + moveA);
-			//	//if (!IsOverlappingWithMasks(posA, colliderA->Bounds())) ownerA->SetPosition(posA);
-			//	ownerA->SetPosition(posA);
-			//}
-			//if (massB > 0.f)
-			//{
-			//	glm::vec3 moveB = -correction * (massA / totalMass);
-			//	glm::vec3 posB = (ownerB->GetWorldPosition() + moveB);
+			// Get per-object lock masks
+			glm::vec3 lockA = rigidbodyA->AxisLock(); // e.g. (1, 0, 1) to lock Y
+			glm::vec3 lockB = rigidbodyB->AxisLock();
 
-			//	//if (!IsOverlappingWithMasks(posB,colliderB->Bounds())) ownerB->SetPosition(posB);
-			//	ownerB->SetPosition(posB);
-			//}
-
-			if (massA > 0.f && massB == 0.f)
-			{
-				// A is dynamic, B is static
-				ownerA->SetPosition(ownerA->GetWorldPosition() + correction);
+			// Apply resolution
+			if (massA > 0.f && massB == 0.f) {
+				glm::vec3 moveA = correction * lockA; // Respect A's lock only
+				ownerA->SetPosition(ownerA->GetWorldPosition() + moveA);
 			}
-			else if (massB > 0.f && massA == 0.f)
-			{
-				// B is dynamic, A is static
-				ownerB->SetPosition(ownerB->GetWorldPosition() - correction);
+			else if (massB > 0.f && massA == 0.f) {
+				glm::vec3 moveB = -correction * lockB; // Respect B's lock only
+				ownerB->SetPosition(ownerB->GetWorldPosition() + moveB);
 			}
-			else if (massA > 0.f && massB > 0.f)
-			{
-				// Both are dynamic – split the correction
-				glm::vec3 moveA = correction * (massB / totalMass);
-				glm::vec3 moveB = -correction * (massA / totalMass);
+			else if (massA > 0.f && massB > 0.f) {
+				glm::vec3 moveA = correction * (massB / totalMass) * lockA;
+				glm::vec3 moveB = -correction * (massA / totalMass) * lockB;
 				ownerA->SetPosition(ownerA->GetWorldPosition() + moveA);
 				ownerB->SetPosition(ownerB->GetWorldPosition() + moveB);
 			}
-
 		}
 	}
 }
+
 
 bool Rinigin::Physics::IsSolid(int x, int y) const
 {

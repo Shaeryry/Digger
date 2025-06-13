@@ -183,6 +183,7 @@
     <ClCompile Include="MoneyBagPrefall.cpp" />
     <ClCompile Include="Nobbin.cpp" />
     <ClCompile Include="NobbinAIComponent.cpp" />
+    <ClCompile Include="NobbinPursueState.cpp" />
     <ClCompile Include="Pathfinder.cpp" />
     <ClCompile Include="ScoreRegisterScreenState.cpp" />
     <ClCompile Include="TerrainComponent.cpp" />
@@ -225,6 +226,7 @@
     <ClInclude Include="MoneyBagIdle.h" />
     <ClInclude Include="Nobbin.h" />
     <ClInclude Include="NobbinAIComponent.h" />
+    <ClInclude Include="NobbinPursueState.h" />
     <ClInclude Include="Pathfinder.h" />
     <ClInclude Include="Prototype.h" />
     <ClInclude Include="PrototypeSpawner.h" />

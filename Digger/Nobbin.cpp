@@ -21,7 +21,7 @@ Nobbin::Nobbin(Level* level) :
 	GetCollider()->AddExcludedLayer("Nobbin");
 	GetCollider()->AddExcludedLayer("Player");
 
-	SetSpeed(m_Speed);
+	SetSpeed(DIGGER::NOBBIN_SPEED);
 
 	GetHealthComponent()->SetMaxHealth(1);
 

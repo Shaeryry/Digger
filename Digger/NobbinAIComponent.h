@@ -29,7 +29,6 @@ private:
     float m_PathCooldownDuration;
     size_t m_CurrentPathIndex;
 
-
     Level* m_Level;
     Nobbin* m_Nobbin;
 };
