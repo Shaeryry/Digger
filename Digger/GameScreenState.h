@@ -46,8 +46,10 @@ private:
 	void StartCoop();
 
 	bool m_AllPlayersDead;
-	bool m_TransitionLevel;
-	float m_TransitionClock;
+
+	float m_TransitionTimer = 0.0f;
+	bool m_TransitioningToNextLevel = false;
+	bool m_TransitioningToScore = false;
 
 	// Commands
 	Rinigin::Command* m_SkipLevelCommand;

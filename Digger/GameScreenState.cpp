@@ -37,6 +37,7 @@
 #include "ScoreRegisterScreenState.h"
 
 #include "ServiceLocator.h"
+#include "Timer.h"
 
 GameScreenState::GameScreenState(Rinigin::StateContextComponent* context) :
 	Rinigin::State(context),
@@ -72,41 +73,103 @@ Rinigin::State* GameScreenState::Update()
 {
 	const bool allPlayersCurrentlyDead = m_Level->GetDeadPlayers().size() >= m_Level->GetPlayerCount();
 
-	// GAME OVER CONDITION
-	if (m_Level->Lives()->GetLives() <= 0) {
-		if (allPlayersCurrentlyDead) {
-			// TO END SCREEN
-			return GetContext()->GetState<ScoreRegisterScreenState>();
-		}
-	}
-
-	// NEXT LEVEL CONDITION
-	const bool emeraldsCleared{ m_Level->GetEmeraldSpawner().GetInstances().size() <= 0 };
-	const bool canMoveLevels{ emeraldsCleared };
-
-	if (canMoveLevels) {
-		// Move on to next level
-		bool success = NextLevel();
-		if (not success) {
-
-			return GetContext()->GetState<ScoreRegisterScreenState>();
-		}
-	}
-
-	// PLAYERS JUST ALL DIED
-	if (allPlayersCurrentlyDead != m_AllPlayersDead) {
-		if (allPlayersCurrentlyDead) {
-			Rinigin::ServiceLocator::GetSoundService().Play({ "DeathTrack.wav",0.5f,true }); // Play death music
+	// Already in transition? Count down
+	if (m_TransitioningToNextLevel || m_TransitioningToScore)
+	{
+		m_TransitionTimer += Rinigin::Timer::GetInstance().deltaTime;
+		if (m_TransitionTimer > DIGGER::TRANSITION_TIME)
+		{
+			if (m_TransitioningToScore)
+			{
+				return GetContext()->GetState<ScoreRegisterScreenState>();
+			}
+			else if (m_TransitioningToNextLevel)
+			{
+				bool success = NextLevel();
+				if (!success)
+				{
+					return GetContext()->GetState<ScoreRegisterScreenState>();
+				}
+				m_TransitioningToNextLevel = false;
+			} 
 		}
 		else {
-			Rinigin::ServiceLocator::GetSoundService().Play({ "MainMusic.wav",0.5f,true }); // Play music
+			Reset();
 		}
+		return nullptr;
+	}
+
+	// Game over
+	if (m_Level->Lives()->GetLives() <= 0 && allPlayersCurrentlyDead)
+	{
+		m_TransitioningToScore = true;
+		m_TransitionTimer = 0;
+		return nullptr;
+	}
+
+	// All emeralds collected
+	const bool emeraldsCleared{ m_Level->GetEmeraldSpawner().GetInstances().size() <= 0 };
+	if (emeraldsCleared)
+	{
+		Rinigin::ServiceLocator::GetSoundService().Play({ "NextLevel.wav",0.5f,true });
+		m_TransitioningToNextLevel = true;
+		m_TransitionTimer = 0;
+		return nullptr;
+	}
+
+	// Death music / respawn
+	if (allPlayersCurrentlyDead != m_AllPlayersDead)
+	{
+		if (allPlayersCurrentlyDead)
+			Rinigin::ServiceLocator::GetSoundService().Play({ "DeathTrack.wav",0.5f,true });
+		else
+			Rinigin::ServiceLocator::GetSoundService().Play({ "MainMusic.wav",0.5f,true });
 	}
 	m_AllPlayersDead = allPlayersCurrentlyDead;
 
-
 	return nullptr;
 }
+
+
+//Rinigin::State* GameScreenState::Update()
+//{
+//	const bool allPlayersCurrentlyDead = m_Level->GetDeadPlayers().size() >= m_Level->GetPlayerCount();
+//
+//	// GAME OVER CONDITION
+//	if (m_Level->Lives()->GetLives() <= 0) {
+//		if (allPlayersCurrentlyDead) {
+//			// TO END SCREEN
+//			return GetContext()->GetState<ScoreRegisterScreenState>();
+//		}
+//	}
+//
+//	// NEXT LEVEL CONDITION
+//	const bool emeraldsCleared{ m_Level->GetEmeraldSpawner().GetInstances().size() <= 0 };
+//	const bool canMoveLevels{ emeraldsCleared };
+//
+//	if (canMoveLevels) {
+//		// Move on to next level
+//		bool success = NextLevel();
+//		if (not success) {
+//
+//			return GetContext()->GetState<ScoreRegisterScreenState>();
+//		}
+//	}
+//
+//	// PLAYERS JUST ALL DIED
+//	if (allPlayersCurrentlyDead != m_AllPlayersDead) {
+//		if (allPlayersCurrentlyDead) {
+//			Rinigin::ServiceLocator::GetSoundService().Play({ "DeathTrack.wav",0.5f,true }); // Play death music
+//		}
+//		else {
+//			Rinigin::ServiceLocator::GetSoundService().Play({ "MainMusic.wav",0.5f,true }); // Play music
+//		}
+//	}
+//	m_AllPlayersDead = allPlayersCurrentlyDead;
+//
+//
+//	return nullptr;
+//}
 
 void GameScreenState::Exit()
 {
