@@ -7,7 +7,9 @@ namespace Rinigin { class GameObject; };
 class MovementCommand final : public Rinigin::Command {
 public:
 	explicit MovementCommand(Rinigin::GameObject* gameObject,const glm::vec3& direction,const float speed) 
-		: m_GameObject{ gameObject }, m_Speed{ speed }, m_Direction{ direction } {};
+		: m_GameObject{ gameObject }, m_Speed{ speed }, m_Direction{ direction } {
+		SetMaxInputs(1);
+	};
 
 	void SetSpeed(float speed) { m_Speed = speed; }
 	void SetDirection(const glm::vec3& direction) { m_Direction = direction; };

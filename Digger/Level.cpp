@@ -32,6 +32,7 @@ using json = nlohmann::json;
 
 #include "StateContextComponent.h"
 #include "LivesDisplayComponent.h"
+#include "ServiceLocator.h"
 
 #include <queue>
 #include <unordered_set>
@@ -197,8 +198,8 @@ void Level::LoadLevelFile(const char* filePath)
 
 void Level::InitializeLevel()
 {
-	// TODO : Destroy and clean existing stuff
 	CleanUpLevel();
+
 
 	const int tileWidth = static_cast<int>(DIGGER::GAME_WIDTH / m_LevelData.width);
 	const int tileHeight = static_cast<int>(DIGGER::GAME_HEIGHT / m_LevelData.height);

@@ -2,7 +2,7 @@
 #include <memory>
 #include <glm.hpp>
 // Class for the digger game
-namespace Rinigin { class Scene; class Gamepad; struct Binding; }
+namespace Rinigin { class Scene; class Gamepad; class Command; struct Binding; }
 
 class MenuCommand;
 class DiggerGame final
@@ -22,6 +22,9 @@ private:
 	Rinigin::Gamepad* m_PlayerTwo; // Controller
 
 	// Commands
+
+	Rinigin::Command* m_MuteGameCommand;
+
 	MenuCommand* m_MenuMoveUpCommand;
 	MenuCommand* m_MenuMoveDownCommand;
 	MenuCommand* m_MenuMoveLeftCommand;

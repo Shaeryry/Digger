@@ -7,6 +7,7 @@
 #include "ServiceLocator.h"
 #include "RigidbodyComponent.h"
 #include <iostream>
+#include "DiggerConstants.h"
 
 DiggerMobileDyingState::DiggerMobileDyingState(Rinigin::StateContextComponent* context, DiggerMobile* digger) :
 	State(context),
@@ -16,7 +17,7 @@ DiggerMobileDyingState::DiggerMobileDyingState(Rinigin::StateContextComponent* c
 
 void DiggerMobileDyingState::Enter()
 {
-	Rinigin::ServiceLocator::GetSoundService().Play({ "bruh.wav", .25f });
+	Rinigin::ServiceLocator::GetSoundService().Play({ "Damage.wav", DIGGER::SFX_VOLUME });
 
 	m_DiggerMobile->GetRigidbody()->GravityEnabled(true);
 	m_DiggerMobile->GetAnimator()->PlayAnimation("Dying");

@@ -16,6 +16,7 @@
 #include "Gamepad.h"
 #include "InputManager.h"
 #include "MenuCommand.h"
+#include "GameCommands.h"
 
 
 DiggerGame::DiggerGame(float screenWidth, float screenHeight) :
@@ -24,7 +25,18 @@ DiggerGame::DiggerGame(float screenWidth, float screenHeight) :
 	m_PlayerOne(nullptr),
 	m_PlayerTwo(nullptr),
 	m_GameScene(nullptr),
-
+	m_SelectUpKeyboard(nullptr),
+	m_SelectDownKeyboard(nullptr),
+	m_SelectLeftKeyboard(nullptr),
+	m_SelectRightKeyboard(nullptr),
+	m_ConfirmKeyboard(nullptr),
+	m_SelectUpGamepad(nullptr), 
+	m_SelectDownGamepad(nullptr),
+	m_SelectLeftGamepad(nullptr),
+	m_SelectRightGamepad(nullptr),
+	m_ConfirmGamepad(nullptr),
+	
+	m_MuteGameCommand(Rinigin::InputManager::GetInstance().AddCommand<GameCommands::MuteGameCommand>()),
 	m_MenuMoveUpCommand(Rinigin::InputManager::GetInstance().AddCommand<MenuCommand>("SelectUp")),
 	m_MenuMoveDownCommand(Rinigin::InputManager::GetInstance().AddCommand<MenuCommand>("SelectDown")),
 	m_MenuMoveLeftCommand(Rinigin::InputManager::GetInstance().AddCommand<MenuCommand>("SelectLeft")),
@@ -45,10 +57,10 @@ void DiggerGame::InitializeGame()
 	// Input
 	m_PlayerOne = Rinigin::InputManager::GetInstance().GetGamepad(0); // Set player 1 to the keyboard
 	m_PlayerTwo = Rinigin::InputManager::GetInstance().GetGamepad(1); // First controller that is found
-	RegisterBindings();
 
 	// Register Services
 	Rinigin::ServiceLocator::RegisterSoundSystem(std::make_unique<Rinigin::SDLMixerSoundService>("../Data/Sounds/"));
+	m_PlayerOne->AddBinding(SDL_SCANCODE_F2, Rinigin::BindingConnection::Down, m_MuteGameCommand); // Add muting
 
 	// Scene
 	m_GameScene = Rinigin::SceneManager::GetInstance().CreateScene("Digger");
@@ -73,9 +85,9 @@ void DiggerGame::InitializeGame()
 	m_MenuMoveLeftCommand->GetInputEvent()->AddObserver(scoreRegisterState);
 	m_MenuMoveRightCommand->GetInputEvent()->AddObserver(scoreRegisterState);
 	m_MenuConfirmCommand->GetInputEvent()->AddObserver(scoreRegisterState);
-
+	 
 	gameContext->SetState(startScreenState); // Set the first state to the start screen
-
+	RegisterBindings();
 }
 
 void DiggerGame::RegisterBindings()

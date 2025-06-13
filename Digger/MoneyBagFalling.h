@@ -13,6 +13,7 @@ public:
 
 	void Notify(Rinigin::EventArguments& eventArguments) override;
 private:
+	void EndSFX();
 	MoneyBag* m_MoneyBag;
 	bool m_Falling;
 	float m_FallHeight;

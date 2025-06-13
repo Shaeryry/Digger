@@ -9,6 +9,8 @@
 #include "MoneyBagFalling.h"
 #include "Timer.h"
 #include "RigidbodyComponent.h"
+#include "ServiceLocator.h"
+#include "DiggerConstants.h"
 
 #include <iostream>
 
@@ -23,6 +25,7 @@ void MoneyBagPrefall::Enter()
 {
 	m_Duration = 0;
 	m_MoneyBag->GetAnimator()->PlayAnimation("Prefall");
+	Rinigin::ServiceLocator::GetSoundService().Play({ "BagWiggle.wav", DIGGER::SFX_VOLUME });
 }
 
 Rinigin::State* MoneyBagPrefall::Update()
@@ -39,4 +42,5 @@ Rinigin::State* MoneyBagPrefall::Update()
 
 void MoneyBagPrefall::Exit()
 {
+	Rinigin::ServiceLocator::GetSoundService().Stop({ "BagWiggle.wav" });
 }

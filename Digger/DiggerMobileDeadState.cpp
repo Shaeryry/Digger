@@ -7,6 +7,7 @@
 #include "Level.h"
 #include "DiggerMobileDiggingState.h"
 #include "DiggerConstants.h"
+#include "DiggerMobile.h"
 
 DiggerMobileDeadState::DiggerMobileDeadState(Rinigin::StateContextComponent* context, DiggerMobile* digger) :
 	State(context),

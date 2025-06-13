@@ -2,6 +2,8 @@
 #include "EventTypes.h"
 #include "Helpers.h"
 #include <iostream>
+#include "ServiceLocator.h"
+#include "DiggerConstants.h"
 
 ScoreComponent::ScoreComponent(Rinigin::GameObject* gameObject) :
 	Component(gameObject),
@@ -40,6 +42,7 @@ void ScoreComponent::Notify(Rinigin::EventArguments& eventArguments)
 		case Rinigin::Helpers::sdbm_hash("EmeraldCollected"): {
 			GameObjectEventArguments& gameObjectArguments{ GetArgumentsOfType<GameObjectEventArguments>(eventArguments) };
 			if (gameObjectArguments.GetGameObject() == GetOwner()) {
+				Rinigin::ServiceLocator::GetSoundService().Play({ "ItemPickup.wav",DIGGER::SFX_VOLUME });
 				AddScore(25);
 			}
 			break;
@@ -48,6 +51,7 @@ void ScoreComponent::Notify(Rinigin::EventArguments& eventArguments)
 
 			GameObjectEventArguments& gameObjectArguments{ GetArgumentsOfType<GameObjectEventArguments>(eventArguments) };
 			if (gameObjectArguments.GetGameObject() == GetOwner()) {
+				Rinigin::ServiceLocator::GetSoundService().Play({ "Gold.wav",DIGGER::SFX_VOLUME });
 				AddScore(500);
 			}
 			break;

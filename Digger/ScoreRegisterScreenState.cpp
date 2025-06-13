@@ -15,6 +15,7 @@
 #include <iostream>
 #include "StartScreenState.h"
 #include "StateContextComponent.h"
+#include "ServiceLocator.h"
 
 ScoreRegisterScreenState::ScoreRegisterScreenState(Rinigin::StateContextComponent* context, GameScreenState* gameState) :
 	State(context),
@@ -93,21 +94,31 @@ void ScoreRegisterScreenState::Notify(Rinigin::EventArguments& arguments)
 	switch (arguments.GetID())
 	{
 	case Rinigin::Helpers::sdbm_hash("SelectUp"):
+		Rinigin::ServiceLocator::GetSoundService().Play({ "MenuSelect.wav", DIGGER::SFX_VOLUME });
+
 		ShiftLetter(1);
 		break;
 	case Rinigin::Helpers::sdbm_hash("SelectDown"):
+		Rinigin::ServiceLocator::GetSoundService().Play({ "MenuSelect.wav", DIGGER::SFX_VOLUME });
+
 		ShiftLetter(-1);
 		break;
 	case Rinigin::Helpers::sdbm_hash("SelectLeft"):
+		Rinigin::ServiceLocator::GetSoundService().Play({ "MenuSelect.wav", DIGGER::SFX_VOLUME });
+
 		ShiftPosition(-1);
 		break;
 	case Rinigin::Helpers::sdbm_hash("SelectRight"):
+		Rinigin::ServiceLocator::GetSoundService().Play({ "MenuSelect.wav", DIGGER::SFX_VOLUME });
+
 		ShiftPosition(1);
 		break;
 	case Rinigin::Helpers::sdbm_hash("Confirm"): {
 		if (not m_Saving and not m_Saved) {
 			m_Saving = true;
 			int score = m_GameState->GetLevel()->Score();
+			Rinigin::ServiceLocator::GetSoundService().Play({ "MenuConfirm.wav", DIGGER::SFX_VOLUME });
+
 			HighScoreManager::SaveHighScores("highscore.json", { m_Abbreviation, score });
 			m_Saved = true;
 			m_Saving = false;

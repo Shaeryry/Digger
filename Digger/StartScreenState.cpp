@@ -16,6 +16,8 @@
 #include "StateContextComponent.h"
 #include "HighScoreManager.h"
 
+#include "ServiceLocator.h"
+
 StartScreenState::StartScreenState(Rinigin::StateContextComponent* context, Rinigin::Gamepad* gamepad) :
 	Rinigin::State(context),
 	m_Scene(Rinigin::SceneManager::GetInstance().GetActiveScene()),
@@ -129,12 +131,18 @@ void StartScreenState::Notify(Rinigin::EventArguments & eventArguments)
 	switch (eventArguments.GetID())
 	{
 		case Rinigin::Helpers::sdbm_hash("SelectUp"):
+			Rinigin::ServiceLocator::GetSoundService().Play({ "MenuSelect.wav", DIGGER::SFX_VOLUME });
+
 			SetSelection(currentGameMode + 1);
 			break;
 		case Rinigin::Helpers::sdbm_hash("SelectDown"):
+			Rinigin::ServiceLocator::GetSoundService().Play({ "MenuSelect.wav", DIGGER::SFX_VOLUME });
+
 			SetSelection(currentGameMode - 1);
 			break;
 		case Rinigin::Helpers::sdbm_hash("Confirm"):
+			Rinigin::ServiceLocator::GetSoundService().Play({ "MenuConfirm.wav", DIGGER::SFX_VOLUME });
+
 			GetContext()->SetState(m_GameScreenState);
 			break;
 		default:

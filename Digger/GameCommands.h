@@ -11,6 +11,13 @@ namespace GameCommands {
 	private:
 		GameScreenState* m_GameState;
 	};
+
+	class MuteGameCommand : public Rinigin::Command
+	{
+	public:
+		explicit MuteGameCommand() = default;
+		virtual void Execute() override;
+	};
 }
 
 

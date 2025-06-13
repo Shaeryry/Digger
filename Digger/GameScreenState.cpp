@@ -36,40 +36,21 @@
 #include "StateContextComponent.h"
 #include "ScoreRegisterScreenState.h"
 
+#include "ServiceLocator.h"
+
 GameScreenState::GameScreenState(Rinigin::StateContextComponent* context) :
 	Rinigin::State(context),
 	m_GameMode(GameMode::SOLO),
 	m_CurrentLevelIndex(0),
+	m_AllPlayersDead(false),
 	m_Level(std::make_unique<Level>(Rinigin::SceneManager::GetInstance().GetActiveScene()))
 {
-	// Gamepads
-	Rinigin::Gamepad* playerOneGamepad{ Rinigin::InputManager::GetInstance().GetGamepad(0) }; // Keyboard
-
-	// Skip button
-	m_SkipLevelCommand = Rinigin::InputManager::GetInstance().AddCommand<GameCommands::SkipLevelCommand>(this);
-	playerOneGamepad->AddBinding(SDL_SCANCODE_F2, Rinigin::BindingConnection::Down, m_SkipLevelCommand);
-
-	//Rinigin::Gamepad* playerTwoGamepad{ Rinigin::InputManager::GetInstance().GetGamepad(1) };
-
 	m_Level->GetLevelObject()->SetActive(false);
+	m_SkipLevelCommand = Rinigin::InputManager::GetInstance().AddCommand<GameCommands::SkipLevelCommand>(this);
 	// TODO : Create characters
 	m_DiggerOne = std::make_unique<DiggerMobile>(0,m_Level.get());	
 	m_DiggerOne->GetRigidbody()->GravityEnabled(false);
 	m_Level->AddPlayer(m_DiggerOne.get());
-
-
-	playerOneGamepad->AddBinding(SDL_SCANCODE_UP, Rinigin::BindingConnection::Down, m_DiggerOne->UpDirectionCommand());
-	playerOneGamepad->AddBinding(SDL_SCANCODE_DOWN, Rinigin::BindingConnection::Down, m_DiggerOne->DownDirectionCommand());
-	playerOneGamepad->AddBinding(SDL_SCANCODE_LEFT, Rinigin::BindingConnection::Down, m_DiggerOne->LeftDirectionCommand());
-	playerOneGamepad->AddBinding(SDL_SCANCODE_RIGHT, Rinigin::BindingConnection::Down, m_DiggerOne->RightDirectionCommand());
-
-	playerOneGamepad->AddBinding(SDL_SCANCODE_UP, Rinigin::BindingConnection::Held, m_DiggerOne->GetMoveCommand());
-	playerOneGamepad->AddBinding(SDL_SCANCODE_DOWN, Rinigin::BindingConnection::Held, m_DiggerOne->GetMoveCommand());
-	playerOneGamepad->AddBinding(SDL_SCANCODE_LEFT, Rinigin::BindingConnection::Held, m_DiggerOne->GetMoveCommand());
-	playerOneGamepad->AddBinding(SDL_SCANCODE_RIGHT, Rinigin::BindingConnection::Held, m_DiggerOne->GetMoveCommand());
-
-	// TEMPORARY WAY OF DAMAGING YOUR OWN CHARACTER
-	playerOneGamepad->AddBinding(SDL_SCANCODE_F, Rinigin::BindingConnection::Down, m_DiggerOne->GetDamageCommand());
 
 	m_DiggerTwo = std::make_unique<DiggerMobile>(1, m_Level.get());
 	m_Level->AddPlayer(m_DiggerTwo.get());
@@ -79,6 +60,8 @@ GameScreenState::GameScreenState(Rinigin::StateContextComponent* context) :
 
 void GameScreenState::Enter()
 {
+	SetupBindings();
+
 	SetLevel(1);
 	m_Level->SetScore(0);
 	m_Level->Lives()->SetLives(DIGGER::DIGGER_LIVES);
@@ -87,9 +70,11 @@ void GameScreenState::Enter()
 
 Rinigin::State* GameScreenState::Update()
 {
+	const bool allPlayersCurrentlyDead = m_Level->GetDeadPlayers().size() >= m_Level->GetPlayerCount();
+
 	// GAME OVER CONDITION
 	if (m_Level->Lives()->GetLives() <= 0) {
-		if (m_Level->GetDeadPlayers().size() >= m_Level->GetPlayerCount()) {
+		if (allPlayersCurrentlyDead) {
 			// TO END SCREEN
 			return GetContext()->GetState<ScoreRegisterScreenState>();
 		}
@@ -108,15 +93,31 @@ Rinigin::State* GameScreenState::Update()
 		}
 	}
 
+	// PLAYERS JUST ALL DIED
+	if (allPlayersCurrentlyDead != m_AllPlayersDead) {
+		if (allPlayersCurrentlyDead) {
+			Rinigin::ServiceLocator::GetSoundService().Play({ "DeathTrack.wav",0.5f,true }); // Play death music
+		}
+		else {
+			Rinigin::ServiceLocator::GetSoundService().Play({ "MainMusic.wav",0.5f,true }); // Play music
+		}
+	}
+	m_AllPlayersDead = allPlayersCurrentlyDead;
+
+
 	return nullptr;
 }
 
 void GameScreenState::Exit()
 {
+	RemoveBindings();
+
 	m_Level->GetLevelObject()->SetActive(false);
 	m_Level->CleanUpLevel();
+
+	Rinigin::ServiceLocator::GetSoundService().Stop({ "MainMusic.wav" }); // stop music
 	Reset();
-	// TODO : Remove bindings
+
 	std::cout << "Game ended !" << std::endl;
 }
 
@@ -124,6 +125,7 @@ void GameScreenState::SetLevel(int levelIndex)
 {
 	m_CurrentLevelIndex = levelIndex;
 	m_Level->LoadLevel(levelIndex);
+	Rinigin::ServiceLocator::GetSoundService().Play({ "MainMusic.wav",0.5f,true }); // Play music
 	StartGame();
 }
 
@@ -136,6 +138,104 @@ bool GameScreenState::NextLevel()
 	}
 
 	return false;
+}
+
+void GameScreenState::SetupBindings()
+{
+	// Gamepads
+	Rinigin::Gamepad* playerKeyboard{ Rinigin::InputManager::GetInstance().GetGamepad(0) }; // Keyboard
+	Rinigin::Gamepad* gamepadOne{ Rinigin::InputManager::GetInstance().GetGamepad(1) }; // Gamepad 1
+	Rinigin::Gamepad* gamepadTwo{ Rinigin::InputManager::GetInstance().GetGamepad(2) }; // Gamepad 2
+
+	// Bindings
+
+	// Keyboard
+		m_KeyboardSkipLevel = playerKeyboard->AddBinding(SDL_SCANCODE_F1, Rinigin::BindingConnection::Down, m_SkipLevelCommand); // Skip level
+
+		// Direction
+		m_KeyboardDirectionUp = playerKeyboard->AddBinding(SDL_SCANCODE_UP, Rinigin::BindingConnection::Down, m_DiggerOne->UpDirectionCommand());
+		m_KeyboardDirectionDown = playerKeyboard->AddBinding(SDL_SCANCODE_DOWN, Rinigin::BindingConnection::Down, m_DiggerOne->DownDirectionCommand());
+		m_KeyboardDirectionLeft = playerKeyboard->AddBinding(SDL_SCANCODE_LEFT, Rinigin::BindingConnection::Down, m_DiggerOne->LeftDirectionCommand());
+		m_KeyboardDirectionRight = playerKeyboard->AddBinding(SDL_SCANCODE_RIGHT, Rinigin::BindingConnection::Down, m_DiggerOne->RightDirectionCommand());
+
+		// Movement
+		m_KeyboardMoveUp = playerKeyboard->AddBinding(SDL_SCANCODE_UP, Rinigin::BindingConnection::Held, m_DiggerOne->GetMoveCommand());
+		m_KeyboardMoveDown = playerKeyboard->AddBinding(SDL_SCANCODE_DOWN, Rinigin::BindingConnection::Held, m_DiggerOne->GetMoveCommand());
+		m_KeyboardMoveLeft = playerKeyboard->AddBinding(SDL_SCANCODE_LEFT, Rinigin::BindingConnection::Held, m_DiggerOne->GetMoveCommand());
+		m_KeyboardMoveRight = playerKeyboard->AddBinding(SDL_SCANCODE_RIGHT, Rinigin::BindingConnection::Held, m_DiggerOne->GetMoveCommand());
+
+	// Gamepads
+
+	// 1
+
+		// Direction
+		m_GamepadOneDirectionUp = gamepadOne->AddBinding(Rinigin::GamepadButton::MINIGIN_GAMEPAD_DPAD_UP, Rinigin::BindingConnection::Down, m_DiggerOne->UpDirectionCommand());
+		m_GamepadOneDirectionDown = gamepadOne->AddBinding(Rinigin::GamepadButton::MINIGIN_GAMEPAD_DPAD_DOWN, Rinigin::BindingConnection::Down, m_DiggerOne->DownDirectionCommand());
+		m_GamepadOneDirectionLeft = gamepadOne->AddBinding(Rinigin::GamepadButton::MINIGIN_GAMEPAD_DPAD_LEFT, Rinigin::BindingConnection::Down, m_DiggerOne->LeftDirectionCommand());
+		m_GamepadOneDirectionRight = gamepadOne->AddBinding(Rinigin::GamepadButton::MINIGIN_GAMEPAD_DPAD_RIGHT, Rinigin::BindingConnection::Down, m_DiggerOne->RightDirectionCommand());
+
+		// Movement
+		m_GamepadOneMoveUp = gamepadOne->AddBinding(Rinigin::GamepadButton::MINIGIN_GAMEPAD_DPAD_UP, Rinigin::BindingConnection::Held, m_DiggerOne->GetMoveCommand());
+		m_GamepadOneMoveDown = gamepadOne->AddBinding(Rinigin::GamepadButton::MINIGIN_GAMEPAD_DPAD_DOWN, Rinigin::BindingConnection::Held, m_DiggerOne->GetMoveCommand());
+		m_GamepadOneMoveLeft = gamepadOne->AddBinding(Rinigin::GamepadButton::MINIGIN_GAMEPAD_DPAD_LEFT, Rinigin::BindingConnection::Held, m_DiggerOne->GetMoveCommand());
+		m_GamepadOneMoveRight = gamepadOne->AddBinding(Rinigin::GamepadButton::MINIGIN_GAMEPAD_DPAD_RIGHT, Rinigin::BindingConnection::Held, m_DiggerOne->GetMoveCommand());
+
+	// 2
+
+		// Direction
+		m_GamepadTwoDirectionUp = gamepadTwo->AddBinding(Rinigin::GamepadButton::MINIGIN_GAMEPAD_DPAD_UP, Rinigin::BindingConnection::Down, m_DiggerTwo->UpDirectionCommand());
+		m_GamepadTwoDirectionDown = gamepadTwo->AddBinding(Rinigin::GamepadButton::MINIGIN_GAMEPAD_DPAD_DOWN, Rinigin::BindingConnection::Down, m_DiggerTwo->DownDirectionCommand());
+		m_GamepadTwoDirectionLeft = gamepadTwo->AddBinding(Rinigin::GamepadButton::MINIGIN_GAMEPAD_DPAD_LEFT, Rinigin::BindingConnection::Down, m_DiggerTwo->LeftDirectionCommand());
+		m_GamepadTwoDirectionRight = gamepadTwo->AddBinding(Rinigin::GamepadButton::MINIGIN_GAMEPAD_DPAD_RIGHT, Rinigin::BindingConnection::Down, m_DiggerTwo->RightDirectionCommand());
+				 
+		// Movement
+		m_GamepadTwoMoveUp = gamepadTwo->AddBinding(Rinigin::GamepadButton::MINIGIN_GAMEPAD_DPAD_UP, Rinigin::BindingConnection::Held, m_DiggerTwo->GetMoveCommand());
+		m_GamepadTwoMoveDown = gamepadTwo->AddBinding(Rinigin::GamepadButton::MINIGIN_GAMEPAD_DPAD_DOWN, Rinigin::BindingConnection::Held, m_DiggerTwo->GetMoveCommand());
+		m_GamepadTwoMoveLeft = gamepadTwo->AddBinding(Rinigin::GamepadButton::MINIGIN_GAMEPAD_DPAD_LEFT, Rinigin::BindingConnection::Held, m_DiggerTwo->GetMoveCommand());
+		m_GamepadTwoMoveRight = gamepadTwo->AddBinding(Rinigin::GamepadButton::MINIGIN_GAMEPAD_DPAD_RIGHT, Rinigin::BindingConnection::Held, m_DiggerTwo->GetMoveCommand());
+
+}
+
+void GameScreenState::RemoveBindings()
+{
+	Rinigin::Gamepad* playerKeyboard{ Rinigin::InputManager::GetInstance().GetGamepad(0) }; // Keyboard
+	Rinigin::Gamepad* gamepadOne{ Rinigin::InputManager::GetInstance().GetGamepad(1) };
+	Rinigin::Gamepad* gamepadTwo{ Rinigin::InputManager::GetInstance().GetGamepad(2) }; 
+
+	// Unbind keyboard
+		playerKeyboard->RemoveBinding(m_KeyboardSkipLevel);
+
+		playerKeyboard->RemoveBinding(m_KeyboardDirectionUp);
+		playerKeyboard->RemoveBinding(m_KeyboardDirectionDown);
+		playerKeyboard->RemoveBinding(m_KeyboardDirectionLeft);
+		playerKeyboard->RemoveBinding(m_KeyboardDirectionRight);
+
+		playerKeyboard->RemoveBinding(m_KeyboardMoveUp);
+		playerKeyboard->RemoveBinding(m_KeyboardMoveDown);
+		playerKeyboard->RemoveBinding(m_KeyboardMoveLeft);
+		playerKeyboard->RemoveBinding(m_KeyboardMoveRight);
+
+	// Unbind gamepad one
+		gamepadOne->RemoveBinding(m_GamepadOneDirectionUp);
+		gamepadOne->RemoveBinding(m_GamepadOneDirectionDown);
+		gamepadOne->RemoveBinding(m_GamepadOneDirectionLeft);
+		gamepadOne->RemoveBinding(m_GamepadOneDirectionRight);
+
+		gamepadOne->RemoveBinding(m_GamepadOneMoveUp);
+		gamepadOne->RemoveBinding(m_GamepadOneMoveDown);
+		gamepadOne->RemoveBinding(m_GamepadOneMoveLeft);
+		gamepadOne->RemoveBinding(m_GamepadOneMoveRight);
+
+	// Unbind gamepad two
+		gamepadTwo->RemoveBinding(m_GamepadTwoDirectionUp);
+		gamepadTwo->RemoveBinding(m_GamepadTwoDirectionDown);
+		gamepadTwo->RemoveBinding(m_GamepadTwoDirectionLeft);
+		gamepadTwo->RemoveBinding(m_GamepadTwoDirectionRight);
+
+		gamepadTwo->RemoveBinding(m_GamepadTwoMoveUp);
+		gamepadTwo->RemoveBinding(m_GamepadTwoMoveDown);
+		gamepadTwo->RemoveBinding(m_GamepadTwoMoveLeft);
+		gamepadTwo->RemoveBinding(m_GamepadTwoMoveRight);
 }
 
 void GameScreenState::StartGame()

@@ -13,34 +13,35 @@
 
 void Rinigin::Physics::Render() const
 {
-	auto* renderer{ Renderer::GetInstance().GetSDLRenderer() };
+	return;
+	//auto* renderer{ Renderer::GetInstance().GetSDLRenderer() };
 
-	for (auto* collider : m_Colliders) {
-		if (!collider->GetOwner()->IsActive()) continue;
-		const glm::vec3 position{ collider->GetPosition() };
-		const glm::vec3 bounds{ collider->Bounds() };
+	//for (auto* collider : m_Colliders) {
+	//	if (!collider->GetOwner()->IsActive()) continue;
+	//	const glm::vec3 position{ collider->GetPosition() };
+	//	const glm::vec3 bounds{ collider->Bounds() };
 
-		const SDL_Rect rect{ 
-			static_cast<int>(position.x),
-			static_cast<int>(position.y),
-			static_cast<int>(bounds.x),
-			static_cast<int>(bounds.y)
-		};
+	//	const SDL_Rect rect{ 
+	//		static_cast<int>(position.x),
+	//		static_cast<int>(position.y),
+	//		static_cast<int>(bounds.x),
+	//		static_cast<int>(bounds.y)
+	//	};
 
-		if (collider->GetCollisions() > 0) {
-			SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255); // red
-		}
-		else {
-			if (collider->IsTrigger()) {
-				SDL_SetRenderDrawColor(renderer, 255, 0, 255, 255); // green
-			}
-			else {
-				SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255); // green
-			}
-		};
+	//	if (collider->GetCollisions() > 0) {
+	//		SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255); // red
+	//	}
+	//	else {
+	//		if (collider->IsTrigger()) {
+	//			SDL_SetRenderDrawColor(renderer, 255, 0, 255, 255); // green
+	//		}
+	//		else {
+	//			SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255); // green
+	//		}
+	//	};
 
-		SDL_RenderDrawRect(renderer, &rect);
-	}
+	//	SDL_RenderDrawRect(renderer, &rect);
+	//}
 }
 
 void Rinigin::Physics::FixedUpdate()

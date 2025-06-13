@@ -12,6 +12,7 @@ struct Audio {
 	Mix_Music* music;
 	Mix_Chunk* soundEffect;
 	bool isMusic;
+	float volume;
 };
 
 class Rinigin::SDLMixerSoundService::SDLpimpl {
@@ -19,9 +20,11 @@ public:
 	SDLpimpl(const std::string& path);
 	~SDLpimpl();
 	void Play(const Rinigin::AudioRequest& request);
+	void SetMuted(bool mute);
+	bool IsMuted() const { return m_Muted; }
 	void Update(const std::stop_token& stopToken);
 private:
-	const Audio& GetAudio(const std::string& soundPath, const bool music);
+	const Audio& GetAudio(const AudioRequest& request);
 	void UnloadSounds();
 
 	std::mutex m_Mutex;
@@ -31,6 +34,10 @@ private:
 	std::string m_Path; 
 	std::map<unsigned int, Audio> m_LoadedAudio;
 	std::queue<Rinigin::AudioRequest> m_SoundQueue;
+
+	// Mute
+	bool m_Muted = false;
+	std::mutex m_MuteMutex;
 };
 
 Rinigin::SDLMixerSoundService::SDLpimpl::SDLpimpl(const std::string& path)
@@ -53,17 +60,18 @@ Rinigin::SDLMixerSoundService::SDLpimpl::~SDLpimpl()
 	m_ConditionVariable.notify_all();
 }
 
-const Audio& Rinigin::SDLMixerSoundService::SDLpimpl::GetAudio(const std::string& fileName,const bool music)
+const Audio& Rinigin::SDLMixerSoundService::SDLpimpl::GetAudio(const AudioRequest& request)
 {
-	const std::string filePath{ m_Path + fileName };
+	const std::string filePath{ m_Path + request.sound };
 	const char* soundFile = filePath.c_str();
-	unsigned int soundId = Helpers::sdbm_hash(fileName.c_str());
+	unsigned int soundId = Helpers::sdbm_hash(request.sound.c_str());
 
 	if (m_LoadedAudio.find(soundId) == m_LoadedAudio.end())
 	{
 		Audio audio{};
-		audio.isMusic = music;
+		audio.isMusic = request.isMusic;
 		audio.music = Mix_LoadMUS(soundFile);
+		audio.volume = request.volume;
 		audio.soundEffect = Mix_LoadWAV(soundFile);
 		 
 		m_LoadedAudio.insert({ soundId, audio });
@@ -85,29 +93,58 @@ void Rinigin::SDLMixerSoundService::SDLpimpl::Update(const std::stop_token& stop
 		const auto soundRequest = m_SoundQueue.front();
 		m_SoundQueue.pop();
 
-		const Audio& pSound = GetAudio(soundRequest.sound, soundRequest.isMusic);
+		// Stop logic
+
+		if (soundRequest.stop) {
+			const unsigned int soundId = Helpers::sdbm_hash(soundRequest.sound.c_str());
+			auto it = m_LoadedAudio.find(soundId);
+			if (it != m_LoadedAudio.end()) {
+				const Audio& audio = it->second;
+				lock.unlock();
+
+				if (audio.isMusic) {
+					Mix_HaltMusic();
+				}
+				else {
+					for (int ch = 0; ch < Mix_AllocateChannels(-1); ++ch) {
+						if (Mix_GetChunk(ch) == audio.soundEffect) {
+							Mix_HaltChannel(ch);
+						}
+					}
+				}
+			}
+			else {
+				lock.unlock(); // not loaded, nothing to stop
+			}
+
+			continue;
+		}
+
+
+
+		const Audio& pSound = GetAudio(soundRequest);
 		lock.unlock();
 
 		const int volume = static_cast<int>(soundRequest.volume * MIX_MAX_VOLUME);
+		const int effectiveVolume = m_Muted ? 0 : volume;
 
 		if (pSound.isMusic)
 		{
 			if (pSound.music)
 			{
-				Mix_VolumeMusic(volume);
+				Mix_VolumeMusic(effectiveVolume);
 				Mix_PlayMusic(pSound.music, 0);
 			}
 		}
 		else {
 
 			if (pSound.soundEffect) {
-				Mix_VolumeChunk(pSound.soundEffect, volume);
+				Mix_VolumeChunk(pSound.soundEffect, effectiveVolume);
 				Mix_PlayChannel(-1, pSound.soundEffect, 0);
 			}
 		}
 
 	}
-
 }
 
 void Rinigin::SDLMixerSoundService::SDLpimpl::Play(const Rinigin::AudioRequest& request)
@@ -115,6 +152,24 @@ void Rinigin::SDLMixerSoundService::SDLpimpl::Play(const Rinigin::AudioRequest& 
 	std::lock_guard<std::mutex> lock(m_Mutex);
 	m_SoundQueue.push(request); 
 	m_ConditionVariable.notify_one();
+}
+
+void Rinigin::SDLMixerSoundService::SDLpimpl::SetMuted(bool mute)
+{
+	std::lock_guard<std::mutex> lock(m_MuteMutex);
+	m_Muted = mute;
+
+	for (auto& [_, audio] : m_LoadedAudio)
+	{
+		if (audio.isMusic && audio.music)
+		{
+			Mix_VolumeMusic(m_Muted ? 0 : static_cast<int>(audio.volume * MIX_MAX_VOLUME));
+		}
+		else if (audio.soundEffect)
+		{
+			Mix_VolumeChunk(audio.soundEffect, m_Muted ? 0 : static_cast<int>(audio.volume * MIX_MAX_VOLUME));
+		}
+	}
 }
 
 
@@ -154,5 +209,22 @@ Rinigin::SDLMixerSoundService::~SDLMixerSoundService()
 void Rinigin::SDLMixerSoundService::Play(const AudioRequest& request)
 {
 	m_pimpl->Play(request);
+}
+
+void Rinigin::SDLMixerSoundService::Stop(const AudioRequest& request)
+{
+	AudioRequest req{ request };
+	req.stop = true;
+	m_pimpl->Play(req);
+}
+
+void Rinigin::SDLMixerSoundService::SetMuted(bool muted)
+{
+	m_pimpl->SetMuted(muted);
+}
+
+bool Rinigin::SDLMixerSoundService::IsMuted() const
+{
+	return m_pimpl->IsMuted();
 }
 

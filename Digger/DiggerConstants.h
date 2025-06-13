@@ -18,6 +18,10 @@ namespace DIGGER {
 	constexpr int MAX_LEVELS{ 3 };
 	constexpr int MAX_LETTERS{ 3 };
 
+	constexpr float TRANSITION_TIME{ 5.f };
+
 	constexpr int MAX_HIGHSCORE_ENTRIES{ 8 };
 	constexpr float SCORE_DISTANCE{ 30.f };
+
+	constexpr float SFX_VOLUME{ .25f };
 };

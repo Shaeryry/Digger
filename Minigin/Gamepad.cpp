@@ -4,6 +4,7 @@
 
 #include <windows.h>
 #include "Xinput.h"
+#include <unordered_map>
 
 // Pimpl
 
@@ -86,6 +87,8 @@ Rinigin::Gamepad::~Gamepad()
 
 void Rinigin::Gamepad::ExecuteCommands(const ExecutionCommandInfo& commandInfo)
 {
+	std::unordered_map<Command*, int> commandExecutionCounts;
+
 	for (auto& binding : m_XInputPimpl->GetBindings() ) {
 		SDL_Event* event{ commandInfo.event };
 
@@ -139,7 +142,14 @@ void Rinigin::Gamepad::ExecuteCommands(const ExecutionCommandInfo& commandInfo)
 		
 
 		if (canExecute) {
-			binding->command->Execute();
+			Command* command = binding->command;
+			int& timesExecuted = commandExecutionCounts[command];
+			int maxPerFrame = command->GetMaxInputs();
+
+			if (maxPerFrame < 0 or timesExecuted < maxPerFrame) {
+				command->Execute();
+				timesExecuted++;
+			}
 		};
 	}
 }
