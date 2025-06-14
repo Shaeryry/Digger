@@ -70,6 +70,9 @@
     <Filter Include="Header Files\States\Nobbin">
       <UniqueIdentifier>{fb14b486-dbd3-465d-8e5f-bcb0e2818404}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\States\Nobbin">
+      <UniqueIdentifier>{8c399675-7b49-41e9-aefb-4fb58cc657ba}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -190,7 +193,10 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="NobbinPursueState.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\States\Nobbin</Filter>
+    </ClCompile>
+    <ClCompile Include="NobbinIdleState.cpp">
+      <Filter>Source Files\States\Nobbin</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -318,7 +324,10 @@
       <Filter>Header Files\Components</Filter>
     </ClInclude>
     <ClInclude Include="NobbinPursueState.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\States\Nobbin</Filter>
+    </ClInclude>
+    <ClInclude Include="NobbinIdleState.h">
+      <Filter>Header Files\States\Nobbin</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

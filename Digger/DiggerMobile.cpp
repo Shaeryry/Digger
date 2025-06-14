@@ -32,8 +32,8 @@ DiggerMobile::DiggerMobile(int index, Level* level) :
 
 	GetCollider()->SetBounds(glm::vec3{30,30,0});
 	GetCollider()->SetOffset(glm::vec3{5,5,0});
-
 	GetTrigger()->SetBounds(glm::vec3{ 40,40,0 });
+
 	GetHealthComponent()->GetDiedEvent()->AddObserver(this);
 	GetHealthComponent()->SetMaxHealth(1);
 

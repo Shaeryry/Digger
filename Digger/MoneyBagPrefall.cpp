@@ -34,7 +34,7 @@ Rinigin::State* MoneyBagPrefall::Update()
 	float velocity = glm::length(m_MoneyBag->GetRigidbody()->Velocity());
 	m_Duration += Rinigin::Timer::GetInstance().deltaTime;
 
-	if (m_Duration > m_FallTime or velocity > 0) {
+	if (m_Duration > DIGGER::BAG_WIGGLE_TIME or velocity > 0) {
 		return m_MoneyBag->GetStateMachine()->GetState<MoneyBagFalling>();
 	}
 	return nullptr;

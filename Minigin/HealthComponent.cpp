@@ -14,11 +14,19 @@ HealthComponent::HealthComponent(Rinigin::GameObject* gameObject, int maxHealth,
 
 void HealthComponent::TakeDamage(int damage)
 {
-	SetHealth(m_Health - damage);
-	if (m_Health <= 0) { 
+	int currentHealth = m_Health;
+	int newHealth = m_Health - damage;
+	SetHealth(newHealth);
+
+	if (newHealth <= 0 and currentHealth > 0) {
 		GameObjectEventArguments arguments{ "Died",GetOwner() };
 		m_DiedEvent->NotifyObservers(arguments);
 	}
+}
+
+void HealthComponent::RestoreHealth(int health)
+{
+	SetHealth(m_Health + health);
 }
 
 void HealthComponent::SetHealth(int health)

@@ -1,11 +1,23 @@
 [
     {
+        "initials": "RIT",
+        "score": 7000
+    },
+    {
+        "initials": "BAR",
+        "score": 5075
+    },
+    {
         "initials": "BTB",
         "score": 3750
     },
     {
         "initials": "AEZ",
         "score": 3750
+    },
+    {
+        "initials": "DAE",
+        "score": 3400
     },
     {
         "initials": "BTA",
@@ -18,17 +30,5 @@
     {
         "initials": "ABY",
         "score": 2425
-    },
-    {
-        "initials": "CAT",
-        "score": 2275
-    },
-    {
-        "initials": "COC",
-        "score": 1925
-    },
-    {
-        "initials": "CAD",
-        "score": 1900
     }
 ]

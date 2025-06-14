@@ -11,12 +11,12 @@ namespace DIGGER {
 
 	// Grid and Tile Settings
 	constexpr static int TILE_SIZE{ 20 };
-	constexpr static int TILE_GRID_SIZE{ 40 };
+	constexpr static int TILE_GRID_SIZE{ 15 };
 	constexpr static int DIG_TUNNEL_SIZE{ 18 };
 	constexpr static int TUNNEL_SAMPLES{ 20 };
 
 	// Player and Game Rules
-	constexpr static float DIGGER_SPEED{ 50 };
+	constexpr static float DIGGER_SPEED{ 70.f };
 	constexpr static int DIGGER_LIVES{ 4 };
 	constexpr static int MAX_LEVELS{ 3 };
 	constexpr static int MAX_LETTERS{ 3 };
@@ -35,8 +35,9 @@ namespace DIGGER {
 	constexpr static float SFX_VOLUME{ 0.25f };
 
 	// Physics and World Events
+	constexpr static float BAG_WIGGLE_TIME{ 1.f };
 	constexpr static float BAG_DESTROY_HEIGHT{ 60 };
 
 	// Enemies
-	constexpr static float NOBBIN_SPEED{ 70 };
+	constexpr static float NOBBIN_SPEED{ 125.f };
 }

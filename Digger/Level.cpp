@@ -84,6 +84,7 @@ void Level::RespawnPlayer(int playerIndex,bool isEnemy)
 		if (not isEnemy) {
 			DiggerMobile* diggerMobile = dynamic_cast<DiggerMobile*>(character);
 			diggerMobile->GetStateContext()->SetState(diggerMobile->GetDiggingState());
+			character->GetHealthComponent()->RestoreHealth(character->GetHealthComponent()->GetMaxHealth());
 			character->GetHealthComponent()->GetDiedEvent()->AddObserver(this);
 			character->GetCharacterObject()->SetPosition(GetPlayerSpawnIndex(playerIndex));
 		}
@@ -248,6 +249,7 @@ void Level::InitializeLevel()
 			m_MapComponent->DigAt(tilePos.x, tilePos.y, static_cast<int>(DIGGER::TILE_SIZE * 1.25f));
 
 			Rinigin::GameObject* spawner = m_Scene->CreateObject();
+			spawner->SetParent(m_LevelGameObject);
 			spawner->AddComponent<EnemySpawnerComponent>(this);
 			m_EnemySpawnerObjects.emplace_back(spawner);
 
@@ -258,9 +260,8 @@ void Level::InitializeLevel()
 			
 		case 5: {
 			// Money bag
-
 			MoneyBag* moneyBag = static_cast<MoneyBag*>(m_ItemSpawner.Spawn("MoneyBag"));
-			moneyBag->GetItemObject()->SetPosition(glm::vec3(tilePos.x, tilePos.y, 0) - moneyBag->GetCollider()->GetHalfExtents());
+			moneyBag->GetItemObject()->SetPosition(glm::vec3(tilePos.x, tilePos.y, 0) /*- moneyBag->GetCollider()->GetHalfExtents()*/);
 			break;
 		}
 		default:

@@ -12,6 +12,5 @@ public:
 private:
 	MoneyBag* m_MoneyBag;
 	float m_Duration;
-	float m_FallTime = 2.f;
 };
 

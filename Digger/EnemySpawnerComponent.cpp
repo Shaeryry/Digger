@@ -6,6 +6,7 @@
 #include "GameObject.h"
 #include "ColliderComponent.h"
 #include "NobbinAIComponent.h"
+#include "DiggerMobile.h"
 
 EnemySpawnerComponent::EnemySpawnerComponent(Rinigin::GameObject* gameObject, Level* level) :
 	Component(gameObject),
@@ -42,6 +43,5 @@ void EnemySpawnerComponent::SpawnEnemy()
 
 	nobbin->GetCharacterObject()->SetPosition(spawnPosition);
 	nobbin->GetCharacterObject()->SetActive(true);
-
-	nobbin->GetCharacterObject()->AddComponent<NobbinAIComponent>(nobbin,m_Level);
+	nobbin->GetCharacterObject()->AddComponent<NobbinAIComponent>(nobbin);
 }

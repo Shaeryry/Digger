@@ -49,6 +49,7 @@ Rinigin::State* MoneyBagFalling::Update()
 			m_Falling = true;
 			m_MoneyBag->GetRigidbody()->SetCanCollide(true);
 			m_MoneyBag->GetCollider()->AddExcludedLayer("Player");
+			m_MoneyBag->GetCollider()->AddExcludedLayer("Nobbin");
 		}
 
 		return nullptr;
@@ -86,8 +87,9 @@ void MoneyBagFalling::Notify(Rinigin::EventArguments& eventArguments)
 		Rinigin::CollisionEventArguments& collisionArgument{ GetArgumentsOfType<Rinigin::CollisionEventArguments>(eventArguments) };
 		const unsigned int layerId{ collisionArgument.GetOther()->GetCollisionLayer() };
 		const unsigned int playerLayerId{ Rinigin::Helpers::sdbm_hash("Player") };
+		const unsigned int nobbinLayerId{ Rinigin::Helpers::sdbm_hash("Nobbin") };
 
-		if (layerId == playerLayerId) {
+		if (layerId == playerLayerId or layerId == nobbinLayerId) {
 			HealthComponent* healthComponent = collisionArgument.GetOther()->GetOwner()->GetComponent<HealthComponent>();
 			// Check if the bag fell on your head
 			if (healthComponent) {

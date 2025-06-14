@@ -9,6 +9,7 @@ class HealthComponent final : public Rinigin::Component
 public:
 	explicit HealthComponent(Rinigin::GameObject* gameObject, int maxHealth = 3,int minHealth = 0);
 	void TakeDamage(int damage);
+	void RestoreHealth(int health);
 
 	void SetMaxHealth(int maxHealth);
 	void SetMinHealth(int minHealth);

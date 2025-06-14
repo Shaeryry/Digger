@@ -17,6 +17,7 @@ MoneyBagIdle::MoneyBagIdle(Rinigin::StateContextComponent* context, MoneyBag* mo
 void MoneyBagIdle::Enter()
 { 
 	m_MoneyBag->GetCollider()->RemoveExcludedLayer("Player");
+	m_MoneyBag->GetCollider()->RemoveExcludedLayer("Nobbin");
 	m_MoneyBag->GetAnimator()->PlayAnimation("Idle");
 }
 

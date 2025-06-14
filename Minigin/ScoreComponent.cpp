@@ -34,7 +34,7 @@ void ScoreComponent::Notify(Rinigin::EventArguments& eventArguments)
 {
 	switch (eventArguments.GetID())
 	{
-		case Rinigin::Helpers::sdbm_hash("EnemyDied"):
+		case Rinigin::Helpers::sdbm_hash("NobbinDied"):
 			AddScore(250);
 			break;
 		case Rinigin::Helpers::sdbm_hash("EmeraldCollected"): {

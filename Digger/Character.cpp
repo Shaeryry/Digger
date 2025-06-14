@@ -51,6 +51,18 @@ Character::Character(const std::string& fileName) :
 	m_LeftDirectionCommand = Rinigin::InputManager::GetInstance().AddCommand<ChangeDirectionCommand>(m_MoveCommand, glm::vec3(-1, 0, 0));
 }
 
+Character::~Character()
+{
+	if (m_CharacterObject) {
+		m_CharacterObject->Destroy();
+	}
+}
+
+
+glm::vec3 Character::GetCenteredPosition() const
+{
+	return m_CharacterObject->GetWorldPosition() + m_Collider->GetHalfExtents();
+}
 
 void Character::SetSpeed(float speed)
 {

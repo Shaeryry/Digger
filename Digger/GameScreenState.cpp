@@ -41,6 +41,35 @@
 
 GameScreenState::GameScreenState(Rinigin::StateContextComponent* context) :
 	Rinigin::State(context),
+	m_TransitionTimer(0.0f),
+	m_TransitioningToNextLevel(false),
+	m_TransitioningToScore(false),
+	m_SkipLevelCommand(nullptr),
+	m_KeyboardSkipLevel(nullptr),
+	m_KeyboardDirectionUp(nullptr),
+	m_KeyboardDirectionDown(nullptr),
+	m_KeyboardDirectionLeft(nullptr),
+	m_KeyboardDirectionRight(nullptr),
+	m_KeyboardMoveUp(nullptr),
+	m_KeyboardMoveDown(nullptr),
+	m_KeyboardMoveLeft(nullptr),
+	m_KeyboardMoveRight(nullptr),
+	m_GamepadOneDirectionUp(nullptr),
+	m_GamepadOneDirectionDown(nullptr),
+	m_GamepadOneDirectionLeft(nullptr),
+	m_GamepadOneDirectionRight(nullptr),
+	m_GamepadOneMoveUp(nullptr),
+	m_GamepadOneMoveDown(nullptr),
+	m_GamepadOneMoveLeft(nullptr),
+	m_GamepadOneMoveRight(nullptr),
+	m_GamepadTwoDirectionUp(nullptr), 
+	m_GamepadTwoDirectionDown(nullptr),
+	m_GamepadTwoDirectionLeft(nullptr),
+	m_GamepadTwoDirectionRight(nullptr),
+	m_GamepadTwoMoveUp(nullptr),
+	m_GamepadTwoMoveDown(nullptr),
+	m_GamepadTwoMoveLeft(nullptr),
+	m_GamepadTwoMoveRight(nullptr),
 	m_GameMode(GameMode::SOLO),
 	m_CurrentLevelIndex(0),
 	m_AllPlayersDead(false),
@@ -62,7 +91,6 @@ GameScreenState::GameScreenState(Rinigin::StateContextComponent* context) :
 void GameScreenState::Enter()
 {
 	SetupBindings();
-
 	SetLevel(1);
 	m_Level->SetScore(0);
 	m_Level->Lives()->SetLives(DIGGER::DIGGER_LIVES);
@@ -94,6 +122,7 @@ Rinigin::State* GameScreenState::Update()
 			} 
 		}
 		else {
+			m_Level->GetEnemySpawner().ClearTracked();
 			Reset();
 		}
 		return nullptr;
@@ -130,46 +159,6 @@ Rinigin::State* GameScreenState::Update()
 	return nullptr;
 }
 
-
-//Rinigin::State* GameScreenState::Update()
-//{
-//	const bool allPlayersCurrentlyDead = m_Level->GetDeadPlayers().size() >= m_Level->GetPlayerCount();
-//
-//	// GAME OVER CONDITION
-//	if (m_Level->Lives()->GetLives() <= 0) {
-//		if (allPlayersCurrentlyDead) {
-//			// TO END SCREEN
-//			return GetContext()->GetState<ScoreRegisterScreenState>();
-//		}
-//	}
-//
-//	// NEXT LEVEL CONDITION
-//	const bool emeraldsCleared{ m_Level->GetEmeraldSpawner().GetInstances().size() <= 0 };
-//	const bool canMoveLevels{ emeraldsCleared };
-//
-//	if (canMoveLevels) {
-//		// Move on to next level
-//		bool success = NextLevel();
-//		if (not success) {
-//
-//			return GetContext()->GetState<ScoreRegisterScreenState>();
-//		}
-//	}
-//
-//	// PLAYERS JUST ALL DIED
-//	if (allPlayersCurrentlyDead != m_AllPlayersDead) {
-//		if (allPlayersCurrentlyDead) {
-//			Rinigin::ServiceLocator::GetSoundService().Play({ "DeathTrack.wav",0.5f,true }); // Play death music
-//		}
-//		else {
-//			Rinigin::ServiceLocator::GetSoundService().Play({ "MainMusic.wav",0.5f,true }); // Play music
-//		}
-//	}
-//	m_AllPlayersDead = allPlayersCurrentlyDead;
-//
-//
-//	return nullptr;
-//}
 
 void GameScreenState::Exit()
 {
@@ -312,9 +301,9 @@ void GameScreenState::StartGame()
 	case GameMode::COOP:
 		StartCoop();
 		break;
-	case GameMode::PVP:
-		// TODO : Spawn 1 player digger and 1 player enemy
-		break;
+	//case GameMode::PVP:
+	//	// TODO : Spawn 1 player digger and 1 player enemy
+	//	break;
 	default:
 		break;
 	}
@@ -324,6 +313,7 @@ void GameScreenState::Reset()
 {
 	m_DiggerOne->GetCharacterObject()->SetActive(false); 
 	m_DiggerTwo->GetCharacterObject()->SetActive(false);
+
 	//m_Nobbin->GetCharacterObject()->SetActive(false);
 }
 

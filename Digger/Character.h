@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 #include "Prototype.h"
+#include <glm/glm.hpp>
 
 namespace Rinigin { 
 	class GameObject;
@@ -22,7 +23,7 @@ class Character
 { 
 public:
 	Character(const std::string& fileName);
-	virtual ~Character() = default;
+	virtual ~Character();
 	Character(const Character& other) = delete;
 	Character(Character&& other) = delete;
 	Character& operator=(const Character& other) = delete;
@@ -45,6 +46,7 @@ public:
 	Rinigin::ColliderComponent* GetTrigger() const { return m_Trigger; };
 
 	Rinigin::RigidbodyComponent* GetRigidbody() const { return m_Rigidbody; }
+	glm::vec3 GetCenteredPosition() const;
 	void SetSpeed(float speed);
 private:
 	Rinigin::GameObject* m_CharacterObject;

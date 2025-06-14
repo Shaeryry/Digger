@@ -18,7 +18,7 @@ class Nobbin;
 enum class GameMode { 
 	SOLO,
 	COOP,
-	PVP,
+	//PVP,
 	END
 };
 
