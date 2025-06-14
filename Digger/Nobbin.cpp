@@ -19,8 +19,8 @@ Nobbin::Nobbin(Level* level) :
 	m_Level(level),
 	m_EnemyDied(std::make_unique<Rinigin::Event>())
 {
-	GetCollider()->SetBounds({ 40,40,0 });
-	GetTrigger()->SetBounds({40, 40, 0});
+	GetCollider()->SetBounds({ 30,30,0 });
+	GetTrigger()->SetBounds({30, 30, 0});
 	GetRigidbody()->SetKinematic(true);
 
 	GetCollider()->SetLayer("Nobbin");

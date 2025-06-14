@@ -39,5 +39,5 @@ namespace DIGGER {
 	constexpr static float BAG_DESTROY_HEIGHT{ 60 };
 
 	// Enemies
-	constexpr static float NOBBIN_SPEED{ 125.f };
+	constexpr static float NOBBIN_SPEED{ 110.f };
 }

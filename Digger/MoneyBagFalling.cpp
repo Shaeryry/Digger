@@ -54,7 +54,7 @@ Rinigin::State* MoneyBagFalling::Update()
 		return nullptr;
 	}
 	else {
-		const float fillPercent = Rinigin::Physics::GetInstance().GetMaskCoverage(position, bounds);
+		const float fillPercent = Rinigin::Physics::GetInstance().GetMaskCoverage(position + m_MoneyBag->GetRigidbody()->Velocity(), bounds);
 		if (velocity <= 0) {
 			float fallenDistance = (position.y - m_FallHeight);
 
@@ -70,7 +70,7 @@ Rinigin::State* MoneyBagFalling::Update()
 			return m_MoneyBag->GetStateMachine()->GetState<MoneyBagIdle>();
 		}
 		else {
-			if (fillPercent < .4f) {
+			if (fillPercent < 1) {
 				m_MoneyBag->GetLevel()->Map()->DigAt((position + (bounds / 2.f)).x, (position + (bounds / 2.f)).y, DIGGER::DIG_TUNNEL_SIZE);
 			}
 		}

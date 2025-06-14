@@ -21,7 +21,7 @@ MoneyBag::MoneyBag(Level* level) :
 	m_StateMachineComponent(nullptr)
 {
 	m_ColliderComponent = GetItemObject()->AddComponent<Rinigin::ColliderComponent>(glm::vec3{ 30,30,0 }, glm::vec3{ 0,0,0 },false);
-	m_TriggerComponent = GetItemObject()->AddComponent<Rinigin::ColliderComponent>(glm::vec3{ 30,30,0 }, glm::vec3{ 0,0,0 }, true);
+	m_TriggerComponent = GetItemObject()->AddComponent<Rinigin::ColliderComponent>(glm::vec3{ 30,15,0 }, glm::vec3{ 0,0,0 }, true);
 	m_TriggerComponent->SetLayer("MoneyBag");
 
 	m_RigidbodyComponent = GetItemObject()->AddComponent<Rinigin::RigidbodyComponent>(m_ColliderComponent,1.f,false);
