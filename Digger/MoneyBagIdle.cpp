@@ -27,8 +27,8 @@ Rinigin::State* MoneyBagIdle::Update()
 	const glm::vec3 offsetPosition{ glm::vec3(0,boundsMoneyBag.y,0) + m_Offset };
 	const glm::vec3 position{ m_MoneyBag->GetItemObject()->GetWorldPosition() + offsetPosition };
 
-	bool filledSpace{ Rinigin::Physics::GetInstance().IsOverlappingWithMasks(position,(boundsMoneyBag * m_BoundsOffset)) };
-	if (!filledSpace) {
+	float filledSpace{ Rinigin::Physics::GetInstance().GetMaskCoverage(position,(boundsMoneyBag * m_BoundsOffset)) };
+	if (filledSpace < 0.5f) {
 		return m_MoneyBag->GetStateMachine()->GetState<MoneyBagPrefall>();
 	}
 	return nullptr;

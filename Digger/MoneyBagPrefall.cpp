@@ -30,7 +30,6 @@ void MoneyBagPrefall::Enter()
 
 Rinigin::State* MoneyBagPrefall::Update()
 {
-
 	float velocity = glm::length(m_MoneyBag->GetRigidbody()->Velocity());
 	m_Duration += Rinigin::Timer::GetInstance().deltaTime;
 

@@ -22,6 +22,7 @@ void EnemySpawnerComponent::Update()
 {
 	const bool canSpawn{
 		(m_SpawnClock > m_SpawnRate)
+		and m_Level->GetDeadPlayers().size() <= 0
 	};
 
 	if (canSpawn) {

@@ -39,32 +39,47 @@ void NobbinAIComponent::Update()
 
 void NobbinAIComponent::Render() const
 {
-	m_Nobbin->GetPursueState()->DrawPath();
+	//m_Nobbin->GetPursueState()->DrawPath();
 }
 
 Character* NobbinAIComponent::FindClosestPlayer() const
 {
-	Character* closest = nullptr;
-	float minDist = std::numeric_limits<float>::max();
-	glm::vec3 myPos = GetOwner()->GetWorldPosition();
 	Level* level = m_Nobbin->GetLevel();
+	if (!level) return nullptr;
 
-	if (level) {
-		for (int i = 0; i < m_Nobbin->GetLevel()->GetPlayers().size(); i++) {
-			Character* player = m_Nobbin->GetLevel()->GetPlayer(i);
+	const auto& deadPlayers = level->GetDeadPlayers();
+	const auto& players = level->GetPlayers();
+	if (players.empty()) return nullptr;
 
-			if (!player or !player->GetCharacterObject()->IsActive()) continue;
+	glm::vec3 myPos = GetOwner()->GetWorldPosition();
 
-			glm::vec3 playerPos = player->GetCharacterObject()->GetWorldPosition();
-			float dist = glm::distance(myPos, playerPos);
+	auto isValid = [deadPlayers](Character* c) {
+		return c &&
+			std::find(deadPlayers.begin(), deadPlayers.end(),c) == deadPlayers.end() and
+			c->GetCharacterObject() and
+			c->GetCharacterObject()->IsActive();
+		};
 
-			if (dist < minDist) {
-				closest = player;
-				minDist = dist;
-			}
-		}
+	auto closestIt = std::min_element(players.begin(), players.end(),
+		[&](Character* a, Character* b) {
+			const bool validA = isValid(a);
+			const bool validB = isValid(b);
+
+			if (!validA && !validB) return false;
+			if (!validA) return false;
+			if (!validB) return true;
+
+			float distA = glm::distance(myPos, a->GetCharacterObject()->GetWorldPosition());
+			float distB = glm::distance(myPos, b->GetCharacterObject()->GetWorldPosition());
+			return distA < distB;
+		});
+
+	if (closestIt != players.end() && isValid(*closestIt)) {
+		return *closestIt;
 	}
 
-	return closest;
+	return nullptr;
 }
+
+
 

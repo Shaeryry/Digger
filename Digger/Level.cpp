@@ -229,14 +229,12 @@ void Level::InitializeLevel()
 			break;
 		case 1:
 			// Dug out
-			//m_MapComponent->DigAt(tilePos.x, tilePos.y, DIGGER::TILE_SIZE);
 			tunnelPositions.emplace_back(tilePos);
 			break;
 		case 2:
 			// Spawn points
 			tunnelPositions.emplace_back(tilePos);
 			m_LevelData.playerSpawns.emplace_back(tilePos - glm::vec2(tileWidth/2.f, tileHeight /2.f));
-			//m_MapComponent->DigAt(tilePos.x, tilePos.y, DIGGER::TILE_SIZE);
 			break;
 		case 3: {
 			// Emeralds
@@ -261,7 +259,7 @@ void Level::InitializeLevel()
 		case 5: {
 			// Money bag
 			MoneyBag* moneyBag = static_cast<MoneyBag*>(m_ItemSpawner.Spawn("MoneyBag"));
-			moneyBag->GetItemObject()->SetPosition(glm::vec3(tilePos.x, tilePos.y, 0) /*- moneyBag->GetCollider()->GetHalfExtents()*/);
+			moneyBag->GetItemObject()->SetPosition(glm::vec3(tilePos.x, tilePos.y, 0));
 			break;
 		}
 		default:

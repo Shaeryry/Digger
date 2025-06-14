@@ -11,6 +11,7 @@
 NobbinPursueState::NobbinPursueState(Rinigin::StateContextComponent* context, Nobbin* nobbin) :
 	State(context),
 	m_Nobbin(nobbin),
+	m_Target(0,0),
 	m_CurrentPathIndex(0),
 	m_PathCooldownTimer(0.0f),
 	m_PathCooldownDuration(1.0f)

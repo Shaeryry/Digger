@@ -1,4 +1,4 @@
-#include "Pathfinder.h"
+﻿#include "Pathfinder.h"
 #include "TerrainComponent.h"
 #include <queue>
 #include <unordered_map>
@@ -19,18 +19,20 @@ std::vector<glm::ivec2> Pathfinder::GetNeighbors(const glm::ivec2& pos)
 
 float Pathfinder::Heuristic(const glm::ivec2& a, const glm::ivec2& b)
 {
-    return static_cast<float>(std::abs(a.x - b.x)) + static_cast<float>(std::abs(a.y - b.y)); // Manhattan distance
+    return static_cast<float>(std::abs(a.x - b.x)) + static_cast<float>(std::abs(a.y - b.y));
 }
-
 std::vector<glm::vec2> Pathfinder::FindPath(TerrainComponent* terrain, const glm::vec2& startPixel, const glm::vec2& endPixel, const glm::vec2& tileSize)
 {
-    Rinigin::Physics& physics{ Rinigin::Physics::GetInstance() };
+    Rinigin::Physics& physics = Rinigin::Physics::GetInstance();
+
     const glm::ivec2 start = glm::ivec2(startPixel.x / tileSize.x, startPixel.y / tileSize.y);
     const glm::ivec2 end = glm::ivec2(endPixel.x / tileSize.x, endPixel.y / tileSize.y);
 
     auto hash = [](glm::ivec2 p, int w) { return p.y * w + p.x; };
-    const int mapWidth = terrain->GetMapWidth();
-    const int mapHeight = terrain->GetMapHeight();
+
+    const glm::ivec2 tileOrigin = glm::ivec2(terrain->GetOrigin().x / tileSize.x, terrain->GetOrigin().y / tileSize.y);
+    const int mapWidth = static_cast<int>(terrain->GetMapWidth() / tileSize.x);
+    const int mapHeight = static_cast<int>(terrain->GetMapHeight() / tileSize.y);
 
     auto cmp = [](Node* a, Node* b) { return a->FCost() > b->FCost(); };
     std::priority_queue<Node*, std::vector<Node*>, decltype(cmp)> openSet(cmp);
@@ -38,10 +40,9 @@ std::vector<glm::vec2> Pathfinder::FindPath(TerrainComponent* terrain, const glm
     std::unordered_map<int, Node*> allNodes;
     std::unordered_map<int, bool> closed;
 
-    // Container to hold ownership of all created nodes
     std::vector<std::unique_ptr<Node>> nodePool;
+    nodePool.emplace_back(std::make_unique<Node>(Node{ start, 0.0f, Heuristic(start, end), nullptr }));
 
-    nodePool.push_back(std::make_unique<Node>(Node{ start, 0.0f, Heuristic(start, end), nullptr }));
     Node* startNode = nodePool.back().get();
     openSet.push(startNode);
     allNodes[hash(start, mapWidth)] = startNode;
@@ -55,10 +56,13 @@ std::vector<glm::vec2> Pathfinder::FindPath(TerrainComponent* terrain, const glm
         {
             std::vector<glm::vec2> path;
             for (Node* node = current; node; node = node->parent) {
-                path.emplace_back(glm::vec2(node->pos.x * tileSize.x, node->pos.y * tileSize.y));
+                glm::vec2 tileCenter = glm::vec2(
+                    (node->pos.x + 0.5f) * tileSize.x,
+                    (node->pos.y + 0.5f) * tileSize.y
+                );
+                path.emplace_back(tileCenter);
             }
             std::reverse(path.begin(), path.end());
-
             return path;
         }
 
@@ -66,28 +70,26 @@ std::vector<glm::vec2> Pathfinder::FindPath(TerrainComponent* terrain, const glm
 
         for (const glm::ivec2& neighbor : GetNeighbors(current->pos))
         {
-            if (neighbor.x < 0 or neighbor.y < 0 or neighbor.x >= mapWidth or neighbor.y >= mapHeight)
+            if (neighbor.x < tileOrigin.x or neighbor.y < tileOrigin.y or neighbor.x >= mapWidth + tileOrigin.x or neighbor.y >= tileOrigin.y + mapHeight)
                 continue;
 
-            glm::vec3 bounds = glm::vec3(tileSize.x, tileSize.y, 0);
-            glm::vec3 worldPos = glm::vec3(
+            glm::vec3 bounds(tileSize.x, tileSize.y, 0);
+            glm::vec3 worldPos(
                 neighbor.x * tileSize.x,
                 neighbor.y * tileSize.y,
                 0
             );
 
             float solidRatio = physics.GetMaskCoverage(worldPos, bounds);
-            if (solidRatio > 0.5f)
-                continue;
+            if (solidRatio > 0.5f) continue;
 
             int neighborHash = hash(neighbor, mapWidth);
-            if (closed[neighborHash])
-                continue;
+            if (closed[neighborHash]) continue;
 
             float tentativeG = current->gCost + 1.0f;
             if (!allNodes.count(neighborHash) or tentativeG < allNodes[neighborHash]->gCost)
             {
-                nodePool.push_back(std::make_unique<Node>(Node{ neighbor, tentativeG, Heuristic(neighbor, end), current }));
+                nodePool.emplace_back(std::make_unique<Node>(Node{ neighbor, tentativeG, Heuristic(neighbor, end), current }));
                 Node* neighborNode = nodePool.back().get();
                 openSet.push(neighborNode);
                 allNodes[neighborHash] = neighborNode;
@@ -95,5 +97,5 @@ std::vector<glm::vec2> Pathfinder::FindPath(TerrainComponent* terrain, const glm
         }
     }
 
-    return {}; 
+    return {}; // No path found
 }

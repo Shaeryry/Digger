@@ -39,12 +39,11 @@ void MoneyBagFalling::Enter()
 Rinigin::State* MoneyBagFalling::Update()
 {
 	const glm::vec3 position{ m_MoneyBag->GetItemObject()->GetWorldPosition() };
+	const glm::vec3 bounds{ m_MoneyBag->GetCollider()->Bounds() };
 	float velocity = glm::length(m_MoneyBag->GetRigidbody()->Velocity());
 
 	if (not m_Falling) {
-		const glm::vec3 bounds{ m_MoneyBag->GetCollider()->Bounds() };
 		const bool colliding = Rinigin::Physics::GetInstance().IsOverlappingWithMasks(position, bounds);
-
 		if (not colliding) {
 			m_Falling = true;
 			m_MoneyBag->GetRigidbody()->SetCanCollide(true);
@@ -55,19 +54,27 @@ Rinigin::State* MoneyBagFalling::Update()
 		return nullptr;
 	}
 	else {
+		const float fillPercent = Rinigin::Physics::GetInstance().GetMaskCoverage(position, bounds);
 		if (velocity <= 0) {
 			float fallenDistance = (position.y - m_FallHeight);
+
 			if (fallenDistance > DIGGER::BAG_DESTROY_HEIGHT) {
 				// Destroy and lowkey just die
 				Item* gold = m_MoneyBag->GetLevel()->GetItemSpawner().Spawn("Gold");
 				gold->GetItemObject()->SetPosition(m_MoneyBag->GetItemObject()->GetWorldPosition());
 				EndSFX();
 				m_MoneyBag->GetItemObject()->Destroy();
+				return nullptr;
 			}
-			else {
-				return m_MoneyBag->GetStateMachine()->GetState<MoneyBagIdle>();
+
+			return m_MoneyBag->GetStateMachine()->GetState<MoneyBagIdle>();
+		}
+		else {
+			if (fillPercent < .4f) {
+				m_MoneyBag->GetLevel()->Map()->DigAt((position + (bounds / 2.f)).x, (position + (bounds / 2.f)).y, DIGGER::DIG_TUNNEL_SIZE);
 			}
 		}
+		
 	}
 
 	return nullptr;

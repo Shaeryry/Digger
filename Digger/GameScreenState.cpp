@@ -90,6 +90,9 @@ GameScreenState::GameScreenState(Rinigin::StateContextComponent* context) :
 
 void GameScreenState::Enter()
 {
+	m_TransitioningToNextLevel = false;
+	m_TransitioningToScore = false;
+
 	SetupBindings();
 	SetLevel(1);
 	m_Level->SetScore(0);
