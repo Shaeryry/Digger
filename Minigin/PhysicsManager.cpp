@@ -170,36 +170,34 @@ void Rinigin::Physics::SolveCollisions()
 			if (colliderB->IsLayerExcluded(colliderA->GetCollisionLayer())) continue;
 			if (!AreCollidersOverlapping(colliderA, colliderB)) continue;
 
-			// Compute overlap
 			glm::vec3 delta = colliderA->GetCenter() - colliderB->GetCenter();
 			glm::vec3 totalHalfSize = colliderA->GetHalfExtents() + colliderB->GetHalfExtents();
 			glm::vec3 overlap = totalHalfSize - glm::abs(delta);
 
 			if (overlap.x <= 0.f || overlap.y <= 0.f) continue;
 
-			// Resolve along the axis of least penetration
 			glm::vec3 correction{};
-			if (overlap.x < overlap.y)
+			if (overlap.x < overlap.y) {
 				correction.x = (delta.x > 0.f ? 1.f : -1.f) * overlap.x;
-			else
+			}
+			else {
 				correction.y = (delta.y > 0.f ? 1.f : -1.f) * overlap.y;
+			}
 
 			// Mass logic
 			float massA = !rigidbodyA->IsKinematic() ? rigidbodyA->Mass() : 0.f;
 			float massB = !rigidbodyB->IsKinematic() ? rigidbodyB->Mass() : 0.f;
 			float totalMass = massA + massB;
 
-			// Get per-object lock masks
-			glm::vec3 lockA = rigidbodyA->AxisLock(); // e.g. (1, 0, 1) to lock Y
+			glm::vec3 lockA = rigidbodyA->AxisLock();
 			glm::vec3 lockB = rigidbodyB->AxisLock();
 
-			// Apply resolution
 			if (massA > 0.f && massB == 0.f) {
-				glm::vec3 moveA = correction * lockA; // Respect A's lock only
+				glm::vec3 moveA = correction * lockA;
 				ownerA->SetPosition(ownerA->GetWorldPosition() + moveA);
 			}
 			else if (massB > 0.f && massA == 0.f) {
-				glm::vec3 moveB = -correction * lockB; // Respect B's lock only
+				glm::vec3 moveB = -correction * lockB;
 				ownerB->SetPosition(ownerB->GetWorldPosition() + moveB);
 			}
 			else if (massA > 0.f && massB > 0.f) {
