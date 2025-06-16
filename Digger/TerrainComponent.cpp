@@ -2,6 +2,7 @@
 #include "Renderer.h"
 #include <glm.hpp>
 #include <SDL_image.h> 
+#include "ResourceManager.h"
 
 TerrainComponent::TerrainComponent(Rinigin::GameObject* gameObject,const glm::vec2& origin ,const glm::vec2& screenSize, const glm::vec2& mapSize) :
 	Component(gameObject),
@@ -13,27 +14,30 @@ TerrainComponent::TerrainComponent(Rinigin::GameObject* gameObject,const glm::ve
 	m_Height = static_cast<int>(mapSize.y);
 
 	// Background tiles
-	m_BackgroundTilesTexture = SDL_CreateTexture(
-		Rinigin::Renderer::GetInstance().GetSDLRenderer(),
-		SDL_PIXELFORMAT_ARGB8888,
-		SDL_TEXTUREACCESS_STREAMING,
-		m_ScreenWidth,
-		m_ScreenHeight
+	m_BackgroundTilesTexture = std::make_unique<Rinigin::Texture2D>( SDL_CreateTexture(
+			Rinigin::Renderer::GetInstance().GetSDLRenderer(),
+			SDL_PIXELFORMAT_ARGB8888,
+			SDL_TEXTUREACCESS_STREAMING,
+			m_ScreenWidth,
+			m_ScreenHeight
+		) 
 	);
-	SDL_SetTextureBlendMode(m_BackgroundTilesTexture, SDL_BLENDMODE_NONE);
+	SDL_SetTextureBlendMode(m_BackgroundTilesTexture->GetSDLTexture(), SDL_BLENDMODE_NONE);
 
 	m_BackgroundPixels = nullptr;
 	m_BackgroundPitch = 0;
 	//
 
-	m_MaskTexture = SDL_CreateTexture(
-		Rinigin::Renderer::GetInstance().GetSDLRenderer(),
-		SDL_PIXELFORMAT_ARGB8888,
-		SDL_TEXTUREACCESS_STREAMING,
-		m_ScreenWidth,
-		m_ScreenHeight
+	m_MaskTexture = std::make_unique<Rinigin::Texture2D>( SDL_CreateTexture(
+			Rinigin::Renderer::GetInstance().GetSDLRenderer(),
+			SDL_PIXELFORMAT_ARGB8888,
+			SDL_TEXTUREACCESS_STREAMING,
+			m_ScreenWidth,
+			m_ScreenHeight
+		)
 	);
-	SDL_SetTextureBlendMode(m_MaskTexture, SDL_BLENDMODE_BLEND);
+
+	SDL_SetTextureBlendMode(m_MaskTexture->GetSDLTexture(), SDL_BLENDMODE_BLEND);
 
 	m_MaskPixels = new Uint32[m_ScreenWidth * m_ScreenHeight];
 	ResetPixels();
@@ -41,19 +45,17 @@ TerrainComponent::TerrainComponent(Rinigin::GameObject* gameObject,const glm::ve
 
 TerrainComponent::~TerrainComponent()
 {
-	delete[] m_MaskPixels;
-	SDL_DestroyTexture(m_BackgroundTilesTexture);
-	SDL_DestroyTexture(m_MaskTexture);
+	//delete[] m_MaskPixels;
 }
 
 void TerrainComponent::UnlockMask()
 {
-	SDL_UnlockTexture(m_BackgroundTilesTexture);
+	SDL_UnlockTexture(m_BackgroundTilesTexture->GetSDLTexture());
 }
 
 void TerrainComponent::LockMask()
 {
-	SDL_LockTexture(m_BackgroundTilesTexture, nullptr, &m_BackgroundPixels, &m_BackgroundPitch);
+	SDL_LockTexture(m_BackgroundTilesTexture->GetSDLTexture(), nullptr, &m_BackgroundPixels, &m_BackgroundPitch);
 	m_BackgroundPixelPtr = static_cast<uint32_t*>(m_BackgroundPixels);
 }
 
@@ -123,7 +125,7 @@ void TerrainComponent::DigAt(int cx, int cy, int radius, bool square)
 
 void TerrainComponent::Update()
 {
-	SDL_UpdateTexture(m_MaskTexture, nullptr, m_MaskPixels, m_ScreenWidth * sizeof(Uint32));
+	SDL_UpdateTexture(m_MaskTexture->GetSDLTexture(), nullptr, m_MaskPixels, m_ScreenWidth * sizeof(Uint32));
 
 	LockMask();
 
@@ -147,7 +149,7 @@ void TerrainComponent::Render() const
 {
 	SDL_Renderer* renderer = Rinigin::Renderer::GetInstance().GetSDLRenderer();
 	// Apply the destruction mask on top
-	SDL_RenderCopy(renderer, m_BackgroundTilesTexture, nullptr, nullptr);
+	SDL_RenderCopy(renderer, m_BackgroundTilesTexture->GetSDLTexture(), nullptr, nullptr);
 	//SDL_RenderPresent(renderer);
 }
 

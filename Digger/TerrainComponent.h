@@ -3,7 +3,7 @@
 #include "ICollisionMask.h"
 #include <glm.hpp>
 
-namespace Rinigin { class GameObject; }
+namespace Rinigin { class GameObject; class Texture2D; }
 
 struct SDL_Texture;
 class TerrainComponent : public Rinigin::Component,public Rinigin::ICollisionMask
@@ -31,13 +31,13 @@ private:
 	
 	glm::vec2 m_Origin;
 
-	SDL_Texture* m_MaskTexture;
+	std::unique_ptr<Rinigin::Texture2D> m_MaskTexture;
 	uint32_t* m_MaskPixels;
 
 	int m_BackgroundPitch;
 	void* m_BackgroundPixels; 
 	uint32_t* m_BackgroundPixelPtr;
-	SDL_Texture* m_BackgroundTilesTexture;
+	std::unique_ptr<Rinigin::Texture2D> m_BackgroundTilesTexture;
 
 	int m_ScreenWidth;
 	int m_ScreenHeight;
